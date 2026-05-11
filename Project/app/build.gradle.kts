@@ -51,4 +51,6 @@ dependencies {
     // RETROFIT
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    // OKHTTP
+    implementation(libs.okhttp.logging)
 }
