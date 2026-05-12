@@ -8,14 +8,11 @@ data class ErrorDto(
 
 data class ErrorContentDto(
     var type: String = "",
-
     val message: String = "",
-
     val fields: List<ErrorFieldDto> = emptyList()
 )
 
 data class ErrorFieldDto(
     val field: String,
-
     val message: String
 )
