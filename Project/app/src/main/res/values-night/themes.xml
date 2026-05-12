@@ -9,7 +9,7 @@
         <item name="colorOnTertiary">@color/white</item>
         <item name="android:colorBackground">@color/black_background</item>
         <item name="colorSurface">@color/grey_dark</item>
-        <item name="colorSurfaceVariant">@color/grey_button_background</item>
+        <item name="colorSurfaceVariant">@color/grey_light_button_background</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">@color/grey_hint</item>
         <item name="colorOnSurface">@color/white</item>
