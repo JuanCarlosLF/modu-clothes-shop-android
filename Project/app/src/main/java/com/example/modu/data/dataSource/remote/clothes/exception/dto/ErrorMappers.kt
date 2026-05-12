@@ -4,7 +4,6 @@ import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.exception.NetworkFieldError
 
-
 fun ErrorDto.toModel(): AppError = this.error.toModel()
 
 private fun ErrorContentDto.toModel(): AppError {
