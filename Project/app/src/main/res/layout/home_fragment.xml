@@ -72,13 +72,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/margin_m"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        app:spanCount="2"
         android:orientation="vertical"
-        tools:listitem="@layout/item_gallery"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_search_filter_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:itemCount="50" />
+        app:spanCount="2"
+        tools:itemCount="50"
+        tools:listitem="@layout/item_gallery" />
 </androidx.constraintlayout.widget.ConstraintLayout>
