@@ -16,6 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", "\"https://api-placeholder.com\"")
     }
 
     buildFeatures{
@@ -50,7 +51,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    // HILT
+
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // OkHttp
+    implementation(libs.okhttp.logging)
 }

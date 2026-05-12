@@ -3,4 +3,16 @@
 
     <!-- Common -->
     <string name="common_search_hint">Buscador</string>
+
+    <!-- Error -->
+    <string name="error_no_internet_title">No Internet Connection</string>
+    <string name="error_no_internet_msg">Please check your network settings and try again.</string>
+    <string name="error_unauthorized_title">Session Expired</string>
+    <string name="error_unauthorized_msg">Your session has expired. Please log in again to continue.</string>
+    <string name="error_not_found_title">Not Found</string>
+    <string name="error_not_found_msg">The requested resource could not be found.</string>
+    <string name="error_internal_error_title">Server Error</string>
+    <string name="error_internal_error_msg">We are currently experiencing technical difficulties. Please try again later.</string>
+    <string name="general_error_title">Oops! Something went wrong</string>
+    <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
 </resources>

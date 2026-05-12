@@ -9,13 +9,19 @@ material = "1.13.0"
 activityKtx = "1.13.0"
 constraintlayout = "2.2.1"
 
-# KOTLIN
+# Kotlin
 kotlin = "2.2.20"
 
-# KSP
+# Retrofit
+retrofit = "2.9.0"
+
+# OkHttp
+okhttp = "4.11.0"
+
+# Ksp
 ksp = "2.2.0-2.0.2"
 
-# HILT
+# Hilt
 hilt = "2.56.2"
 
 [libraries]
@@ -28,7 +34,14 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
-# HILT
+# Retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+# OkHttp
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 
