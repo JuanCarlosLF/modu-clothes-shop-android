@@ -67,12 +67,9 @@ class DataErrorHandlerImpl @Inject constructor(
     private fun parse(httpException: HttpException): AppError {
         return try {
             val errorBody = httpException.response()?.errorBody()?.string()
-
             val type: Type = object : TypeToken<ErrorDto>() {}.type
             val errorParsed = Gson().fromJson<ErrorDto>(errorBody, type)
-
             errorParsed.toModel()
-
         } catch (e: Exception) {
             AppError(
                 type = ErrorType.UNKNOWN,
