@@ -36,19 +36,16 @@ class DataErrorHandlerImpl @Inject constructor(
                             title = context.getString(R.string.error_401_title),
                             message = context.getString(R.string.error_401_msg)
                         )
-
                         404 -> AppError(
                             type = ErrorType.NOT_FOUND,
                             title = context.getString(R.string.error_404_title),
                             message = context.getString(R.string.error_404_msg)
                         )
-
                         in 500..599 -> AppError(
                             type = ErrorType.INTERNAL_ERROR,
                             title = context.getString(R.string.error_500_title),
                             message = context.getString(R.string.error_500_msg)
                         )
-
                         else -> parsedError
                     }
                 } else {
