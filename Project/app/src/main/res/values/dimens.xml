@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Margin -->
+    <dimen name="margin_xxxs">2dp</dimen>
+    <dimen name="margin_xxs">4dp</dimen>
+    <dimen name="margin_xs">8dp</dimen>
+    <dimen name="margin_s">16dp</dimen>
+    <dimen name="margin_m">20dp</dimen>
+    <dimen name="margin_l">24dp</dimen>
+    <dimen name="margin_xl">32dp</dimen>
+    <dimen name="margin_xxxl">50dp</dimen>
+
+    <!-- Padding -->
+    <dimen name="padding_delete">0dp</dimen>
+    <dimen name="padding_xxxs">2dp</dimen>
+    <dimen name="padding_xxs">4dp</dimen>
+    <dimen name="padding_xs">8dp</dimen>
+    <dimen name="padding_s">16dp</dimen>
+    <dimen name="padding_m">20dp</dimen>
+    <dimen name="padding_l">24dp</dimen>
+    <dimen name="padding_xl">32dp</dimen>
+
+    <!-- Text Size -->
+    <dimen name="home_title_text_size">32sp</dimen>
+
+    <!-- Component Size -->
+    <dimen name="button_min_size">48dp</dimen>
+
+    <!-- Other -->
+    <dimen name="search_text_input_layout_corner_radius">28dp</dimen>
+</resources>

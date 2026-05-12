@@ -5,9 +5,11 @@
     <color name="grey_on_surface_variant">#CAC4D0</color>
     <color name="grey_soft">#F9F9F9</color>
     <color name="grey_quantity_selector_background">#303030</color>
-    <color name="grey_button_background">#2F2F2F</color>
+    <color name="grey_light_button_background">#2F2F2F</color>
+    <color name="grey_dark_button_background">#2B2930</color>
     <color name="grey_light">#94A3B8</color>
-    <color name="grey_hint">#475569</color>
+    <color name="blue_dark_hint">#475569</color>
+    <color name="grey_hint">#CAC4D0</color>
     <color name="grey_dark">#1E1E1E</color>
     <color name="orange_primary">#B3653F</color>
     <color name="pink_soft_secondary">#FFD5D9</color>
