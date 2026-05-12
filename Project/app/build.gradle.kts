@@ -51,12 +51,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    // HILT
+
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    // RETROFIT
+
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
-    // OKHTTP
+
+    // OkHttp
     implementation(libs.okhttp.logging)
 }

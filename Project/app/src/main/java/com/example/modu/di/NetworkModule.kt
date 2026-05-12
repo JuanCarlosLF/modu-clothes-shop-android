@@ -15,7 +15,6 @@ import kotlin.apply
 
 @Module
 @InstallIn(SingletonComponent::class)
-
 object NetworkModule {
 
     @Singleton
@@ -50,7 +49,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideClothesApi(retrofit: Retrofit) : ClothesApi{
+    fun provideClothesApi(retrofit: Retrofit) : ClothesApi {
         return retrofit.create(ClothesApi::class.java)
     }
 }

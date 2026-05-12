@@ -22,8 +22,8 @@ class DataErrorHandlerImpl @Inject constructor(
         return when (error) {
             is IOException -> AppError(
                 type = ErrorType.NO_INTERNET,
-                title = context.getString(R.string.no_internet_title),
-                message = context.getString(R.string.no_internet_msg)
+                title = context.getString(R.string.error_no_internet_title),
+                message = context.getString(R.string.error_no_internet_msg)
             )
 
             is HttpException -> {
@@ -31,20 +31,20 @@ class DataErrorHandlerImpl @Inject constructor(
 
                 if (parsedError.type == ErrorType.UNKNOWN) {
                     when (error.code()) {
-                        401 -> AppError(
+                        HTTP_UNAUTHORIZED_ERROR_CODE -> AppError(
                             type = ErrorType.UNAUTHORIZED,
-                            title = context.getString(R.string.error_401_title),
-                            message = context.getString(R.string.error_401_msg)
+                            title = context.getString(R.string.error_unauthorized_title),
+                            message = context.getString(R.string.error_unauthorized_msg)
                         )
-                        404 -> AppError(
+                        HTTP_NOT_FOUND_ERROR_CODE -> AppError(
                             type = ErrorType.NOT_FOUND,
-                            title = context.getString(R.string.error_404_title),
-                            message = context.getString(R.string.error_404_msg)
+                            title = context.getString(R.string.error_not_found_title),
+                            message = context.getString(R.string.error_not_found_msg)
                         )
                         in 500..599 -> AppError(
                             type = ErrorType.INTERNAL_ERROR,
-                            title = context.getString(R.string.error_500_title),
-                            message = context.getString(R.string.error_500_msg)
+                            title = context.getString(R.string.error_internal_error_title),
+                            message = context.getString(R.string.error_internal_error_msg)
                         )
                         else -> parsedError
                     }
@@ -74,5 +74,10 @@ class DataErrorHandlerImpl @Inject constructor(
                 message = context.getString(R.string.general_error_msg)
             )
         }
+    }
+
+    companion object {
+        private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
+        private const val HTTP_NOT_FOUND_ERROR_CODE = 404
     }
 }
