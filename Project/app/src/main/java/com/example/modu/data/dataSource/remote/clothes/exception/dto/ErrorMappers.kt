@@ -9,7 +9,7 @@ fun ErrorDto.toModel(): AppError = this.error.toModel()
 private fun ErrorContentDto.toModel(): AppError {
     val type = try {
         ErrorType.valueOf(this.type)
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         ErrorType.UNKNOWN
     }
 
