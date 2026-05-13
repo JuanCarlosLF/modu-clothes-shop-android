@@ -8,14 +8,14 @@ internal fun ErrorDto.toModel(): AppError = this.error.toModel()
 
 private fun ErrorContentDto.toModel(): AppError {
     val type = try {
-        ErrorType.valueOf(this.type)
+        ErrorType.valueOf(this.title)
     } catch (_: IllegalArgumentException) {
         ErrorType.UNKNOWN
     }
 
     return AppError(
         type = type,
-        title = this.type,
+        title = this.title,
         message = this.message,
         fields = this.fields.map { field -> field.toModel() }
     )
