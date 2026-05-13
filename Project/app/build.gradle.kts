@@ -67,4 +67,7 @@ dependencies {
 
     // OkHttp
     implementation(libs.okhttp.logging)
+
+    // Coil
+    implementation(libs.coil)
 }

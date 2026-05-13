@@ -1,21 +1,21 @@
-package com.example.modu.data.dataSource.remote.clothes.exception.dto
+package com.example.modu.data.dataSource.remote.product.exception.dto
 
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.exception.NetworkFieldError
 
-internal fun ErrorDto.toModel(): AppError = this.error.toModel()
+internal fun ErrorDto.toModel(): AppError = this.content.toModel()
 
 private fun ErrorContentDto.toModel(): AppError {
     val type = try {
-        ErrorType.valueOf(this.type)
+        ErrorType.valueOf(this.title)
     } catch (_: IllegalArgumentException) {
         ErrorType.UNKNOWN
     }
 
     return AppError(
         type = type,
-        title = this.type,
+        title = this.title,
         message = this.message,
         fields = this.fields.map { field -> field.toModel() }
     )
