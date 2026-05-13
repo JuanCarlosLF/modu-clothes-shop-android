@@ -1,8 +1,7 @@
 package com.example.modu.di
 
-import com.example.modu.domain.repository.clothes.ClothesRepository
-import com.example.modu.domain.usecase.ClothesUseCase
-import com.example.modu.domain.usecase.ClothesUseCaseImpl
+import com.example.modu.domain.usecase.ProductUseCase
+import com.example.modu.domain.usecase.ProductUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,5 +14,5 @@ abstract class DomainModule {
 
     @Binds
     @Singleton
-    abstract fun bindClothesUseCase(clothesUseCase: ClothesUseCaseImpl) : ClothesUseCase
+    abstract fun bindProductUseCase(productsUseCase: ProductUseCaseImpl) : ProductUseCase
 }

@@ -1,11 +1,11 @@
 package com.example.modu.di
 
-import com.example.modu.data.dataSource.ClothesDataSource
-import com.example.modu.data.dataSource.remote.ClothesRemoteDataSourceImpl
-import com.example.modu.data.dataSource.remote.clothes.exception.DataErrorHandlerImpl
-import com.example.modu.data.dataSource.remote.clothes.exception.ErrorHandler
-import com.example.modu.data.repository.clothes.ClothesRepositoryImpl
-import com.example.modu.domain.repository.clothes.ClothesRepository
+import com.example.modu.data.dataSource.ProductDataSource
+import com.example.modu.data.dataSource.remote.ProductRemoteDataSourceImpl
+import com.example.modu.data.dataSource.remote.product.exception.DataErrorHandlerImpl
+import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
+import com.example.modu.data.repository.product.ProductRepositoryImpl
+import com.example.modu.domain.repository.products.ProductRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,14 +18,13 @@ abstract class ErrorHandlerModule {
 
     @Binds
     @Singleton
-    abstract fun bindErrorHandler(
-        dataErrorHandlerImpl: DataErrorHandlerImpl): ErrorHandler
+    abstract fun bindErrorHandler(dataErrorHandlerImpl: DataErrorHandlerImpl): ErrorHandler
 
     @Binds
     @Singleton
-    abstract fun bindClothesDataSource(dataSourceImpl: ClothesRemoteDataSourceImpl) : ClothesDataSource
+    abstract fun bindProductDataSource(dataSourceImpl: ProductRemoteDataSourceImpl) : ProductDataSource
 
     @Binds
     @Singleton
-    abstract fun bindClothesRepository(clothesRepositoryImpl: ClothesRepositoryImpl) : ClothesRepository
+    abstract fun bindProductRepository(productRepositoryImpl: ProductRepositoryImpl) : ProductRepository
 }

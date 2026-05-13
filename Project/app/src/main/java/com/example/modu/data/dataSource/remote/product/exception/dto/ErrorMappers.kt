@@ -1,4 +1,4 @@
-package com.example.modu.data.dataSource.remote.clothes.exception.dto
+package com.example.modu.data.dataSource.remote.product.exception.dto
 
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType

@@ -1,9 +1,9 @@
-package com.example.modu.data.dataSource.remote.clothes.exception
+package com.example.modu.data.dataSource.remote.product.exception
 
 import android.content.Context
 import com.example.modu.R
-import com.example.modu.data.dataSource.remote.clothes.exception.dto.ErrorDto
-import com.example.modu.data.dataSource.remote.clothes.exception.dto.toModel
+import com.example.modu.data.dataSource.remote.product.exception.dto.ErrorDto
+import com.example.modu.data.dataSource.remote.product.exception.dto.toModel
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.google.gson.Gson

@@ -1,7 +1,7 @@
 package com.example.modu.di
 
 import com.example.modu.BuildConfig
-import com.example.modu.data.dataSource.remote.clothes.api.ClothesApi
+import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,7 +49,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideClothesApi(retrofit: Retrofit) : ClothesApi {
-        return retrofit.create(ClothesApi::class.java)
+    fun provideProductApi(retrofit: Retrofit) : ProductApi {
+        return retrofit.create(ProductApi::class.java)
     }
 }
