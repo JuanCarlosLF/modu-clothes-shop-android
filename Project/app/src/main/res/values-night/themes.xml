@@ -1,6 +1,7 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.MODU" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/black_background</item>
         <item name="colorPrimary">@color/orange_primary</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/pink_soft_secondary</item>
