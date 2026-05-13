@@ -18,7 +18,6 @@
     <dimen name="padding_m">20dp</dimen>
     <dimen name="padding_l">24dp</dimen>
     <dimen name="padding_xl">32dp</dimen>
-    <dimen name="padding_delete">0dp</dimen>
 
     <!-- Text Size -->
     <dimen name="text_size_home_title">32sp</dimen>
