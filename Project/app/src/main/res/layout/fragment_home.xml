@@ -6,20 +6,20 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/home_title_text_view"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_home_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_s"
         android:layout_marginTop="@dimen/margin_xs"
         android:text="@string/home_title"
-        android:textSize="@dimen/home_title_text_size"
+        android:textSize="@dimen/text_size_home_title"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/home_search_filter_container"
-        android:layout_width="match_parent"
+        android:id="@+id/layout_home_search_and_filter"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_s"
         android:layout_marginBottom="@dimen/margin_m"
@@ -27,21 +27,20 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_title_text_view">
+        app:layout_constraintTop_toBottomOf="@id/text_home_title">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/home_search_layout"
+            android:id="@+id/layout_home_search"
             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-
             android:layout_marginEnd="@dimen/margin_s"
+            android:layout_weight="1"
             app:boxBackgroundColor="@color/grey_dark_button_background"
-            app:boxCornerRadiusBottomEnd="@dimen/search_text_input_layout_corner_radius"
-            app:boxCornerRadiusBottomStart="@dimen/search_text_input_layout_corner_radius"
-            app:boxCornerRadiusTopEnd="@dimen/search_text_input_layout_corner_radius"
-            app:boxCornerRadiusTopStart="@dimen/search_text_input_layout_corner_radius"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_search_text_input_layout"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_search_text_input_layout"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_search_text_input_layout"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_search_text_input_layout"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:endIconDrawable="@drawable/ic_search"
@@ -49,7 +48,7 @@
             app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/home_search_edit_text"
+                android:id="@+id/edit_text_home_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/common_search_hint"
@@ -60,24 +59,24 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
-            android:id="@+id/home_filter_button"
+            android:id="@+id/button_home_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_filter" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/home_recycler_view"
-        android:layout_width="match_parent"
+        android:id="@+id/recycler_view_home"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/margin_m"
         android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_search_filter_container"
-        app:spanCount="2"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_search_and_filter"
         tools:itemCount="50"
-        tools:listitem="@layout/item_gallery" />
+        tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        tools:listitem="@layout/item_gallery"
+        tools:spanCount="2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

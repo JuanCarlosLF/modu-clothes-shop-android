@@ -11,7 +11,6 @@
     <dimen name="margin_xxxl">50dp</dimen>
 
     <!-- Padding -->
-    <dimen name="padding_delete">0dp</dimen>
     <dimen name="padding_xxxs">2dp</dimen>
     <dimen name="padding_xxs">4dp</dimen>
     <dimen name="padding_xs">8dp</dimen>
@@ -19,13 +18,14 @@
     <dimen name="padding_m">20dp</dimen>
     <dimen name="padding_l">24dp</dimen>
     <dimen name="padding_xl">32dp</dimen>
+    <dimen name="padding_delete">0dp</dimen>
 
     <!-- Text Size -->
-    <dimen name="home_title_text_size">32sp</dimen>
+    <dimen name="text_size_home_title">32sp</dimen>
 
     <!-- Component Size -->
-    <dimen name="button_min_size">48dp</dimen>
+    <dimen name="button_size_min">48dp</dimen>
 
     <!-- Other -->
-    <dimen name="search_text_input_layout_corner_radius">28dp</dimen>
+    <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
 </resources>
