@@ -4,6 +4,9 @@
     <!-- Common -->
     <string name="common_search_hint">Buscador</string>
 
+    <!-- Home -->
+    <string name="home_title">Mosaic</string>
+
     <!-- Error -->
     <string name="error_no_internet_title">No Internet Connection</string>
     <string name="error_no_internet_msg">Please check your network settings and try again.</string>

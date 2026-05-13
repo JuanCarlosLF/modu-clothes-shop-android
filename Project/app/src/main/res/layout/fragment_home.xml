@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_s"
         android:layout_marginTop="@dimen/margin_xs"
+        android:text="@string/home_title"
         android:textSize="@dimen/home_title_text_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Mosaic" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/home_search_filter_container"
@@ -34,8 +34,9 @@
             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_s"
             android:layout_weight="1"
+
+            android:layout_marginEnd="@dimen/margin_s"
             app:boxBackgroundColor="@color/grey_dark_button_background"
             app:boxCornerRadiusBottomEnd="@dimen/search_text_input_layout_corner_radius"
             app:boxCornerRadiusBottomStart="@dimen/search_text_input_layout_corner_radius"
@@ -56,7 +57,6 @@
                 android:paddingVertical="@dimen/padding_s"
                 android:textColor="@color/white"
                 android:textColorHint="@color/grey_hint" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
@@ -64,7 +64,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_filter" />
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
