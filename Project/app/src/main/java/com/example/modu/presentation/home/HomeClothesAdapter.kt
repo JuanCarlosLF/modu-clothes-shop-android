@@ -9,10 +9,12 @@ import coil.load
 import com.example.modu.databinding.ItemGalleryBinding
 import com.example.modu.domain.entity.Product
 
-class HomeProductsAdapter (val onItemClick: (Product) -> Unit) : ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>(ProductsDiffCallback) {
+class HomeProductsAdapter(val onItemClick: (Product) -> Unit) :
+    ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>
+        (ProductsDiffCallback) {
 
-    inner class ProductsViewHolder(private val binding: ItemGalleryBinding) : RecyclerView.ViewHolder(binding.root) {
-
+    inner class ProductsViewHolder(private val binding: ItemGalleryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Product) {
             binding.itemImage.load(item.image) {
                 crossfade(true)
@@ -33,7 +35,8 @@ class HomeProductsAdapter (val onItemClick: (Product) -> Unit) : ListAdapter<Pro
         return ProductsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) = holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) =
+        holder.bind(getItem(position))
 
     private object ProductsDiffCallback : DiffUtil.ItemCallback<Product>() {
 

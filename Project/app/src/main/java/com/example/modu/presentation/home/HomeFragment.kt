@@ -32,14 +32,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupRecyclerView() {
-        adapter = HomeProductsAdapter() {
-            product ->
+        adapter = HomeProductsAdapter() { product ->
             val bundle = Bundle().apply {
                 putInt(DETAIL_NAVIGATION_KEY, product.id)
             }
             findNavController().navigate(
                 R.id.action_home_to_detail,
-                bundle)
+                bundle
+            )
         }
 
         binding?.recyclerHome?.layoutManager =
@@ -64,6 +64,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     companion object {
-    private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
+        private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
     }
 }

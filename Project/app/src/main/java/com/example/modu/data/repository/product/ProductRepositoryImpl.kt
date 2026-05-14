@@ -14,7 +14,6 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getProducts(): List<Product> {
         return try {
             dataSource.getProducts().map { it.toDomain() }
-
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }
