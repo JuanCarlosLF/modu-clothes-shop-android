@@ -10,9 +10,10 @@ import com.example.modu.databinding.ItemGalleryBinding
 import com.example.modu.domain.entity.Product
 
 private const val FADE_DURATION_MS = 500
-class HomeProductsAdapter(val onItemClick: (Product) -> Unit) :
-    ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>
-        (ProductsDiffCallback) {
+
+class HomeProductsAdapter(
+    val onItemClick: (Product) -> Unit
+) : ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>(ProductsDiffCallback) {
 
     inner class ProductsViewHolder(private val binding: ItemGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
