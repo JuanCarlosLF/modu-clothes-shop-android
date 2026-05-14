@@ -4,9 +4,9 @@ import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.exception.NetworkFieldError
 
-internal fun ErrorDto.toModel(): AppError = this.content.toModel()
+internal fun ErrorDto.toDomain(): AppError = this.content.toDomain()
 
-private fun ErrorContentDto.toModel(): AppError {
+private fun ErrorContentDto.toDomain(): AppError {
     val type = try {
         ErrorType.valueOf(requireNotNull(this.title))
     } catch (_: IllegalArgumentException) {
@@ -17,11 +17,11 @@ private fun ErrorContentDto.toModel(): AppError {
         type = type,
         title = this.title,
         message = this.message,
-        fields = this.fields?.map { field -> field.toModel() }
+        fields = this.fields?.map { field -> field.toDomain() }
     )
 }
 
-private fun ErrorFieldDto.toModel(): NetworkFieldError =
+private fun ErrorFieldDto.toDomain(): NetworkFieldError =
     NetworkFieldError(
         field = this.field,
         message = this.message
