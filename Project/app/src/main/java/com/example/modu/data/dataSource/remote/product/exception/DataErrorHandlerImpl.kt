@@ -3,7 +3,7 @@ package com.example.modu.data.dataSource.remote.product.exception
 import android.content.Context
 import com.example.modu.R
 import com.example.modu.data.dataSource.remote.product.exception.dto.ErrorDto
-import com.example.modu.data.dataSource.remote.product.exception.dto.toModel
+import com.example.modu.data.dataSource.remote.product.exception.dto.toDomain
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.google.gson.Gson
@@ -13,6 +13,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.lang.reflect.Type
 import javax.inject.Inject
+
+private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
+private const val HTTP_NOT_FOUND_ERROR_CODE = 404
 
 class DataErrorHandlerImpl @Inject constructor(
     @ApplicationContext private val context: Context
@@ -66,7 +69,7 @@ class DataErrorHandlerImpl @Inject constructor(
             val errorBody = httpException.response()?.errorBody()?.string()
             val type: Type = object : TypeToken<ErrorDto>() {}.type
             val parsedError = Gson().fromJson<ErrorDto>(errorBody, type)
-            parsedError.toModel()
+            parsedError.toDomain(context)
         } catch (_: Exception) {
             AppError(
                 type = ErrorType.UNKNOWN,
@@ -74,10 +77,5 @@ class DataErrorHandlerImpl @Inject constructor(
                 message = context.getString(R.string.general_error_msg)
             )
         }
-    }
-
-    companion object {
-        private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
-        private const val HTTP_NOT_FOUND_ERROR_CODE = 404
     }
 }

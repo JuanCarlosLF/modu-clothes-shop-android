@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ErrorContentDto(
     @SerializedName("type")
-    var title: String = "",
-    val message: String = "",
-    val fields: List<ErrorFieldDto> = emptyList()
+    var title: String? = null,
+    val message: String? = null,
+    val fields: List<ErrorFieldDto>? = null
 )

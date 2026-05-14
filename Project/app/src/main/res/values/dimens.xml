@@ -8,7 +8,7 @@
     <dimen name="margin_m">20dp</dimen>
     <dimen name="margin_l">24dp</dimen>
     <dimen name="margin_xl">32dp</dimen>
-    <dimen name="margin_xxxl">50dp</dimen>
+    <dimen name="margin_xxxl">60dp</dimen>
 
     <!-- Padding -->
     <dimen name="padding_xxxs">2dp</dimen>
@@ -24,6 +24,7 @@
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
+    <dimen name="image_view_clothes_min_size">100dp</dimen>
 
     <!-- Other -->
     <dimen name="corner_radius_search_text_input_layout">28dp</dimen>

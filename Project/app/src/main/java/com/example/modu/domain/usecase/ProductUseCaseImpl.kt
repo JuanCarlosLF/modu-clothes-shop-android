@@ -8,5 +8,5 @@ class ProductUseCaseImpl @Inject constructor(
     private val repository: ProductRepository
 ) : ProductUseCase {
 
-    override suspend fun getProducts(): List<Product> = repository.getProducts()
+    override suspend fun getProductsBy(): List<Product> = repository.getProductsBy()
 }
