@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,9 +29,9 @@ class HomeViewModel @Inject constructor(private val useCase: ProductUseCase) : V
         viewModelScope.launch {
             try {
                 val products = useCase.getProducts()
-                _uiState.value = uiState.value.copy(products = products)
+                _uiState.update { it.copy(products = products) }
             } catch (error: Exception) {
-                _uiState.value = uiState.value.copy(error = error.message)
+                _uiState.update { it.copy(error = error.message) }
             }
         }
     }
