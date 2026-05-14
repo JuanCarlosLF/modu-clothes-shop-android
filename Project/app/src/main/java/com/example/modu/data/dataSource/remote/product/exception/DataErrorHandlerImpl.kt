@@ -14,6 +14,9 @@ import java.io.IOException
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
+private const val HTTP_NOT_FOUND_ERROR_CODE = 404
+
 class DataErrorHandlerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ErrorHandler {
@@ -74,10 +77,5 @@ class DataErrorHandlerImpl @Inject constructor(
                 message = context.getString(R.string.general_error_msg)
             )
         }
-    }
-
-    companion object {
-        private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
-        private const val HTTP_NOT_FOUND_ERROR_CODE = 404
     }
 }
