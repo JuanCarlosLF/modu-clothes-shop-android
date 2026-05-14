@@ -4,5 +4,5 @@ import com.example.modu.domain.entity.Product
 
 data class HomeUiState(
     val products: List<Product> = emptyList(),
-    val error: String? = null
+    val errorMessage: String? = null
 )

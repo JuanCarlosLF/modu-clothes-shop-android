@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(private val useCase: ProductUseCase) : V
                 val products = useCase.getProductsBy()
                 _uiState.update { it.copy(products = products) }
             } catch (error: Exception) {
-                _uiState.update { it.copy(error = error.message) }
+                _uiState.update { it.copy(errorMessage = error.message) }
             }
         }
     }
