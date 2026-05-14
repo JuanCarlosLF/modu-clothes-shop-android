@@ -1,6 +1,6 @@
 package com.example.modu.data.dataSource.remote.product.exception.dto
 
 data class ErrorFieldDto(
-    val field: String,
-    val message: String
+    val field: String? = null,
+    val message: String? = null
 )

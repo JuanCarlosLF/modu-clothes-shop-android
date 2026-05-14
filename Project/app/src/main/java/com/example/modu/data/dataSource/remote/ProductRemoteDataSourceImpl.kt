@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class ProductRemoteDataSourceImpl @Inject constructor(private val api: ProductApi) : ProductDataSource {
 
-    override suspend fun getProducts(): List<ProductDto> = api.getProducts().products
+    override suspend fun getProducts(): List<ProductDto> = api.getProductsBy().products
 }

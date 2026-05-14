@@ -13,12 +13,12 @@ enum class ErrorType {
 
 data class AppError(
     val type: ErrorType,
-    val title: String,
-    override val message: String,
-    val fields: List<NetworkFieldError> = emptyList()
+    val title: String?,
+    override val message: String?,
+    val fields: List<NetworkFieldError>? = emptyList()
 ) : Exception(message)
 
 data class NetworkFieldError(
-    val field: String,
-    val message: String
+    val field: String?,
+    val message: String?
 )

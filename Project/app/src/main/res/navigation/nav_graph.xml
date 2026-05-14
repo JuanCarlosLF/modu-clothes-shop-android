@@ -2,22 +2,22 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/home_fragment">
+    app:startDestination="@id/fragment_home">
 
     <fragment
-        android:id="@+id/home_fragment"
+        android:id="@+id/fragment_home"
         android:name="com.example.modu.presentation.home.HomeFragment">
         <action
             android:id="@+id/action_home_to_detail"
-            app:destination="@+id/detail_fragment" />
+            app:destination="@+id/fragment_detail" />
         <action
             android:id="@+id/action_home_to_cart"
-            app:destination="@+id/cart_fragment" />
+            app:destination="@+id/fragment_cart" />
     </fragment>
     <fragment
-        android:id="@+id/detail_fragment"
+        android:id="@+id/fragment_detail"
         android:name="com.example.modu.presentation.DetailFragment" />
     <fragment
-        android:id="@+id/cart_fragment"
+        android:id="@+id/fragment_cart"
         android:name="com.example.modu.presentation.CartFragment" />
 </navigation>
