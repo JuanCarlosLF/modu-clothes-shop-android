@@ -9,6 +9,7 @@ import coil.load
 import com.example.modu.databinding.ItemGalleryBinding
 import com.example.modu.domain.entity.Product
 
+private const val FADE_DURATION_MS = 500
 class HomeProductsAdapter(val onItemClick: (Product) -> Unit) :
     ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>
         (ProductsDiffCallback) {
@@ -18,7 +19,7 @@ class HomeProductsAdapter(val onItemClick: (Product) -> Unit) :
         fun bind(item: Product) {
             binding.itemImage.load(item.image) {
                 crossfade(true)
-                crossfade(500)
+                crossfade(FADE_DURATION_MS)
                 binding.root.setOnClickListener {
                     onItemClick(item)
                 }

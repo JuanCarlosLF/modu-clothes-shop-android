@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
+private const val LAYOUT_COLUMNS_QUANTITY = 2
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -45,7 +46,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         binding?.recyclerHome?.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            StaggeredGridLayoutManager(LAYOUT_COLUMNS_QUANTITY, StaggeredGridLayoutManager.VERTICAL)
 
         binding?.recyclerHome?.adapter = adapter
     }
