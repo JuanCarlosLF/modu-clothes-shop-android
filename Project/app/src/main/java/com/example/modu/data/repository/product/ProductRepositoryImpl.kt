@@ -1,6 +1,5 @@
 package com.example.modu.data.repository.product
 
-import android.util.Log
 import com.example.modu.data.dataSource.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
 import com.example.modu.domain.entity.Product
@@ -17,7 +16,6 @@ class ProductRepositoryImpl @Inject constructor(
             dataSource.getProducts().map { it.toDomain() }
 
         } catch (error: Exception) {
-            Log.e("APP_ERROR", "Repository error: ${error.message}")
             throw errorHandler.handle(error)
         }
     }

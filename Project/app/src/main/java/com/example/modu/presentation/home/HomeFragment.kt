@@ -1,9 +1,7 @@
 package com.example.modu.presentation.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -39,7 +37,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val bundle = Bundle().apply {
                 putInt(DETAIL_NAVIGATION_KEY, product.id)
             }
-            Log.d("MI_APP", "Navigating to detail...")
             findNavController().navigate(
                 R.id.action_home_to_detail,
                 bundle)
@@ -55,7 +52,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    Log.d("MI_APP", "Clothes get: ${state.products.size}")
                     adapter?.submitList(state.products)
                 }
             }
