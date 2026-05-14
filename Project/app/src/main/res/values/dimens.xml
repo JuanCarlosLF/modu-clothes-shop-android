@@ -24,6 +24,7 @@
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
+    <dimen name="image_view_clothes_min_size">100dp</dimen>
 
     <!-- Other -->
     <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
