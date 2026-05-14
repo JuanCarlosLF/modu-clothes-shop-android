@@ -14,6 +14,8 @@ import com.example.modu.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
+
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -61,9 +63,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
-    }
-
-    companion object {
-        private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
     }
 }
