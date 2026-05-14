@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(private val useCase: ProductUseCase) : V
     private fun loadProducts() {
         viewModelScope.launch {
             try {
-                val products = useCase.getProducts()
+                val products = useCase.getProductsBy()
                 _uiState.update { it.copy(products = products) }
             } catch (error: Exception) {
                 _uiState.update { it.copy(error = error.message) }
