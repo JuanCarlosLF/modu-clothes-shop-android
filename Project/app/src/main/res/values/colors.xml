@@ -11,9 +11,12 @@
     <color name="blue_dark_hint">#475569</color>
     <color name="grey_hint">#CAC4D0</color>
     <color name="grey_dark">#1E1E1E</color>
+    <color name="grey_stroke">#2A2A2A</color>
     <color name="orange_primary">#B3653F</color>
+    <color name="orange_background">#24653F1A</color>
     <color name="pink_soft_secondary">#FFD5D9</color>
     <color name="aquamarine_tertiary">#0FA3B1</color>
     <color name="black_bottom_navigation_background">#2B2930</color>
+    <color name="grey_medium">#6B7280</color>
     <color name="green">#10B981</color>
 </resources>

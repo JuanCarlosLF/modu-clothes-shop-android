@@ -21,11 +21,22 @@
 
     <!-- Text Size -->
     <dimen name="text_size_home_title">32sp</dimen>
+    <dimen name="text_size_filter_title">20sp</dimen>
+    <dimen name="text_size_filter_smaller">12sp</dimen>
+    <dimen name="text_size_filter_small">14sp</dimen>
+    <dimen name="text_size_filter_medium">16sp</dimen>
+    <dimen name="text_size_filter_big">18sp</dimen>
+
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
     <dimen name="image_view_clothes_min_size">100dp</dimen>
 
-    <!-- Other -->
-    <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
+    <!-- Corner Radius -->
+    <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
+    <dimen name="corner_radius_filter_search_text_input_layout">12dp</dimen>
+    <dimen name="corner_radius_filter_by_price_buttons">12dp</dimen>
+    <dimen name="corner_radius_filter_by_price_current_value">16dp</dimen>
+    <dimen name="corner_radius_filter_buttons">16dp</dimen>
+    <dimen name="corner_radius_filter_save_filters">100dp</dimen>
 </resources>
