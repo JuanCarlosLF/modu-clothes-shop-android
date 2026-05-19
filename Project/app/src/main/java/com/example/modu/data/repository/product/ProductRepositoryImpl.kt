@@ -3,7 +3,7 @@ package com.example.modu.data.repository.product
 import com.example.modu.data.dataSource.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
 import com.example.modu.domain.entity.product.Product
-import com.example.modu.domain.entity.product.category.Category
+import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.repository.products.ProductRepository
 import javax.inject.Inject
 
