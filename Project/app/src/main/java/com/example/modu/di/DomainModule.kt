@@ -1,7 +1,7 @@
 package com.example.modu.di
 
-import com.example.modu.domain.usecase.ProductUseCase
-import com.example.modu.domain.usecase.ProductUseCaseImpl
+import com.example.modu.domain.usecase.product.ProductUseCase
+import com.example.modu.domain.usecase.product.ProductUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
