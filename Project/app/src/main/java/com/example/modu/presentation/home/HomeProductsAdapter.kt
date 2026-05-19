@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.modu.databinding.ItemGalleryBinding
-import com.example.modu.domain.entity.Product
+import com.example.modu.domain.entity.product.Product
 
 private const val FADE_DURATION_MS = 500
 
