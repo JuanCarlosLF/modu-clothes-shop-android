@@ -51,7 +51,7 @@
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider_header"
         android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/divider_height"
         app:dividerColor="@color/grey_stroke"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
