@@ -17,6 +17,7 @@
     <string name="filter_by_title_title">Filter by Title</string>
     <string name="filter_by_price_title">Filter by Price</string>
     <string name="filter_by_price_range_title">Filter by Price Range</string>
+    <string name="filter_by_category_title">Filter by Category</string>
     <string name="filter_search_hint_text">Search products...</string>
     <string name="filter_by_price_first_button_text">Lowest First</string>
     <string name="filter_by_price_second_button_text">Higher First</string>
