@@ -10,6 +10,23 @@
     <!-- Home -->
     <string name="home_title">Mosaic</string>
 
+    <!-- Filter -->
+    <string name="filter_title">Filters</string>
+    <string name="filter_button_reset_text">RESET</string>
+    <string name="filter_button_save_text">Guardar filtros</string>
+    <string name="filter_by_title_title">Filter by Title</string>
+    <string name="filter_by_price_title">Filter by Price</string>
+    <string name="filter_by_price_range_title">Filter by Price Range</string>
+    <string name="filter_search_hint_text">Search products...</string>
+    <string name="filter_by_price_first_button_text">Lowest First</string>
+    <string name="filter_by_price_second_button_text">Higher First</string>
+    <string name="filter_slider_min_value">$0</string>
+    <string name="filter_slider_max_value">$1000+</string>
+    <string name="filter_slider_default_value">Up to $640</string>
+    <string name="filter_slider_current_value">Up to $%1$d</string>
+    <string name="filter_info_title">Combining Filters</string>
+    <string name="filter_info_desc">Selecting multiple filters will refine your search results to match all criteria simultaneously.</string>
+
     <!-- Error -->
     <string name="error_no_internet_title">No Internet Connection</string>
     <string name="error_no_internet_msg">Please check your network settings and try again.</string>

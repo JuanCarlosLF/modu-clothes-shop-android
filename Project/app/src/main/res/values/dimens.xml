@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Text -->
+    <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_general">14sp</dimen>
+    <dimen name="text_size_filter_titles">18sp</dimen>
+    <dimen name="text_size_filter_screen_title">20sp</dimen>
     <dimen name="text_size_big">22sp</dimen>
     <dimen name="text_size_biggest">24sp</dimen>
     <dimen name="text_size_home_title">32sp</dimen>
@@ -35,6 +38,12 @@
     <dimen name="button_size_min">48dp</dimen>
     <dimen name="image_view_clothes_min_size">100dp</dimen>
 
-    <!-- Other -->
-    <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
+    <!-- Corner Radius -->
+    <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
+    <dimen name="corner_radius_filter_search_text_input_layout">12dp</dimen>
+    <dimen name="corner_radius_filter_by_price_buttons">12dp</dimen>
+    <dimen name="corner_radius_filter_by_price_current_value">16dp</dimen>
+    <dimen name="corner_radius_filter_by_category">99dp</dimen>
+    <dimen name="corner_radius_filter_buttons">16dp</dimen>
+    <dimen name="corner_radius_filter_save_filters">100dp</dimen>
 </resources>
