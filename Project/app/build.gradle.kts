@@ -68,6 +68,9 @@ dependencies {
     // OkHttp
     implementation(libs.okhttp.logging)
 
+    // Splash
+    implementation(libs.androidx.core.splashscreen)
+
     // Coil
     implementation(libs.coil)
 

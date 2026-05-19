@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">MODU</string>
 
+    <!-- Detail Fragment -->
+    <string name="mosaic">Mosaic</string>
+
     <!-- Common -->
     <string name="common_search_hint">Buscador</string>
 

@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Text -->
+    <dimen name="text_size_general">14sp</dimen>
+    <dimen name="text_size_big">22sp</dimen>
+    <dimen name="text_size_biggest">24sp</dimen>
+    <dimen name="text_size_home_title">32sp</dimen>
+
     <!-- Margin -->
     <dimen name="margin_xxxs">2dp</dimen>
     <dimen name="margin_xxs">4dp</dimen>
-    <dimen name="margin_xs">8dp</dimen>
+    <dimen name="margin_xs_plus">8dp</dimen>
+    <dimen name="margin_xs">11dp</dimen>
+    <dimen name="margin_s_plus">12dp</dimen>
     <dimen name="margin_s">16dp</dimen>
     <dimen name="margin_m">20dp</dimen>
+    <dimen name="margin_m_plus">21dp</dimen>
     <dimen name="margin_l">24dp</dimen>
     <dimen name="margin_xl">32dp</dimen>
-    <dimen name="margin_xxl">52dp</dimen>
-    <dimen name="margin_xxxl">60dp</dimen>
+    <dimen name="margin_xxxl">50dp</dimen>
+    <dimen name="margin_negative">-24dp</dimen>
+    <dimen name="margin_top_bar">52dp</dimen>
+    <dimen name="margin_xxxxl">60dp</dimen>
 
     <!-- Padding -->
     <dimen name="padding_xxxs">2dp</dimen>
@@ -19,15 +30,6 @@
     <dimen name="padding_m">20dp</dimen>
     <dimen name="padding_l">24dp</dimen>
     <dimen name="padding_xl">32dp</dimen>
-
-    <!-- Text Size -->
-    <dimen name="text_size_home_title">32sp</dimen>
-    <dimen name="text_size_filter_title">20sp</dimen>
-    <dimen name="text_size_filter_smaller">12sp</dimen>
-    <dimen name="text_size_filter_small">14sp</dimen>
-    <dimen name="text_size_filter_medium">16sp</dimen>
-    <dimen name="text_size_filter_big">18sp</dimen>
-
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>

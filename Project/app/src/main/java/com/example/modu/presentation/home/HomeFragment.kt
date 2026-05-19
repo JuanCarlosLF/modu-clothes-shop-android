@@ -40,7 +40,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 putInt(DETAIL_NAVIGATION_KEY, product.id)
             }
             findNavController().navigate(
-                R.id.action_home_to_detail,
+                R.id.action_home_to_cart,
                 bundle
             )
         }

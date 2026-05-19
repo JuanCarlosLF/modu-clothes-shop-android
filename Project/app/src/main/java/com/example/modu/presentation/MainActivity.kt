@@ -1,7 +1,10 @@
 package com.example.modu.presentation
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.modu.R
@@ -13,11 +16,15 @@ class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
 
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.uiState.value.isLoading
+        }
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         binding?.let { binding ->
             setContentView(binding.root)
             val navHostFragment =
@@ -25,5 +32,9 @@ class MainActivity : AppCompatActivity() {
             val navController = navHostFragment.navController
             binding.bottomNav.setupWithNavController(navController)
         }
+    }
+
+    fun setBottomNavVisible(isVisible: Boolean) {
+        binding?.bottomNav?.isVisible = isVisible
     }
 }
