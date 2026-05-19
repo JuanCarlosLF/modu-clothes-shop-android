@@ -2,7 +2,7 @@ package com.example.modu.domain.usecase.product
 
 import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.entity.product.Category
-import com.example.modu.domain.repository.products.ProductRepository
+import com.example.modu.domain.repository.product.ProductRepository
 import javax.inject.Inject
 
 class ProductUseCaseImpl @Inject constructor(

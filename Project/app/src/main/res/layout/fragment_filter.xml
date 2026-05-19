@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/margin_l"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/button_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_s"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_filter_screen_title"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_reset"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_xs"
+            android:text="@string/filter_button_reset_text"
+            android:textColor="@color/orange_primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:dividerColor="@color/grey_stroke"
+        app:layout_constraintTop_toBottomOf="@id/layout_header" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_save_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_s"
+        android:backgroundTint="@color/orange_primary"
+        android:padding="@dimen/padding_s"
+        android:text="@string/filter_button_save_text"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/corner_radius_filter_save_filters"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view_filters"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/button_save_filters"
+        app:layout_constraintTop_toBottomOf="@id/divider_header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:divider="@drawable/horizontal_divider"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/padding_l"
+            android:paddingVertical="@dimen/padding_l"
+            android:showDividers="middle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/padding_l">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/header_filter_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/padding_s">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_by_title_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_filter_titles"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/icon_arrow_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_up"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/content_filter_title"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/grey_dark"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_filter_search_text_input_layout"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_filter_search_text_input_layout"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_filter_search_text_input_layout"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_filter_search_text_input_layout"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/grey_medium">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/filter_search_hint_text"
+                        android:inputType="text"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/grey_medium" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/padding_l">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/header_filter_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_s">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_by_price_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_filter_titles"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/icon_arrow_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_up"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/content_filter_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_filter_lowest"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_xs"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/selector_filter_bg"
+                        android:checkable="true"
+                        android:text="@string/filter_by_price_first_button_text"
+                        android:textColor="@color/selector_filter_stroke"
+                        app:cornerRadius="@dimen/corner_radius_filter_by_price_buttons"
+                        app:strokeColor="@color/selector_filter_stroke" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_filter_highest"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_xs"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/selector_filter_bg"
+                        android:checkable="true"
+                        android:text="@string/filter_by_price_second_button_text"
+                        android:textColor="@color/selector_filter_stroke"
+                        app:cornerRadius="@dimen/corner_radius_filter_by_price_buttons"
+                        app:strokeColor="@color/selector_filter_stroke" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/padding_l">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/header_filter_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_by_price_range_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_filter_titles"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/icon_arrow_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_up"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/content_filter_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatSeekBar
+                        android:id="@+id/slider_price_range"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="1000"
+                        android:paddingStart="@dimen/padding_xs"
+                        android:paddingEnd="@dimen/padding_xs"
+                        android:progress="640"
+                        android:progressDrawable="@drawable/bg_slider_track"
+                        android:splitTrack="false"
+                        android:thumb="@drawable/bg_slider_thumb" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/text_min_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/filter_slider_min_value"
+                            android:textColor="@color/grey_medium"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@color/orange_background"
+                            app:cardCornerRadius="@dimen/corner_radius_filter_buttons"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:strokeWidth="0dp">
+
+                            <TextView
+                                android:id="@+id/text_current_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="@dimen/padding_s"
+                                android:paddingVertical="@dimen/padding_xxs"
+                                android:text="@string/filter_slider_default_value"
+                                android:textColor="@color/orange_primary"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/text_max_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/filter_slider_max_value"
+                            android:textColor="@color/grey_medium"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/padding_l">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/header_filter_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_s">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_by_category_title"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_filter_titles"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/icon_arrow_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_up"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_filter_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="6"
+                    tools:listitem="@layout/item_filter_category" />
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_l"
+                android:layout_marginBottom="@dimen/margin_xxxl"
+                app:cardBackgroundColor="@color/grey_dark"
+                app:cardCornerRadius="@dimen/corner_radius_filter_buttons"
+                app:strokeColor="@color/grey_stroke"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_s">
+
+                    <ImageView
+                        android:id="@+id/icon_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_info"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_info_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_s_plus"
+                        android:text="@string/filter_info_title"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@id/icon_info"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/icon_info"
+                        app:layout_constraintTop_toTopOf="@id/icon_info" />
+
+                    <TextView
+                        android:id="@+id/text_info_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_xxxs"
+                        android:lineSpacingExtra="@dimen/line_spacing_filter_info_desc"
+                        android:text="@string/filter_info_desc"
+                        android:textColor="@color/grey_medium"
+                        android:textSize="@dimen/text_size_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/text_info_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_info_title" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

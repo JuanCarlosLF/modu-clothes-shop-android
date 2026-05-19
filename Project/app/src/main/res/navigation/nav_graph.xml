@@ -8,6 +8,9 @@
         android:id="@+id/fragment_home"
         android:name="com.example.modu.presentation.home.HomeFragment">
         <action
+            android:id="@+id/action_home_to_filter"
+            app:destination="@+id/fragment_filter" />
+        <action
             android:id="@+id/action_home_to_cart"
             app:destination="@+id/fragment_cart" />
     </fragment>
@@ -17,4 +20,12 @@
     <fragment
         android:id="@+id/fragment_cart"
         android:name="com.example.modu.presentation.CartFragment" />
+
+    <fragment
+        android:id="@+id/fragment_filter"
+        android:name="com.example.modu.presentation.filter.FilterFragment">
+        <action
+            android:id="@+id/action_filter_to_home"
+            app:destination="@+id/fragment_home" />
+    </fragment>
 </navigation>

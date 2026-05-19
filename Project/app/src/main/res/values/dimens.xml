@@ -46,4 +46,7 @@
     <dimen name="corner_radius_filter_by_category">99dp</dimen>
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_filter_save_filters">100dp</dimen>
+
+    <!-- Line spacing -->
+    <dimen name="line_spacing_filter_info_desc">4dp</dimen>
 </resources>

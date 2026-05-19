@@ -32,6 +32,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         setupRecyclerView()
         setupObservers()
+        setupListeners()
     }
 
     private fun setupRecyclerView() {
@@ -58,6 +59,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     adapter?.submitList(state.products)
                 }
             }
+        }
+    }
+
+    private fun setupListeners() {
+        binding?.buttonHomeFilter?.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_filter)
         }
     }
 

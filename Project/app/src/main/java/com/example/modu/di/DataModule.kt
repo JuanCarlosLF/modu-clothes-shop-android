@@ -5,7 +5,7 @@ import com.example.modu.data.dataSource.remote.ProductRemoteDataSourceImpl
 import com.example.modu.data.dataSource.remote.product.exception.DataErrorHandlerImpl
 import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
 import com.example.modu.data.repository.product.ProductRepositoryImpl
-import com.example.modu.domain.repository.products.ProductRepository
+import com.example.modu.domain.repository.product.ProductRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
