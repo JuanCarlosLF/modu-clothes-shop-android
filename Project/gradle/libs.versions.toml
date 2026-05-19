@@ -34,6 +34,9 @@ splash = "1.0.1"
 # Coil
 coil = "2.6.0"
 
+# Flexbox
+flexbox = "3.0.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -67,6 +70,9 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 
 # Coil
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+
+# Flexbox
+flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

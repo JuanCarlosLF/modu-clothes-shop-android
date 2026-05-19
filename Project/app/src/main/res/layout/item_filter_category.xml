@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/margin_xs"
+    android:layout_marginBottom="@dimen/margin_xs"
+    android:checkable="true"
+    android:textAlignment="center"
+    android:textColor="@color/white"
+    app:chipBackgroundColor="@color/selector_chip_bg"
+    app:chipCornerRadius="@dimen/corner_radius_filter_by_category"
+    app:chipStrokeColor="@color/grey_stroke"
+    app:chipStrokeWidth="1dp"
+    app:chipStartPadding="@dimen/padding_s"
+    app:chipEndPadding="@dimen/padding_s"
+
+    tools:text="Streetwear" />

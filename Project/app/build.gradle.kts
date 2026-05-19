@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://api-placeholder.com\"")
+        buildConfigField("String", "BASE_URL", "\"https://dragonfly-mutiny-unseen.ngrok-free.dev\"")
     }
 
     buildFeatures{
@@ -73,4 +73,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil)
+
+    // Flexbox
+    implementation(libs.flexbox)
 }
