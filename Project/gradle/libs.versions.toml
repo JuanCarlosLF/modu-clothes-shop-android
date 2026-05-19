@@ -31,6 +31,9 @@ navigationUiKtx = "2.9.8"
 # Coil
 coil = "2.6.0"
 
+# Flexbox
+flexbox = "3.0.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -62,6 +65,9 @@ navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx",
 
 # Coil
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+
+# Flexbox
+flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

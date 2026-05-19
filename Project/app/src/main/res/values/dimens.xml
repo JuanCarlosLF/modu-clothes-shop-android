@@ -8,6 +8,7 @@
     <dimen name="margin_m">20dp</dimen>
     <dimen name="margin_l">24dp</dimen>
     <dimen name="margin_xl">32dp</dimen>
+    <dimen name="margin_xxl">52dp</dimen>
     <dimen name="margin_xxxl">60dp</dimen>
 
     <!-- Padding -->
@@ -37,6 +38,7 @@
     <dimen name="corner_radius_filter_search_text_input_layout">12dp</dimen>
     <dimen name="corner_radius_filter_by_price_buttons">12dp</dimen>
     <dimen name="corner_radius_filter_by_price_current_value">16dp</dimen>
+    <dimen name="corner_radius_filter_by_category">99dp</dimen>
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_filter_save_filters">100dp</dimen>
 </resources>
