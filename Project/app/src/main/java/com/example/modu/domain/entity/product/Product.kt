@@ -1,7 +1,6 @@
-package com.example.modu.domain.entity
+package com.example.modu.domain.entity.product
 
 data class Product(
     val id: Int,
-    val name: String,
     val image: String
 )
