@@ -26,6 +26,7 @@
     <string name="filter_slider_default_value">Up to $640</string>
     <string name="filter_slider_current_value">Up to $%1$d</string>
     <string name="filter_info_title">Combining Filters</string>
+    <string name="filter_slider_max_valu">1000</string>
     <string name="filter_info_desc">Selecting multiple filters will refine your search results to match all criteria simultaneously.</string>
 
     <!-- Error -->

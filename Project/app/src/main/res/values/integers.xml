@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="filter_slider_max_value">1000</integer>
+    <integer name="filter_slider_default_value">640</integer>
+</resources>

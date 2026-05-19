@@ -261,10 +261,10 @@
                         android:id="@+id/slider_price_range"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:max="1000"
+                        android:max="@integer/filter_slider_max_value"
                         android:paddingStart="@dimen/padding_xs"
                         android:paddingEnd="@dimen/padding_xs"
-                        android:progress="640"
+                        android:progress="@integer/filter_slider_default_value"
                         android:progressDrawable="@drawable/bg_slider_track"
                         android:splitTrack="false"
                         android:thumb="@drawable/bg_slider_thumb" />
