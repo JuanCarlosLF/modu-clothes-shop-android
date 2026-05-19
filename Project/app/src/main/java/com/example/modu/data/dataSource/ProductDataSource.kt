@@ -5,6 +5,5 @@ import com.example.modu.data.dataSource.remote.product.dto.category.CategoryDto
 
 interface ProductDataSource {
     suspend fun getProductsBy() : List<ProductDto>
-
     suspend fun getCategories() : List<CategoryDto>
 }
