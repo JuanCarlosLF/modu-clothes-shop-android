@@ -50,14 +50,16 @@
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider_header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         app:dividerColor="@color/grey_stroke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_header" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_save_filters"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_s"
         android:backgroundTint="@color/orange_primary"
@@ -65,13 +67,17 @@
         android:text="@string/filter_button_save_text"
         android:textColor="@color/white"
         app:cornerRadius="@dimen/corner_radius_filter_save_filters"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view_filters"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/button_save_filters"
         app:layout_constraintTop_toBottomOf="@id/divider_header">
 
