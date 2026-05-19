@@ -37,6 +37,8 @@
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
     <dimen name="image_view_clothes_min_size">100dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="stroke_width_default">1dp</dimen>
 
     <!-- Corner Radius -->
     <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
@@ -46,4 +48,7 @@
     <dimen name="corner_radius_filter_by_category">99dp</dimen>
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_filter_save_filters">100dp</dimen>
+
+    <!-- Line spacing -->
+    <dimen name="line_spacing_filter_info_desc">4dp</dimen>
 </resources>
