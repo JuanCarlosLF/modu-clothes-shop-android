@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.modu.R
@@ -31,5 +32,9 @@ class MainActivity : AppCompatActivity() {
             val navController = navHostFragment.navController
             binding.bottomNav.setupWithNavController(navController)
         }
+    }
+
+    fun setBottomNavVisible(isVisible: Boolean) {
+        binding?.bottomNav?.isVisible = isVisible
     }
 }

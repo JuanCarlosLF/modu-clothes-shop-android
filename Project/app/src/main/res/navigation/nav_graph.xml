@@ -8,15 +8,12 @@
         android:id="@+id/fragment_home"
         android:name="com.example.modu.presentation.home.HomeFragment">
         <action
-            android:id="@+id/action_home_to_detail"
-            app:destination="@+id/fragment_detail" />
-        <action
             android:id="@+id/action_home_to_cart"
             app:destination="@+id/fragment_cart" />
     </fragment>
     <fragment
         android:id="@+id/fragment_detail"
-        android:name="com.example.modu.presentation.DetailFragment" />
+        android:name="com.example.modu.presentation.detail.DetailFragment" />
     <fragment
         android:id="@+id/fragment_cart"
         android:name="com.example.modu.presentation.CartFragment" />
