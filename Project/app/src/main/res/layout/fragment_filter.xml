@@ -367,7 +367,7 @@
                 app:cardBackgroundColor="@color/grey_dark"
                 app:cardCornerRadius="@dimen/corner_radius_filter_buttons"
                 app:strokeColor="@color/grey_stroke"
-                app:strokeWidth="1dp">
+                app:strokeWidth="@dimen/stroke_width_default">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
