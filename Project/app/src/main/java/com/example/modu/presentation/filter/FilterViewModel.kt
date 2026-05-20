@@ -57,15 +57,15 @@ class FilterViewModel @Inject constructor(
 
     fun updateCategory(category: Category, isChecked: Boolean) {
         _uiState.update { currentState ->
-            val currentSelected = currentState.selectedCategories.toMutableList()
+            val currentSelectedCategories = currentState.selectedCategories.toMutableList()
             if (isChecked) {
-                if (!currentSelected.any { it.name == category.name }) {
-                    currentSelected.add(category)
+                if (currentSelectedCategories.none { it.name == category.name }) {
+                    currentSelectedCategories.add(category)
                 }
             } else {
-                currentSelected.removeAll { it.name == category.name }
+                currentSelectedCategories.removeAll { it.name == category.name }
             }
-            currentState.copy(selectedCategories = currentSelected)
+            currentState.copy(selectedCategories = currentSelectedCategories)
         }
     }
 
