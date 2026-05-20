@@ -2,12 +2,14 @@ package com.example.modu.presentation.filter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.domain.entity.product.Category
+import com.example.modu.domain.usecase.product.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,11 +20,17 @@ class FilterViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FilterUiState())
-    val uiState: StateFlow<FilterUiState> = _uiState.asStateFlow()
-
-    init {
-        loadCategories()
-    }
+    val uiState: StateFlow<FilterUiState> = _uiState
+        .onStart {
+            if (_uiState.value.categories == null) {
+                loadCategories()
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = _uiState.value
+        )
 
     private fun loadCategories() {
         viewModelScope.launch {
@@ -49,15 +57,15 @@ class FilterViewModel @Inject constructor(
 
     fun updateCategory(category: Category, isChecked: Boolean) {
         _uiState.update { currentState ->
-            val currentSelected = currentState.selectedCategories.toMutableList()
+            val currentSelectedCategories = currentState.selectedCategories.toMutableList()
             if (isChecked) {
-                if (!currentSelected.any { it.name == category.name }) {
-                    currentSelected.add(category)
+                if (currentSelectedCategories.none { it.name == category.name }) {
+                    currentSelectedCategories.add(category)
                 }
             } else {
-                currentSelected.removeAll { it.name == category.name }
+                currentSelectedCategories.removeAll { it.name == category.name }
             }
-            currentState.copy(selectedCategories = currentSelected)
+            currentState.copy(selectedCategories = currentSelectedCategories)
         }
     }
 

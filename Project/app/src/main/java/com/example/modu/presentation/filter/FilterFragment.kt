@@ -1,5 +1,6 @@
 package com.example.modu.presentation.filter
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -22,12 +23,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+private const val PRICE_SORT_DESC = "highest"
+private const val PRICE_SORT_ASC = "lowest"
+
+
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private var binding: FragmentFilterBinding? = null
     private val viewModel: FilterViewModel by viewModels()
-    private lateinit var categoryAdapter: FilterCategoriesAdapter
+    private var categoryAdapter: FilterCategoriesAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,23 +40,27 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
         setupAdapter()
         setupListeners()
-        observeViewModel()
+        setupObservers()
     }
 
     private fun setupAdapter() {
+        val safeContext = context ?: return
+
         categoryAdapter = FilterCategoriesAdapter { category, isChecked ->
             viewModel.updateCategory(category, isChecked)
         }
 
-        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
+        binding?.rvFilterCategory?.apply {
+            layoutManager = setupFlexbox(safeContext)
+            adapter = categoryAdapter
+        }
+    }
+
+    private fun setupFlexbox(safeContext: Context): FlexboxLayoutManager {
+        return FlexboxLayoutManager(safeContext).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
             justifyContent = JustifyContent.FLEX_START
-        }
-
-        binding?.rvFilterCategory?.apply {
-            layoutManager = flexLayoutManager
-            adapter = categoryAdapter
         }
     }
 
@@ -72,11 +81,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 }
 
                 buttonFilterLowest.setOnClickListener {
-                    viewModel.updatePriceOrder("lowest")
+                    viewModel.updatePriceOrder(PRICE_SORT_ASC)
                 }
 
                 buttonFilterHighest.setOnClickListener {
-                    viewModel.updatePriceOrder("highest")
+                    viewModel.updatePriceOrder(PRICE_SORT_DESC)
                 }
 
                 sliderPriceRange.setOnSeekBarChangeListener(object :
@@ -105,37 +114,38 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     val state = viewModel.uiState.value
 
                     val resultBundle = Bundle().apply {
-                        putString("title", state.selectedTitle)
-                        putString("orderByPrice", state.selectedPriceOrder)
+                        putString(BUNDLE_KEY_TITLE, state.selectedTitle)
+                        putString(BUNDLE_KEY_ORDER_BY_PRICE, state.selectedPriceOrder)
 
-                        state.selectedMaxPrice?.let { putInt("maxPrice", it) }
+                        state.selectedMaxPrice?.let { putInt(BUNDLE_KEY_MAX_PRICE, it) }
 
-                        val categoryNamesArray = state.selectedCategories.map { it.name }.toTypedArray()
-                        putStringArray("categoryNames", categoryNamesArray)
+                        val categoryNamesArray =
+                            state.selectedCategories.map { it.name }.toTypedArray()
+                        putStringArray(BUNDLE_KEY_CATEGORY_NAMES, categoryNamesArray)
                     }
-                    setFragmentResult("filter_request", resultBundle)
+                    setFragmentResult(BUNDLE_KEY, resultBundle)
                     findNavController().popBackStack()
                 }
             }
         }
     }
 
-    private fun observeViewModel() {
+    private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
                     state.categories?.let { categories ->
-                        categoryAdapter.submitList(categories)
+                        categoryAdapter?.submitList(categories)
                     }
-                    categoryAdapter.updateSelectedCategories(state.selectedCategories)
+                    categoryAdapter?.updateSelectedCategories(state.selectedCategories)
 
                     binding?.apply {
                         if (contentFilterTitle.editText?.text?.toString() != state.selectedTitle) {
-                            contentFilterTitle.editText?.setText(state.selectedTitle ?: "")
+                            contentFilterTitle.editText?.setText(state.selectedTitle.orEmpty())
                         }
 
-                        buttonFilterLowest.isChecked = state.selectedPriceOrder == "lowest"
-                        buttonFilterHighest.isChecked = state.selectedPriceOrder == "highest"
+                        buttonFilterLowest.isChecked = state.selectedPriceOrder == PRICE_SORT_ASC
+                        buttonFilterHighest.isChecked = state.selectedPriceOrder == PRICE_SORT_DESC
 
                         val maxPrice = state.selectedMaxPrice ?: sliderPriceRange.max
                         if (sliderPriceRange.progress != maxPrice) {
@@ -150,5 +160,13 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        const val BUNDLE_KEY_TITLE = "title"
+        const val BUNDLE_KEY_ORDER_BY_PRICE = "orderByPrice"
+        const val BUNDLE_KEY_MAX_PRICE = "maxPrice"
+        const val BUNDLE_KEY_CATEGORY_NAMES = "categoryNames"
+        const val BUNDLE_KEY = "filter_request"
     }
 }
