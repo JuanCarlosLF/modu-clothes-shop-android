@@ -43,15 +43,15 @@ class FilterViewModel @Inject constructor(
         }
     }
 
-    fun updateTitleText(title: String?) {
+    fun updateTitleText(title: String) {
         _uiState.update { it.copy(selectedTitle = title) }
     }
 
-    fun updatePriceOrder(order: String?) {
+    fun updatePriceOrder(order: String) {
         _uiState.update { it.copy(selectedPriceOrder = order) }
     }
 
-    fun updateMaxPrice(price: Int?) {
+    fun updateMaxPrice(price: Int) {
         _uiState.update { it.copy(selectedMaxPrice = price) }
     }
 
