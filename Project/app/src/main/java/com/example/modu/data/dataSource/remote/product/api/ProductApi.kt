@@ -1,7 +1,7 @@
 package com.example.modu.data.dataSource.remote.product.api
 
 import com.example.modu.data.dataSource.remote.product.dto.ProductWrapperDto
-import com.example.modu.data.dataSource.remote.product.dto.detail.CategoryDto
+import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 import retrofit2.http.GET
 import retrofit2.http.Path
