@@ -1,5 +1,6 @@
 package com.example.modu.presentation.filter
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -30,7 +31,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private var binding: FragmentFilterBinding? = null
     private val viewModel: FilterViewModel by viewModels()
-    private lateinit var categoryAdapter: FilterCategoriesAdapter
+    private  var categoryAdapter: FilterCategoriesAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,18 +43,20 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
 
     private fun setupAdapter() {
+        val safeContext = context ?: return
+
         categoryAdapter = FilterCategoriesAdapter { category, isChecked ->
             viewModel.updateCategory(category, isChecked)
         }
 
         binding?.rvFilterCategory?.apply {
-            layoutManager = setupFlexbox()
+            layoutManager = setupFlexbox(safeContext)
             adapter = categoryAdapter
         }
     }
 
-    private fun setupFlexbox(): FlexboxLayoutManager {
-        return FlexboxLayoutManager(requireContext()).apply {
+    private fun setupFlexbox(safeContext: Context): FlexboxLayoutManager {
+        return FlexboxLayoutManager(safeContext).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
             justifyContent = JustifyContent.FLEX_START
@@ -130,9 +133,9 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
                     state.categories?.let { categories ->
-                        categoryAdapter.submitList(categories)
+                        categoryAdapter?.submitList(categories)
                     }
-                    categoryAdapter.updateSelectedCategories(state.selectedCategories)
+                    categoryAdapter?.updateSelectedCategories(state.selectedCategories)
 
                     binding?.apply {
                         if (contentFilterTitle.editText?.text?.toString() != state.selectedTitle) {
