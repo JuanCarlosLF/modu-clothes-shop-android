@@ -76,7 +76,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                 contentFilterTitle.editText?.doAfterTextChanged { text ->
                     viewModel.updateTitleText(
-                        text?.toString()?.takeIf { it.isNotBlank() }
+                        text.toString()
                     )
                 }
 
@@ -123,7 +123,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                             state.selectedCategories.map { it.name }.toTypedArray()
                         putStringArray(BUNDLE_KEY_CATEGORY_NAMES, categoryNamesArray)
                     }
-                    setFragmentResult(BUNDLE_KEY, resultBundle)
+                    setFragmentResult(RESULT_KEY, resultBundle)
                     findNavController().popBackStack()
                 }
             }
@@ -164,9 +164,9 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     companion object {
         const val BUNDLE_KEY_TITLE = "title"
-        const val BUNDLE_KEY_ORDER_BY_PRICE = "orderByPrice"
-        const val BUNDLE_KEY_MAX_PRICE = "maxPrice"
-        const val BUNDLE_KEY_CATEGORY_NAMES = "categoryNames"
-        const val BUNDLE_KEY = "filter_request"
+        const val BUNDLE_KEY_ORDER_BY_PRICE = "order_by_price"
+        const val BUNDLE_KEY_MAX_PRICE = "max_price"
+        const val BUNDLE_KEY_CATEGORY_NAMES = "category_names"
+        const val RESULT_KEY = "filter_request"
     }
 }
