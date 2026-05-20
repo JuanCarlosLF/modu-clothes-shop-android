@@ -25,6 +25,12 @@ import kotlinx.coroutines.launch
 
 private const val PRICE_SORT_DESC = "highest"
 private const val PRICE_SORT_ASC = "lowest"
+private const val REQUEST_KEY_FILTER = "filter_request"
+private const val BUNDLE_KEY_TITLE = "title"
+private const val BUNDLE_KEY_ORDER_BY_PRICE = "orderByPrice"
+private const val BUNDLE_KEY_MAX_PRICE = "maxPrice"
+private const val BUNDLE_KEY_CATEGORY_NAMES = "categoryNames"
+private const val BUNDLE_KEY = "filter_request"
 
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
@@ -113,15 +119,15 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     val state = viewModel.uiState.value
 
                     val resultBundle = Bundle().apply {
-                        putString("title", state.selectedTitle)
-                        putString("orderByPrice", state.selectedPriceOrder)
+                        putString(BUNDLE_KEY_TITLE, state.selectedTitle)
+                        putString(BUNDLE_KEY_ORDER_BY_PRICE, state.selectedPriceOrder)
 
-                        state.selectedMaxPrice?.let { putInt("maxPrice", it) }
+                        state.selectedMaxPrice?.let { putInt(BUNDLE_KEY_MAX_PRICE, it) }
 
                         val categoryNamesArray = state.selectedCategories.map { it.name }.toTypedArray()
-                        putStringArray("categoryNames", categoryNamesArray)
+                        putStringArray(BUNDLE_KEY_CATEGORY_NAMES, categoryNamesArray)
                     }
-                    setFragmentResult("filter_request", resultBundle)
+                    setFragmentResult(BUNDLE_KEY, resultBundle)
                     findNavController().popBackStack()
                 }
             }
