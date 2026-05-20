@@ -5,10 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.modu.R
+import com.example.modu.databinding.ItemFilterCategoryBinding
 import com.example.modu.domain.entity.product.Category
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.material.chip.Chip
 
 class FilterCategoriesAdapter(
     private val onCategoryChecked: (Category, Boolean) -> Unit
@@ -16,16 +15,22 @@ class FilterCategoriesAdapter(
 
     private val selectedCategoryNames = mutableSetOf<String>()
 
-    inner class CategoryViewHolder(private val chip: Chip) : RecyclerView.ViewHolder(chip) {
-        fun bind(category: Category) {
-            with(chip) {
-                text = category.name
-                setOnCheckedChangeListener(null)
-                isChecked = category.name in selectedCategoryNames
-                setOnCheckedChangeListener { _, isChecked ->
-                    onCategoryChecked(category, isChecked)
-                }
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+        val binding = ItemFilterCategoryBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return CategoryViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+        holder.bind(getItem(position))
+
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is FlexboxLayoutManager.LayoutParams) {
+            layoutParams.isWrapBefore = (position > 0 && position % 2 == 0)
+            holder.itemView.layoutParams = layoutParams
         }
     }
 
@@ -44,23 +49,17 @@ class FilterCategoriesAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val chipView = LayoutInflater
-            .from(parent.context)
-            .inflate(
-                R.layout.item_filter_category,
-                parent, false
-            ) as Chip
-        return CategoryViewHolder(chipView)
-    }
-
-    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(getItem(position))
-
-        val layoutParams = holder.itemView.layoutParams
-        if (layoutParams is FlexboxLayoutManager.LayoutParams) {
-            layoutParams.isWrapBefore = (position > 0 && position % 2 == 0)
-            holder.itemView.layoutParams = layoutParams
+    inner class CategoryViewHolder(private val binding: ItemFilterCategoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(category: Category) {
+            with(binding.root) {
+                text = category.name
+                setOnCheckedChangeListener(null)
+                isChecked = category.name in selectedCategoryNames
+                setOnCheckedChangeListener { _, isChecked ->
+                    onCategoryChecked(category, isChecked)
+                }
+            }
         }
     }
 
