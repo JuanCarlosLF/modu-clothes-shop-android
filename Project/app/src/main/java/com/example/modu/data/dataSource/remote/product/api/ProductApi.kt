@@ -13,7 +13,8 @@ interface ProductApi {
         @Query("size") size: Int? = null,
         @Query("title") title: String? = null,
         @Query("orderByPrice") orderByPrice: String? = null,
-        @Query("maxPrice") maxPrice: Int? = null
+        @Query("maxPrice") maxPrice: Int? = null,
+        @Query("categories") categories: List<String>? = null
     ): ProductWrapperDto
 
     @GET("categories")
