@@ -25,19 +25,14 @@ import kotlinx.coroutines.launch
 
 private const val PRICE_SORT_DESC = "highest"
 private const val PRICE_SORT_ASC = "lowest"
-private const val REQUEST_KEY_FILTER = "filter_request"
-private const val BUNDLE_KEY_TITLE = "title"
-private const val BUNDLE_KEY_ORDER_BY_PRICE = "orderByPrice"
-private const val BUNDLE_KEY_MAX_PRICE = "maxPrice"
-private const val BUNDLE_KEY_CATEGORY_NAMES = "categoryNames"
-private const val BUNDLE_KEY = "filter_request"
+
 
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private var binding: FragmentFilterBinding? = null
     private val viewModel: FilterViewModel by viewModels()
-    private  var categoryAdapter: FilterCategoriesAdapter? = null
+    private var categoryAdapter: FilterCategoriesAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -124,7 +119,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                         state.selectedMaxPrice?.let { putInt(BUNDLE_KEY_MAX_PRICE, it) }
 
-                        val categoryNamesArray = state.selectedCategories.map { it.name }.toTypedArray()
+                        val categoryNamesArray =
+                            state.selectedCategories.map { it.name }.toTypedArray()
                         putStringArray(BUNDLE_KEY_CATEGORY_NAMES, categoryNamesArray)
                     }
                     setFragmentResult(BUNDLE_KEY, resultBundle)
@@ -164,5 +160,13 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        const val BUNDLE_KEY_TITLE = "title"
+        const val BUNDLE_KEY_ORDER_BY_PRICE = "orderByPrice"
+        const val BUNDLE_KEY_MAX_PRICE = "maxPrice"
+        const val BUNDLE_KEY_CATEGORY_NAMES = "categoryNames"
+        const val BUNDLE_KEY = "filter_request"
     }
 }
