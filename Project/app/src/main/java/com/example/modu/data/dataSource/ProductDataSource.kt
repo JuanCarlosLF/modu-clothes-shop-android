@@ -3,6 +3,7 @@ package com.example.modu.data.dataSource
 import androidx.paging.PagingSource
 import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
+import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 
 interface ProductDataSource {
     fun getProductsPagingSource(
@@ -13,4 +14,5 @@ interface ProductDataSource {
     ): PagingSource<Int, ProductDto>
 
     suspend fun getCategories(): List<CategoryDto>
+    suspend fun getDetailById(id: Int): DetailDto
 }

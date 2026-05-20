@@ -6,6 +6,7 @@ import com.example.modu.data.dataSource.remote.product.ProductPagingSource
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
+import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 import javax.inject.Inject
 
 class ProductRemoteDataSourceImpl @Inject constructor(private val api: ProductApi) :
@@ -27,4 +28,5 @@ class ProductRemoteDataSourceImpl @Inject constructor(private val api: ProductAp
     }
 
     override suspend fun getCategories(): List<CategoryDto> = api.getCategories()
+    override suspend fun getDetailById(id: Int): DetailDto = api.getDetailById(id)
 }
