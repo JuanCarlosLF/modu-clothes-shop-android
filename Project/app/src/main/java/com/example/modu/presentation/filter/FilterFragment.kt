@@ -46,15 +46,17 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             viewModel.updateCategory(category, isChecked)
         }
 
-        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
+        binding?.rvFilterCategory?.apply {
+            layoutManager = setupFlexbox()
+            adapter = categoryAdapter
+        }
+    }
+
+    private fun setupFlexbox(): FlexboxLayoutManager {
+        return FlexboxLayoutManager(requireContext()).apply {
             flexWrap = FlexWrap.WRAP
             flexDirection = FlexDirection.ROW
             justifyContent = JustifyContent.FLEX_START
-        }
-
-        binding?.rvFilterCategory?.apply {
-            layoutManager = flexLayoutManager
-            adapter = categoryAdapter
         }
     }
 
@@ -134,7 +136,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
                     binding?.apply {
                         if (contentFilterTitle.editText?.text?.toString() != state.selectedTitle) {
-                            contentFilterTitle.editText?.setText(state.selectedTitle ?: "")
+                            contentFilterTitle.editText?.setText(state.selectedTitle.orEmpty())
                         }
 
                         buttonFilterLowest.isChecked = state.selectedPriceOrder == PRICE_SORT_ASC
