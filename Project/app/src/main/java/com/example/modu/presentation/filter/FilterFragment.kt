@@ -22,6 +22,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+private const val PRICE_SORT_DESC = "highest"
+private const val PRICE_SORT_ASC = "lowest"
+
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
@@ -72,11 +75,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 }
 
                 buttonFilterLowest.setOnClickListener {
-                    viewModel.updatePriceOrder("lowest")
+                    viewModel.updatePriceOrder(PRICE_SORT_ASC)
                 }
 
                 buttonFilterHighest.setOnClickListener {
-                    viewModel.updatePriceOrder("highest")
+                    viewModel.updatePriceOrder(PRICE_SORT_DESC)
                 }
 
                 sliderPriceRange.setOnSeekBarChangeListener(object :
@@ -134,8 +137,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                             contentFilterTitle.editText?.setText(state.selectedTitle ?: "")
                         }
 
-                        buttonFilterLowest.isChecked = state.selectedPriceOrder == "lowest"
-                        buttonFilterHighest.isChecked = state.selectedPriceOrder == "highest"
+                        buttonFilterLowest.isChecked = state.selectedPriceOrder == PRICE_SORT_ASC
+                        buttonFilterHighest.isChecked = state.selectedPriceOrder == PRICE_SORT_DESC
 
                         val maxPrice = state.selectedMaxPrice ?: sliderPriceRange.max
                         if (sliderPriceRange.progress != maxPrice) {
