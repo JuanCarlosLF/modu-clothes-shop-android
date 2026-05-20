@@ -38,7 +38,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
         setupAdapter()
         setupListeners()
-        observeViewModel()
+        setupObservers()
     }
 
     private fun setupAdapter() {
@@ -123,7 +123,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         }
     }
 
-    private fun observeViewModel() {
+    private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest { state ->
