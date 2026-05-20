@@ -2,8 +2,8 @@ package com.example.modu.presentation.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.modu.databinding.ItemGalleryBinding
@@ -12,8 +12,8 @@ import com.example.modu.domain.entity.product.Product
 private const val FADE_DURATION_MS = 500
 
 class HomeProductsAdapter(
-    val onItemClick: (Product) -> Unit
-) : ListAdapter<Product, HomeProductsAdapter.ProductsViewHolder>(ProductsDiffCallback) {
+    private val onItemClick: (Product) -> Unit
+) : PagingDataAdapter<Product, HomeProductsAdapter.ProductsViewHolder>(ProductsDiffCallback) {
 
     inner class ProductsViewHolder(private val binding: ItemGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -37,11 +37,14 @@ class HomeProductsAdapter(
         return ProductsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) =
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) {
+        val item = getItem(position)
+        if (item != null) {
+            holder.bind(item)
+        }
+    }
 
     private object ProductsDiffCallback : DiffUtil.ItemCallback<Product>() {
-
         override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
             return oldItem.id == newItem.id
         }

@@ -1,9 +1,16 @@
 package com.example.modu.domain.repository.product
 
+import androidx.paging.PagingData
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
+import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
-    suspend fun getProductsBy() : List<Product>
+    fun getProductsBy(
+        title: String?,
+        orderByPrice: String?,
+        maxPrice: Int?,
+        categories: List<String>?
+    ): Flow<PagingData<Product>>
     suspend fun getCategories() : List<Category>
 }

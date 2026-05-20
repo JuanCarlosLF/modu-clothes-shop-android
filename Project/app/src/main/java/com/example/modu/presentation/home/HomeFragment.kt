@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.modu.R
 import com.example.modu.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
@@ -24,10 +25,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModels()
     private var adapter: HomeProductsAdapter? = null
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding = FragmentHomeBinding.bind(view)
 
         setupRecyclerView()
@@ -36,7 +35,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupRecyclerView() {
-        adapter = HomeProductsAdapter() { product ->
+        adapter = HomeProductsAdapter { product ->
             val bundle = Bundle().apply {
                 putInt(DETAIL_NAVIGATION_KEY, product.id)
             }
@@ -46,17 +45,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             )
         }
 
-        binding?.recyclerHome?.layoutManager =
-            StaggeredGridLayoutManager(LAYOUT_COLUMNS_QUANTITY, StaggeredGridLayoutManager.VERTICAL)
-
+        binding?.recyclerHome?.layoutManager = StaggeredGridLayoutManager(
+            LAYOUT_COLUMNS_QUANTITY,
+            StaggeredGridLayoutManager.VERTICAL
+        )
         binding?.recyclerHome?.adapter = adapter
     }
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    adapter?.submitList(state.products)
+                viewModel.productsFlow.collectLatest { pagingData ->
+                    adapter?.submitData(pagingData)
                 }
             }
         }
