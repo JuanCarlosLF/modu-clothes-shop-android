@@ -76,4 +76,7 @@ dependencies {
 
     // Flexbox
     implementation(libs.flexbox)
+
+    // Paging
+    implementation(libs.androidx.paging.runtime)
 }
