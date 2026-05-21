@@ -23,13 +23,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var binding: FragmentHomeBinding? = null
     private val viewModel: HomeViewModel by viewModels()
     private var adapter: HomeProductsAdapter? = null
-
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding = FragmentHomeBinding.bind(view)
-
         setupRecyclerView()
         setupObservers()
         setupListeners()
