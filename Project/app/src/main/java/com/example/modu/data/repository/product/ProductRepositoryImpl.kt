@@ -6,13 +6,12 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.modu.data.dataSource.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
-import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.entity.product.Category
+import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.repository.product.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.math.max
 
 class ProductRepositoryImpl @Inject constructor(
     private val dataSource: ProductDataSource,
@@ -33,7 +32,14 @@ class ProductRepositoryImpl @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                dataSource.getProductsPagingSource(title, orderByPrice, maxPrice, categories)
+                dataSource.getProductsPagingSource(
+                    title,
+                    orderByPrice,
+                    maxPrice,
+                    categories
+                ) { exception ->
+                    errorHandler.handle(exception)
+                }
             }
         )
             .flow

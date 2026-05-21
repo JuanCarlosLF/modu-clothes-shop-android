@@ -16,14 +16,16 @@ class ProductRemoteDataSourceImpl @Inject constructor(private val api: ProductAp
         title: String?,
         orderByPrice: String?,
         maxPrice: Int?,
-        categories: List<String>?
+        categories: List<String>?,
+        mapException: (Exception) -> Exception
     ): PagingSource<Int, ProductDto> {
         return ProductPagingSource(
             api = api,
             title = title,
             orderByPrice = orderByPrice,
             maxPrice = maxPrice,
-            categories = categories
+            categories = categories,
+            mapException = mapException
         )
     }
 

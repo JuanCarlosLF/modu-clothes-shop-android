@@ -10,7 +10,8 @@ interface ProductDataSource {
         title: String?,
         orderByPrice: String?,
         maxPrice: Int?,
-        categories: List<String>?
+        categories: List<String>?,
+        mapException: (Exception) -> Exception
     ): PagingSource<Int, ProductDto>
 
     suspend fun getCategories(): List<CategoryDto>

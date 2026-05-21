@@ -10,7 +10,8 @@ class ProductPagingSource(
     private val title: String?,
     private val orderByPrice: String?,
     private val maxPrice: Int?,
-    private val categories: List<String>?
+    private val categories: List<String>?,
+    private val mapException: (Exception) -> Exception
 ) : PagingSource<Int, ProductDto>() {
 
     override fun getRefreshKey(state: PagingState<Int, ProductDto>): Int? {
@@ -38,7 +39,7 @@ class ProductPagingSource(
                 nextKey = if (response.meta.hasNext == true) currentPage + 1 else null
             )
         } catch (exception: Exception) {
-            LoadResult.Error(exception)
+            LoadResult.Error(mapException(exception))
         }
     }
 }
