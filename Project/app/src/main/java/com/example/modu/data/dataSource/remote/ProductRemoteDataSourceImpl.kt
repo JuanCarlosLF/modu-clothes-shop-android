@@ -9,8 +9,9 @@ import com.example.modu.data.dataSource.remote.product.dto.ProductDto
 import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 import javax.inject.Inject
 
-class ProductRemoteDataSourceImpl @Inject constructor(private val api: ProductApi) :
-    ProductDataSource {
+class ProductRemoteDataSourceImpl @Inject constructor(
+    private val api: ProductApi
+) : ProductDataSource {
 
     override fun getProductsPagingSource(
         title: String?,
