@@ -65,6 +65,33 @@
             android:background="@drawable/ic_filter" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/container_filters"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/margin_s"
+        android:layout_marginHorizontal="@dimen/margin_s"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_home_search_and_filter"
+        tools:visibility="visible">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_filters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+
+        </HorizontalScrollView>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_home"
         android:layout_width="0dp"
@@ -76,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_home_search_and_filter"
+        app:layout_constraintTop_toBottomOf="@id/container_filters"
         tools:itemCount="50"
         tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         tools:listitem="@layout/item_gallery"

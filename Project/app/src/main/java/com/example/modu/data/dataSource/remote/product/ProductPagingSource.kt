@@ -30,7 +30,7 @@ class ProductPagingSource(
                 title = title,
                 orderByPrice = orderByPrice,
                 maxPrice = maxPrice,
-                categories =categories
+                categories = categories
             )
 
             LoadResult.Page(
