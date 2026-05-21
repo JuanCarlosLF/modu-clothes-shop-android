@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_image"
+    android:layout_width="@dimen/item_carrusel_detail_width"
+    android:layout_height="@dimen/item_carrusel_detail_height"
+    android:layout_margin="@dimen/margin_xxs"
+    android:adjustViewBounds="true"
+    android:minHeight="@dimen/image_view_clothes_min_size"
+    android:scaleType="centerCrop"
+    app:shapeAppearanceOverlay="@style/RoundedImageStyle"
+    tools:src="@tools:sample/backgrounds/scenic" />

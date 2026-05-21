@@ -1,19 +1,14 @@
 package com.example.modu.presentation.detail
 
 import android.os.Bundle
-import android.transition.TransitionManager
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.modu.R
 import com.example.modu.databinding.FragmentDetailBinding
 import com.example.modu.presentation.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
@@ -26,7 +21,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         (activity as? MainActivity)?.setBottomNavVisible(false)
         binding = FragmentDetailBinding.bind(view)
         setupListeners()
-        setupObservers()
     }
 
     override fun onDestroyView() {
@@ -34,24 +28,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         binding = null
     }
 
-    private fun setupObservers() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    binding?.let { binding ->
-                        TransitionManager.beginDelayedTransition(binding.bottomSheet)
-                        binding.layoutExpandedContent.visibility =
-                            if (state.isExpanded) View.VISIBLE else View.GONE
-                    }
-                }
-            }
-        }
-    }
-
     private fun setupListeners() {
-        binding?.btnExpandBottomSheet?.setOnClickListener {
-            viewModel.toggleExpanded()
-        }
         binding?.let { binding ->
             binding.icBack.setOnClickListener {
                 findNavController().popBackStack()
