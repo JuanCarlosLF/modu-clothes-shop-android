@@ -23,8 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-private const val PRICE_SORT_DESC = "highest"
-private const val PRICE_SORT_ASC = "lowest"
+private const val PRICE_SORT_DESC = "desc"
+private const val PRICE_SORT_ASC = "asc"
 
 
 @AndroidEntryPoint
