@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
 
+private const val STARTING_PAGE_NUMBER = 0
 class ProductPagingSource(
     private val api: ProductApi,
     private val title: String?,
@@ -23,7 +24,7 @@ class ProductPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductDto> {
         return try {
-            val currentPage = params.key ?: 1
+            val currentPage = params.key ?: STARTING_PAGE_NUMBER
             val response = api.getProductsBy(
                 page = currentPage,
                 size = params.loadSize,
@@ -35,7 +36,7 @@ class ProductPagingSource(
 
             LoadResult.Page(
                 data = response.products,
-                prevKey = if (currentPage == 1) null else currentPage - 1,
+                prevKey = if (currentPage == STARTING_PAGE_NUMBER) null else currentPage - 1,
                 nextKey = if (response.meta.hasNext == true) currentPage + 1 else null
             )
         } catch (exception: Exception) {
