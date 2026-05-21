@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+private const val PAGING_DEFAULT_SIZE = 20
+private const val PAGING_INITIAL_SIZE = 20
 class ProductRepositoryImpl @Inject constructor(
     private val dataSource: ProductDataSource,
     private val errorHandler: ErrorHandler
@@ -27,8 +29,8 @@ class ProductRepositoryImpl @Inject constructor(
 
         return Pager(
             config = PagingConfig(
-                pageSize = 20,
-                initialLoadSize = 20,
+                pageSize = PAGING_DEFAULT_SIZE,
+                initialLoadSize = PAGING_INITIAL_SIZE,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
