@@ -6,7 +6,7 @@ import com.example.modu.data.dataSource.remote.product.dto.ProductDto
 import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 
 interface ProductDataSource {
-    fun getProductsPagingSource(
+    fun getPaginatedProducts(
         title: String?,
         orderByPrice: String?,
         maxPrice: Int?,

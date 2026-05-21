@@ -13,7 +13,7 @@ class ProductRemoteDataSourceImpl @Inject constructor(
     private val api: ProductApi
 ) : ProductDataSource {
 
-    override fun getProductsPagingSource(
+    override fun getPaginatedProducts(
         title: String?,
         orderByPrice: String?,
         maxPrice: Int?,
