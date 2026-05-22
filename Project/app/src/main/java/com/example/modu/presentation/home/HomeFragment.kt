@@ -52,13 +52,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun setupRecyclerView() {
         adapter = HomeProductsAdapter { product ->
-            val bundle = Bundle().apply {
-                putInt(DETAIL_NAVIGATION_KEY, product.id)
-            }
-            findNavController().navigate(
-                R.id.action_home_to_cart,
-                bundle
-            )
+            val action =
+                HomeFragmentDirections.actionHomeToDetail(product.id)
+
+            findNavController().navigate(action)
         }
 
         binding?.recyclerHome?.layoutManager = StaggeredGridLayoutManager(
