@@ -37,6 +37,9 @@ coil = "2.6.0"
 # Flexbox
 flexbox = "3.0.0"
 
+# Paging
+paging = "3.4.2"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -73,6 +76,9 @@ coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
 # Flexbox
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
+
+# Paging
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

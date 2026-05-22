@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.modu.R
 import com.example.modu.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
@@ -30,7 +31,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setupRecyclerView()
         setupObservers()
         setupListeners()
-
     }
 
     private fun setupRecyclerView() {
@@ -40,17 +40,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             findNavController().navigate(action)
         }
-        binding?.recyclerHome?.layoutManager =
-            StaggeredGridLayoutManager(LAYOUT_COLUMNS_QUANTITY, StaggeredGridLayoutManager.VERTICAL)
 
+        binding?.recyclerHome?.layoutManager = StaggeredGridLayoutManager(
+            LAYOUT_COLUMNS_QUANTITY,
+            StaggeredGridLayoutManager.VERTICAL
+        )
         binding?.recyclerHome?.adapter = adapter
     }
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    adapter?.submitList(state.products)
+                viewModel.productsFlow.collectLatest { pagingData ->
+                    adapter?.submitData(pagingData)
                 }
             }
         }

@@ -10,12 +10,13 @@ import retrofit2.http.Query
 interface ProductApi {
 
     @GET("products")
-    suspend fun getProducts(
-        @Query("page") page: Int? = null,
-        @Query("size") size: Int? = null,
-        @Query("title") title: String? = null,
-        @Query("orderByPrice") orderByPrice: String? = null,
-        @Query("maxPrice") maxPrice: Int? = null
+    suspend fun getProductsBy(
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("title") title: String?,
+        @Query("orderByPrice") orderByPrice: String?,
+        @Query("maxPrice") maxPrice: Int?,
+        @Query("categories") categories: List<String>?
     ): ProductWrapperDto
 
     @GET("product/{id}")
