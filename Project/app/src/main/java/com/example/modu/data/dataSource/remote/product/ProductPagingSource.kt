@@ -6,6 +6,7 @@ import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
 
 private const val STARTING_PAGE_NUMBER = 0
+
 class ProductPagingSource(
     private val api: ProductApi,
     private val title: String?,

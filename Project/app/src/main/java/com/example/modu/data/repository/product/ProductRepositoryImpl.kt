@@ -34,7 +34,7 @@ class ProductRepositoryImpl @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                dataSource.getProductsPagingSource(
+                dataSource.getPaginatedProducts(
                     title,
                     orderByPrice,
                     maxPrice,

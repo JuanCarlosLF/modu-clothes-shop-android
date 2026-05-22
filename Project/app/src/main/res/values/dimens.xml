@@ -3,7 +3,8 @@
     <!-- Text -->
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_general">14sp</dimen>
-    <dimen name="text_size_filter_titles">18sp</dimen>
+    <dimen name="text_size_general_plus">18sp</dimen>
+    <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_filter_screen_title">20sp</dimen>
     <dimen name="text_size_big">22sp</dimen>
     <dimen name="text_size_biggest">24sp</dimen>
@@ -13,6 +14,7 @@
     <dimen name="margin_xxxs">2dp</dimen>
     <dimen name="margin_xxs">4dp</dimen>
     <dimen name="margin_xs_plus">8dp</dimen>
+    <dimen name="margin_xs_s">10dp</dimen>
     <dimen name="margin_xs">11dp</dimen>
     <dimen name="margin_s_plus">12dp</dimen>
     <dimen name="margin_s">16dp</dimen>
@@ -20,6 +22,8 @@
     <dimen name="margin_m_plus">21dp</dimen>
     <dimen name="margin_l">24dp</dimen>
     <dimen name="margin_xl">32dp</dimen>
+    <dimen name="margin_xl_x">35dp</dimen>
+    <dimen name="margin_xl_plus">40dp</dimen>
     <dimen name="margin_xxxl">50dp</dimen>
     <dimen name="margin_negative">-24dp</dimen>
     <dimen name="margin_top_bar">52dp</dimen>
@@ -36,9 +40,15 @@
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
+    <dimen name="item_size_width">62dp</dimen>
+    <dimen name="item_size_height">46dp</dimen>
+    <dimen name="item_color_width">68dp</dimen>
+    <dimen name="item_color_height">46dp</dimen>
     <dimen name="image_view_clothes_min_size">100dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="stroke_width_default">1dp</dimen>
+    <dimen name="item_carrusel_detail_width">114dp</dimen>
+    <dimen name="item_carrusel_detail_height">196dp</dimen>
 
     <!-- Corner Radius -->
     <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
@@ -48,6 +58,12 @@
     <dimen name="corner_radius_filter_by_category">99dp</dimen>
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_filter_save_filters">100dp</dimen>
+
+    <!-- Other -->
+    <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
+    <dimen name="width_bg_quantity">107dp</dimen>
+    <dimen name="height_gb_quantity">48dp</dimen>
+
 
     <!-- Line spacing -->
     <dimen name="line_spacing_filter_info_desc">4dp</dimen>
