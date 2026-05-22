@@ -13,10 +13,21 @@
         <action
             android:id="@+id/action_home_to_cart"
             app:destination="@+id/fragment_cart" />
+        <action
+            android:id="@+id/action_home_to_detail"
+            app:destination="@id/fragment_product_detail" />
     </fragment>
     <fragment
-        android:id="@+id/fragment_detail"
-        android:name="com.example.modu.presentation.detail.DetailFragment" />
+        android:id="@+id/fragment_product_detail"
+        android:name="com.example.modu.presentation.productDetail.ProductDetailFragment">
+        <argument
+            android:name="product_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_fragment_product_detail_self"
+            app:destination="@+id/fragment_product_detail" />
+    </fragment>
+
     <fragment
         android:id="@+id/fragment_cart"
         android:name="com.example.modu.presentation.CartFragment" />
