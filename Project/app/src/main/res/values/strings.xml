@@ -45,4 +45,6 @@
     <string name="error_internal_error_msg">We are currently experiencing technical difficulties. Please try again later.</string>
     <string name="general_error_title">Oops! Something went wrong</string>
     <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
+    <string name="error_generic_oops">Oops! Something went wrong.</string>
+    <string name="button_retry">Retry</string>
 </resources>

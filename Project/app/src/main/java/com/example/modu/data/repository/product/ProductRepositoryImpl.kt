@@ -26,7 +26,6 @@ class ProductRepositoryImpl @Inject constructor(
         maxPrice: Int?,
         categories: List<String>?
     ): Flow<PagingData<Product>> {
-
         return Pager(
             config = PagingConfig(
                 pageSize = PAGING_DEFAULT_SIZE,
