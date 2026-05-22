@@ -25,13 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-private const val DETAIL_NAVIGATION_KEY = "PRODUCT_ID"
 private const val LAYOUT_COLUMNS_QUANTITY = 2
-private const val CHIP_PREFIX_TITLE = "Nombre: "
-private const val CHIP_PREFIX_ORDER = "Orden: "
-private const val CHIP_PREFIX_MAX_PRICE = "Máx: "
-private const val CHIP_SUFFIX_CURRENCY = "$"
-
 private const val WAIT_BEFORE_SEARCH_TIME: Long = 400
 
 @AndroidEntryPoint
@@ -113,13 +107,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         chipGroup.removeAllViews()
 
         state.title?.takeIf { it.isNotBlank() }?.let { title ->
-            chipGroup.addView(createCloseableChip("$CHIP_PREFIX_TITLE$title") { viewModel.removeTitleFilter() })
+            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_title}$title") { viewModel.removeTitleFilter() })
         }
         state.orderByPrice?.takeIf { it.isNotBlank() }?.let { order ->
-            chipGroup.addView(createCloseableChip("$CHIP_PREFIX_ORDER$order") { viewModel.removeOrderFilter() })
+            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_order}$order") { viewModel.removeOrderFilter() })
         }
         state.maxPrice?.let { price ->
-            chipGroup.addView(createCloseableChip("$CHIP_PREFIX_MAX_PRICE$price$CHIP_SUFFIX_CURRENCY") { viewModel.removeMaxPriceFilter() })
+            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_max_price}$price${R.string.home_filter_suffix_currency}") { viewModel.removeMaxPriceFilter() })
         }
         state.categories?.forEach { category ->
             chipGroup.addView(createCloseableChip(category) {
