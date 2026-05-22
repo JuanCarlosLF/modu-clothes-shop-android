@@ -23,26 +23,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var binding: FragmentHomeBinding? = null
     private val viewModel: HomeViewModel by viewModels()
     private var adapter: HomeProductsAdapter? = null
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentHomeBinding.bind(view)
         setupRecyclerView()
         setupObservers()
         setupListeners()
+
     }
 
     private fun setupRecyclerView() {
-        adapter = HomeProductsAdapter() { product ->
-            val bundle = Bundle().apply {
-                putInt(DETAIL_NAVIGATION_KEY, product.id)
-            }
-            findNavController().navigate(
-                R.id.action_home_to_cart,
-                bundle
-            )
-        }
+        adapter = HomeProductsAdapter { product ->
+            val action =
+                HomeFragmentDirections.actionHomeToDetail(product.id)
 
+            findNavController().navigate(action)
+        }
         binding?.recyclerHome?.layoutManager =
             StaggeredGridLayoutManager(LAYOUT_COLUMNS_QUANTITY, StaggeredGridLayoutManager.VERTICAL)
 

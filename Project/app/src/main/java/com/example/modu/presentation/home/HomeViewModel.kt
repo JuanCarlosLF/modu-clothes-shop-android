@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.usecase.product.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +19,6 @@ class HomeViewModel @Inject constructor(private val useCase: ProductUseCase) : V
 
     init {
         viewModelScope.launch {
-            delay(5000)
             loadProducts()
         }
     }
@@ -28,7 +26,7 @@ class HomeViewModel @Inject constructor(private val useCase: ProductUseCase) : V
     private fun loadProducts() {
         viewModelScope.launch {
             try {
-                val products = useCase.getProductsBy()
+                val products = useCase.getProducts()
                 _uiState.update { it.copy(products = products) }
             } catch (error: Exception) {
                 _uiState.update { it.copy(errorMessage = error.message) }

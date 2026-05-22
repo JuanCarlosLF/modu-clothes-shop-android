@@ -1,4 +1,4 @@
-package com.example.modu.presentation.detail
+package com.example.modu.presentation.productDetail
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
-class DetailViewModel @Inject constructor() : ViewModel() {
+class ProductDetailViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState = MutableStateFlow(DetailUiState())
+    private val _uiState = MutableStateFlow(ProductDetailUiState())
     val uiState = _uiState.asStateFlow()
 
     fun toggleExpanded() {

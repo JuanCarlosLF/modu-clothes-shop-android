@@ -1,7 +1,7 @@
 package com.example.modu.data.dataSource.remote.product.api
 
+import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.ProductWrapperDto
-import com.example.modu.data.dataSource.remote.product.dto.detail.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface ProductApi {
 
     @GET("products")
-    suspend fun getProductsBy(
+    suspend fun getProducts(
         @Query("page") page: Int? = null,
         @Query("size") size: Int? = null,
         @Query("title") title: String? = null,
@@ -22,5 +22,5 @@ interface ProductApi {
     suspend fun getDetailById(@Path("id") id: Int): DetailDto
 
     @GET("categories")
-    suspend fun getCategories() : List<CategoryDto>
+    suspend fun getCategories(): List<CategoryDto>
 }

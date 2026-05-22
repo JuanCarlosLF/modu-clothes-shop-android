@@ -1,9 +1,10 @@
 package com.example.modu.domain.usecase.product
 
-import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.entity.product.Category
+import com.example.modu.domain.entity.product.Product
 
 interface ProductUseCase {
-    suspend fun getProductsBy() : List<Product>
-    suspend fun getCategories() : List<Category>
+    suspend fun getProducts(): List<Product>
+
+    suspend fun getCategories(): List<Category>
 }

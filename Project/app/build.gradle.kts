@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.navigation.safe.args)
 }
 
 android {
@@ -16,7 +17,11 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://dragonfly-mutiny-unseen.ngrok-free.dev\"")
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"https://dragonfly-mutiny-unseen.ngrok-free.dev/\""
+        )
     }
 
     buildFeatures {

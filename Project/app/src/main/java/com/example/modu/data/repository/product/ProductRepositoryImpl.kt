@@ -12,9 +12,9 @@ class ProductRepositoryImpl @Inject constructor(
     private val errorHandler: ErrorHandler
 ) : ProductRepository {
 
-    override suspend fun getProductsBy(): List<Product> {
+    override suspend fun getProducts(): List<Product> {
         return try {
-            dataSource.getProductsBy().map { it.toDomain() }
+            dataSource.getProducts().map { it.toDomain() }
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }
