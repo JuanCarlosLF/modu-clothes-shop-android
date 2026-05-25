@@ -2,7 +2,7 @@ package com.example.modu.di
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSourceImpl
-import com.example.modu.data.dataSource.remote.CartRemoteDataSourceImpl
+import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSourceImpl
 import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.ProductRemoteDataSourceImpl

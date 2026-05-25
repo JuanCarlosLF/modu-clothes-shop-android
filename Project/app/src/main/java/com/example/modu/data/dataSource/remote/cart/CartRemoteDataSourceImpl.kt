@@ -1,6 +1,5 @@
-package com.example.modu.data.dataSource.remote
+package com.example.modu.data.dataSource.remote.cart
 
-import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.api.CartApi
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
