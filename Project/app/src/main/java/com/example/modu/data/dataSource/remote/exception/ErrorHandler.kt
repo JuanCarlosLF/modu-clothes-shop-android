@@ -1,4 +1,4 @@
-package com.example.modu.data.dataSource.remote.product.exception
+package com.example.modu.data.dataSource.remote.exception
 
 interface ErrorHandler {
     fun handle(error: Exception) : Exception

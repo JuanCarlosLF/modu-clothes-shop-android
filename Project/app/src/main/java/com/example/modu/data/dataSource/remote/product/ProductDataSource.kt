@@ -1,4 +1,4 @@
-package com.example.modu.data.dataSource
+package com.example.modu.data.dataSource.remote.product
 
 import androidx.paging.PagingSource
 import com.example.modu.data.dataSource.remote.product.dto.CategoryDto

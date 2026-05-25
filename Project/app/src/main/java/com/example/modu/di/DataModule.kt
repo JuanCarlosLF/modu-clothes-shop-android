@@ -1,9 +1,9 @@
 package com.example.modu.di
 
-import com.example.modu.data.dataSource.ProductDataSource
-import com.example.modu.data.dataSource.remote.ProductRemoteDataSourceImpl
-import com.example.modu.data.dataSource.remote.product.exception.DataErrorHandlerImpl
-import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
+import com.example.modu.data.dataSource.remote.product.ProductDataSource
+import com.example.modu.data.dataSource.remote.product.ProductRemoteDataSourceImpl
+import com.example.modu.data.dataSource.remote.exception.DataErrorHandlerImpl
+import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.repository.product.ProductRepositoryImpl
 import com.example.modu.domain.repository.product.ProductRepository
 import dagger.Binds
