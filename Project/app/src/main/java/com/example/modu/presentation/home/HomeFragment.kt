@@ -18,6 +18,7 @@ import com.example.modu.R
 import com.example.modu.databinding.FragmentHomeBinding
 import com.example.modu.databinding.ItemHomeFilterChipBinding
 import com.example.modu.presentation.filter.FilterFragment
+import com.example.modu.presentation.filter.FilterFragment.Companion.PRICE_SORT_ASC
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -107,17 +108,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         chipGroup.removeAllViews()
 
         state.title?.takeIf { it.isNotBlank() }?.let { title ->
-            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_title}$title") { viewModel.removeTitleFilter() })
+            val prefix = getString(R.string.home_filter_prefix_title)
+            chipGroup.addView(createCloseableChip("$prefix$title") {
+                viewModel.removeFilter(HomeViewModel.ActiveFilter.Title)
+            })
         }
+
         state.orderByPrice?.takeIf { it.isNotBlank() }?.let { order ->
-            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_order}$order") { viewModel.removeOrderFilter() })
+            val displayOrder = if (order == PRICE_SORT_ASC) R.string.home_filter_order_lowest else R.string.home_filter_order_highest
+            val prefix = getString(R.string.home_filter_prefix_order)
+            chipGroup.addView(createCloseableChip("$prefix$displayOrder") {
+                viewModel.removeFilter(HomeViewModel.ActiveFilter.Order)
+            })
         }
+
         state.maxPrice?.let { price ->
-            chipGroup.addView(createCloseableChip("${R.string.home_filter_prefix_max_price}$price${R.string.home_filter_suffix_currency}") { viewModel.removeMaxPriceFilter() })
+            val prefix = getString(R.string.home_filter_prefix_max_price)
+            val suffix = getString(R.string.home_filter_suffix_currency)
+            chipGroup.addView(createCloseableChip("$prefix$price$suffix") {
+                viewModel.removeFilter(HomeViewModel.ActiveFilter.MaxPrice)
+            })
         }
+
         state.categories?.forEach { category ->
             chipGroup.addView(createCloseableChip(category) {
-                viewModel.removeCategoryFilter(category)
+                viewModel.removeFilter(HomeViewModel.ActiveFilter.Category(category))
             })
         }
     }

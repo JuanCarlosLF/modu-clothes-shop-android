@@ -13,6 +13,8 @@
     <string name="home_filter_prefix_order">Orden: </string>
     <string name="home_filter_prefix_max_price">Máx: </string>
     <string name="home_filter_suffix_currency">$</string>
+    <string name="home_filter_order_lowest">Lowest</string>
+    <string name="home_filter_order_highest">Highest</string>
 
     <!-- Detail -->
     <string name="size">Talla</string>

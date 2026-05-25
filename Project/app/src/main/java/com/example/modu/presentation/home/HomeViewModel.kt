@@ -58,4 +58,27 @@ class HomeViewModel @Inject constructor(
             _uiState.update { it.copy(title = query) }
         }
     }
+
+    sealed interface ActiveFilter {
+        data object Title : ActiveFilter
+        data object Order : ActiveFilter
+        data object MaxPrice : ActiveFilter
+        data class Category(val name: String) : ActiveFilter
+    }
+
+    fun removeFilter(filter: ActiveFilter) {
+        _uiState.update { state ->
+            when (filter) {
+                ActiveFilter.Title -> state.copy(title = null)
+                ActiveFilter.Order -> state.copy(orderByPrice = null)
+                ActiveFilter.MaxPrice -> state.copy(maxPrice = null)
+                is ActiveFilter.Category -> {
+                    val newCategories = state.categories
+                        ?.filter { it != filter.name }
+                        ?.takeIf { it.isNotEmpty() }
+                    state.copy(categories = newCategories)
+                }
+            }
+        }
+    }
 }
