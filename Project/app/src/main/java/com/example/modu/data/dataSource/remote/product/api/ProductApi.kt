@@ -16,7 +16,7 @@ interface ProductApi {
         @Query("title") title: String?,
         @Query("orderByPrice") orderByPrice: String?,
         @Query("maxPrice") maxPrice: Int?,
-        @Query("categories") categories: List<String>?
+        @Query("category") categories: List<String>?
     ): ProductWrapperDto
 
     @GET("product/{id}")

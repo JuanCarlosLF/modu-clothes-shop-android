@@ -23,10 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-private const val PRICE_SORT_DESC = "highest"
-private const val PRICE_SORT_ASC = "lowest"
-
-
 @AndroidEntryPoint
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
@@ -163,6 +159,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
 
     companion object {
+        const val PRICE_SORT_DESC = "desc"
+        const val PRICE_SORT_ASC = "asc"
         const val BUNDLE_KEY_TITLE = "title"
         const val BUNDLE_KEY_ORDER_BY_PRICE = "order_by_price"
         const val BUNDLE_KEY_MAX_PRICE = "max_price"

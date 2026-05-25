@@ -9,7 +9,13 @@
 
     <!-- Home -->
     <string name="home_title">Mosaic</string>
-    
+    <string name="home_filter_prefix_title">Nombre: </string>
+    <string name="home_filter_prefix_order">Orden: </string>
+    <string name="home_filter_prefix_max_price">Máx: </string>
+    <string name="home_filter_suffix_currency">$</string>
+    <string name="home_filter_order_lowest">Lowest</string>
+    <string name="home_filter_order_highest">Highest</string>
+
     <!-- Detail -->
     <string name="size">Talla</string>
     <string name="color">Color</string>
@@ -45,4 +51,6 @@
     <string name="error_internal_error_msg">We are currently experiencing technical difficulties. Please try again later.</string>
     <string name="general_error_title">Oops! Something went wrong</string>
     <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
+    <string name="error_generic_oops">Oops! Something went wrong.</string>
+    <string name="button_retry">Retry</string>
 </resources>
