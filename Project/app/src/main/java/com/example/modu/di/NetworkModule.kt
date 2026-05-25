@@ -1,6 +1,7 @@
 package com.example.modu.di
 
 import com.example.modu.BuildConfig
+import com.example.modu.data.dataSource.remote.cart.api.CartApi
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import dagger.Module
 import dagger.Provides
@@ -50,4 +51,8 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideProductApi(retrofit: Retrofit) : ProductApi = retrofit.create(ProductApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCartApi(retrofit: Retrofit): CartApi = retrofit.create(CartApi::class.java)
 }

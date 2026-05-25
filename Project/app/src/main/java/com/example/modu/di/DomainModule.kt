@@ -1,5 +1,7 @@
 package com.example.modu.di
 
+import com.example.modu.domain.usecase.cart.CartUseCase
+import com.example.modu.domain.usecase.cart.CartUseCaseImpl
 import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.domain.usecase.product.ProductUseCaseImpl
 import dagger.Binds
@@ -15,4 +17,8 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindProductUseCase(productsUseCase: ProductUseCaseImpl) : ProductUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindCartUseCase(impl: CartUseCaseImpl): CartUseCase
 }
