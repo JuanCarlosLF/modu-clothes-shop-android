@@ -40,19 +40,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun removeTitleFilter() = _uiState.update { it.copy(title = null) }
-
-    fun removeOrderFilter() = _uiState.update { it.copy(orderByPrice = null) }
-
-    fun removeMaxPriceFilter() = _uiState.update { it.copy(maxPrice = null) }
-
-    fun removeCategoryFilter(categoryToRemove: String) {
-        _uiState.update { state ->
-            val newCategories = state.categories?.filter { it != categoryToRemove }?.takeIf { it.isNotEmpty() }
-            state.copy(categories = newCategories)
-        }
-    }
-
     fun updateSearchQuery(query: String?) {
         if (_uiState.value.title != query) {
             _uiState.update { it.copy(title = query) }
