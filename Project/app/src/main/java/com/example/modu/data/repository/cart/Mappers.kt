@@ -4,6 +4,8 @@ import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
 import com.example.modu.domain.entity.cart.CartItem
 import java.math.BigDecimal
 
+private const val BID_DECIMAL_CONVERSION_MULT = 100
+
 internal fun CartItemDbo.toDomain(): CartItem {
     return CartItem(
         id = id,
@@ -11,8 +13,8 @@ internal fun CartItemDbo.toDomain(): CartItem {
         productVariantId = productVariantId,
         currentStock = currentStock,
         quantity = quantity,
-        unitPrice = BigDecimal.valueOf(unitPrice).divide(BigDecimal(100)),
-        totalPrice = BigDecimal.valueOf(totalPrice).divide(BigDecimal(100))
+        unitPrice = BigDecimal.valueOf(unitPrice).divide(BigDecimal(BID_DECIMAL_CONVERSION_MULT)),
+        totalPrice = BigDecimal.valueOf(totalPrice).divide(BigDecimal(BID_DECIMAL_CONVERSION_MULT))
     )
 }
 
@@ -23,7 +25,7 @@ internal fun CartItem.toDbo(): CartItemDbo {
         productVariantId = productVariantId,
         currentStock = currentStock,
         quantity = quantity,
-        unitPrice = unitPrice.multiply(BigDecimal(100)).toLong(),
-        totalPrice = totalPrice.multiply(BigDecimal(100)).toLong()
+        unitPrice = unitPrice.multiply(BigDecimal(BID_DECIMAL_CONVERSION_MULT)).toLong(),
+        totalPrice = totalPrice.multiply(BigDecimal(BID_DECIMAL_CONVERSION_MULT)).toLong()
     )
 }
