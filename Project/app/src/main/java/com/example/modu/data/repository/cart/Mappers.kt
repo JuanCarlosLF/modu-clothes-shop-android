@@ -38,10 +38,10 @@ internal fun CartItem.toDbo(): CartItemDbo {
 
 internal fun CartDto.toDomain(): Cart {
     return Cart(
-        deviceId = this.deviceId,
-        createdAt = this.updatedAt.toString(),
-        updatedAt = this.updatedAt.toString(),
-        items = this.cartItems.map { it.toDomain() },
+        deviceId = requireNotNull(this.deviceId),
+        createdAt = requireNotNull(this.updatedAt).toString(),
+        updatedAt = requireNotNull(this.updatedAt).toString(),
+        items = this.cartItems?.map { it.toDomain() } ?: emptyList(),
         priceAlert = this.priceChangedAlert?.toDomain(),
         stockAlert = this.insufficientStockAlert?.toDomain()
     )
@@ -49,51 +49,51 @@ internal fun CartDto.toDomain(): Cart {
 
 internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
-        id = this.id,
-        productVariantId = this.productVariantId,
-        currentStock = this.currentStock,
-        quantity = this.quantity,
-        unitPrice = this.unitPrice,
-        totalPrice = this.totalPrice
+        id = requireNotNull(this.id),
+        productVariantId = requireNotNull(this.productVariantId),
+        currentStock = requireNotNull(this.currentStock),
+        quantity = requireNotNull(this.quantity),
+        unitPrice = requireNotNull(this.unitPrice),
+        totalPrice = requireNotNull(this.totalPrice)
     )
 }
 
 internal fun PriceChangedAlertDto.toDomain(): PriceChangedAlert {
     return PriceChangedAlert(
-        items = this.cartItems.map { it.toDomain() }
+        items = this.cartItems?.map { it.toDomain() } ?: emptyList()
     )
 }
 
 internal fun PriceAlertItemDto.toDomain(): PriceAlertItem {
     return PriceAlertItem(
-        productVariantId = this.id,
-        oldPrice = this.oldPrice,
-        newPrice = this.newPrice
+        productVariantId = requireNotNull(this.id),
+        oldPrice = requireNotNull(this.oldPrice),
+        newPrice = requireNotNull(this.newPrice)
     )
 }
 
 internal fun InsufficientStockAlertDto.toDomain(): InsufficientStockAlert {
     return InsufficientStockAlert(
-        items = this.cartItems.map { it.toDomain() }
+        items = this.cartItems?.map { it.toDomain() } ?: emptyList()
     )
 }
 
 internal fun StockAlertItemDto.toDomain(): StockAlertItem {
     return StockAlertItem(
-        productVariantId = this.id,
-        requestedQuantity = this.requestedQuantity,
-        availableStock = this.availableQuantity
+        productVariantId = requireNotNull(this.id),
+        requestedQuantity = requireNotNull(this.requestedQuantity),
+        availableStock = requireNotNull(this.availableQuantity)
     )
 }
 
 internal fun CartItemDto.toDbo(): CartItemDbo {
     return CartItemDbo(
-        id = this.id,
-        productVariantId = this.productVariantId,
-        currentStock = this.currentStock,
-        quantity = this.quantity,
-        unitPrice = this.unitPrice,
-        totalPrice = this.totalPrice
+        id = requireNotNull(this.id),
+        productVariantId = requireNotNull(this.productVariantId),
+        currentStock = requireNotNull(this.currentStock),
+        quantity = requireNotNull(this.quantity),
+        unitPrice = requireNotNull(this.unitPrice),
+        totalPrice = requireNotNull(this.totalPrice)
     )
 }
 
