@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class CartDto(
     @SerializedName("device_id")
-    val deviceId: String,
+    val deviceId: String? = null,
     @SerializedName("updated_at")
-    val updatedAt: Long,
+    val updatedAt: Long? = null,
     @SerializedName("cart_items")
-    val cartItems: List<CartItemDto>,
+    val cartItems: List<CartItemDto>? = null,
     @SerializedName("price_changed_alert")
-    val priceChangedAlert: PriceChangedAlertDto?,
+    val priceChangedAlert: PriceChangedAlertDto? = null,
     @SerializedName("insufficient_stock_alert")
-    val insufficientStockAlert: InsufficientStockAlertDto?
+    val insufficientStockAlert: InsufficientStockAlertDto? = null
 )

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class UpdateCartRequestDto(
     @SerializedName("device_id")
-    val deviceId: String,
+    val deviceId: String? = null,
     @SerializedName("cart_items"
-    ) val cartItems: List<CartItemDto>
+    ) val cartItems: List<CartItemDto>? = null
 )

@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class InsufficientStockAlertDto(
     @SerializedName("cart_items")
-    val cartItems: List<StockAlertItemDto>
+    val cartItems: List<StockAlertItemDto>? = null
 )
