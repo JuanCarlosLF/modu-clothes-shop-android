@@ -1,4 +1,4 @@
-package com.example.modu.data.dataSource.remote.product.exception.dto
+package com.example.modu.data.dataSource.remote.exception.dto
 
 import com.google.gson.annotations.SerializedName
 

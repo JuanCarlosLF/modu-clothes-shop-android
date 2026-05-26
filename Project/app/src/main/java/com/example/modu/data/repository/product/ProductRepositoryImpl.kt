@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.modu.data.dataSource.ProductDataSource
-import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
+import com.example.modu.data.dataSource.remote.product.ProductDataSource
+import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product

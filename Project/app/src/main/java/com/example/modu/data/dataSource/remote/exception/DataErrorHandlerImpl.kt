@@ -1,9 +1,9 @@
-package com.example.modu.data.dataSource.remote.product.exception
+package com.example.modu.data.dataSource.remote.exception
 
 import android.content.Context
 import com.example.modu.R
-import com.example.modu.data.dataSource.remote.product.exception.dto.ErrorDto
-import com.example.modu.data.dataSource.remote.product.exception.dto.toDomain
+import com.example.modu.data.dataSource.remote.exception.dto.ErrorDto
+import com.example.modu.data.dataSource.remote.exception.dto.toDomain
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.google.gson.Gson
@@ -67,7 +67,7 @@ class DataErrorHandlerImpl @Inject constructor(
     private fun parse(httpException: HttpException): AppError {
         return try {
             val errorBody = httpException.response()?.errorBody()?.string()
-            val type: Type = object : TypeToken<ErrorDto>() {}.type
+            val type: Type = object : com.google.gson.reflect.TypeToken<ErrorDto>() {}.type
             val parsedError = Gson().fromJson<ErrorDto>(errorBody, type)
             parsedError.toDomain(context)
         } catch (_: Exception) {
