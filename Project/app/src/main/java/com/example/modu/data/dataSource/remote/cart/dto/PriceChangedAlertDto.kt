@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class PriceChangedAlertDto(
     @SerializedName("cart_items")
-    val cartItems: List<PriceAlertItemDto>
+    val cartItems: List<PriceAlertItemDto>? = null
 )

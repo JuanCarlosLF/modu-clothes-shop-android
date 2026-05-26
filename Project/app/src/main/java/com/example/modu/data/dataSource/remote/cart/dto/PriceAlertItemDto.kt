@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class PriceAlertItemDto(
     val id: Int,
     @SerializedName("old_price")
-    val oldPrice: Double,
+    val oldPrice: Double? = null,
     @SerializedName("new_price")
-    val newPrice: Double
+    val newPrice: Double? = null
 )

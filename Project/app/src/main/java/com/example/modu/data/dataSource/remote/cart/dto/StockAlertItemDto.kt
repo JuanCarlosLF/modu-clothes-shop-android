@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class StockAlertItemDto(
     val id: Int,
     @SerializedName("requested_quantity")
-    val requestedQuantity: Int,
+    val requestedQuantity: Int? = null,
     @SerializedName("available_quantity")
-    val availableQuantity: Int
+    val availableQuantity: Int? = null
 )
