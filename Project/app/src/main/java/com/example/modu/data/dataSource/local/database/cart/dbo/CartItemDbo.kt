@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class CartItemDbo(
     @PrimaryKey
     val id: Int,
+    val productId: Int,
     val productVariantId: Int,
     val currentStock: Int,
     val quantity: Int,
