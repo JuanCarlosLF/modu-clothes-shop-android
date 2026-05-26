@@ -20,7 +20,7 @@ class CartRepositoryImpl @Inject constructor(
         return try {
             val response = remoteDataSource.getCart(deviceId)
             localDataSource.clearCart()
-            localDataSource.insertCartItems(response.cartItems.map { it.toDbo() })
+            localDataSource.insertCartItems(response.cartItems?.map { it.toDbo() } ?: emptyList())
             response.toDomain()
         } catch (error: Exception) {
             throw errorHandler.handle(error)
@@ -53,7 +53,7 @@ class CartRepositoryImpl @Inject constructor(
             )
             val response = remoteDataSource.updateCart(request)
             localDataSource.clearCart()
-            localDataSource.insertCartItems(response.cartItems.map { it.toDbo() })
+            localDataSource.insertCartItems(response.cartItems?.map { it.toDbo() } ?: emptyList())
             response.toDomain()
         } catch (error: Exception) {
             throw errorHandler.handle(error)
@@ -65,7 +65,7 @@ class CartRepositoryImpl @Inject constructor(
             val request = AddItemRequestDto(deviceId, productVariantId, quantity)
             val response = remoteDataSource.addItem(request)
             localDataSource.clearCart()
-            localDataSource.insertCartItems(response.cartItems.map { it.toDbo() })
+            localDataSource.insertCartItems(response.cartItems?.map { it.toDbo() } ?: emptyList())
             response.toDomain()
         } catch (error: Exception) {
             throw errorHandler.handle(error)
@@ -76,7 +76,7 @@ class CartRepositoryImpl @Inject constructor(
         return try {
             val response = remoteDataSource.deleteItemById(itemId, deviceId)
             localDataSource.clearCart()
-            localDataSource.insertCartItems(response.cartItems.map { it.toDbo() })
+            localDataSource.insertCartItems(response.cartItems?.map { it.toDbo() } ?: emptyList())
             response.toDomain()
         } catch (error: Exception) {
             throw errorHandler.handle(error)
