@@ -1,5 +1,6 @@
 package com.example.modu.domain.repository.product
 
+import com.example.modu.domain.entity.detail.Detail
 import androidx.paging.PagingData
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
@@ -12,5 +13,6 @@ interface ProductRepository {
         maxPrice: Int?,
         categories: List<String>?
     ): Flow<PagingData<Product>>
-    suspend fun getCategories() : List<Category>
+    suspend fun getDetailById(id: Int): Detail
+    suspend fun getCategories(): List<Category>
 }

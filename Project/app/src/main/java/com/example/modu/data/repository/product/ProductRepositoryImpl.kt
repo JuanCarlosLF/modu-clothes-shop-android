@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.modu.data.dataSource.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.exception.ErrorHandler
+import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.repository.product.ProductRepository
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 private const val PAGING_DEFAULT_SIZE = 20
 private const val PAGING_INITIAL_SIZE = 20
+
 class ProductRepositoryImpl @Inject constructor(
     private val dataSource: ProductDataSource,
     private val errorHandler: ErrorHandler
@@ -50,6 +52,8 @@ class ProductRepositoryImpl @Inject constructor(
                 }
             }
     }
+
+    override suspend fun getDetailById(id: Int): Detail = dataSource.getDetailById(id).toDomain()
 
     override suspend fun getCategories(): List<Category> {
         return try {
