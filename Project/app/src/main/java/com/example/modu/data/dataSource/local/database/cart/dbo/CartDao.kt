@@ -18,9 +18,6 @@ interface CartDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<CartItemDbo>)
 
-    @Query("UPDATE cart_items SET quantity = :quantity, totalPrice = :totalPrice WHERE id = :itemId")
-    suspend fun updateQuantityAndPrice(itemId: Int, quantity: Int, totalPrice: Long)
-
     @Query("DELETE FROM cart_items WHERE id = :itemId")
     suspend fun deleteItem(itemId: Int)
 
