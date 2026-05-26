@@ -86,7 +86,18 @@ internal fun StockAlertItemDto.toDomain(): StockAlertItem {
     )
 }
 
-internal fun CartItem.toDto(): CartItemDto {
+internal fun CartItemDto.toDbo(): CartItemDbo {
+    return CartItemDbo(
+        id = this.id,
+        productVariantId = this.productVariantId,
+        currentStock = this.currentStock,
+        quantity = this.quantity,
+        unitPrice = this.unitPrice,
+        totalPrice = this.totalPrice
+    )
+}
+
+internal fun CartItemDbo.toDto(): CartItemDto {
     return CartItemDto(
         id = this.id,
         productVariantId = this.productVariantId,

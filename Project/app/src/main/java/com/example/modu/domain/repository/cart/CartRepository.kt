@@ -12,4 +12,5 @@ interface CartRepository {
     suspend fun getLocalCartItems(): List<CartItem>
     suspend fun saveLocalCartItems(items: List<CartItem>)
     suspend fun clearLocalCart()
+    suspend fun syncOfflineCart(deviceId: String): Cart
 }

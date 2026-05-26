@@ -17,6 +17,10 @@ class CartUseCaseImpl @Inject constructor(
         return repository.updateCart(deviceId, items)
     }
 
+    override suspend fun syncOfflineCart(deviceId: String): Cart {
+        return repository.syncOfflineCart(deviceId)
+    }
+
     override suspend fun addItem(deviceId: String, productVariantId: Int, quantity: Int): Cart {
         return repository.addItem(deviceId, productVariantId, quantity)
     }
