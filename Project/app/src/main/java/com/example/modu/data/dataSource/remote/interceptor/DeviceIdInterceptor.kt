@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 private const val HEADER_KEY = "Authorization"
 class DeviceIdInterceptor @Inject constructor(
+
     private val appPreferences: AppPreferences
 ) : Interceptor {
 
