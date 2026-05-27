@@ -8,5 +8,4 @@ interface CartRepository {
     suspend fun addOrUpdateItemLocal(item: CartItem)
     suspend fun deleteItemLocal(id: Int)
     suspend fun clearCartLocal()
-    suspend fun syncOfflineCart()
 }

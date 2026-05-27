@@ -1,6 +1,7 @@
 package com.example.modu.di
 
 import com.example.modu.BuildConfig
+import com.example.modu.data.dataSource.remote.interceptor.DeviceIdInterceptor
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import dagger.Module
 import dagger.Provides
@@ -31,9 +32,13 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        deviceIdInterceptor: DeviceIdInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+            .addInterceptor(deviceIdInterceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
@@ -49,5 +54,5 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideProductApi(retrofit: Retrofit) : ProductApi = retrofit.create(ProductApi::class.java)
+    fun provideProductApi(retrofit: Retrofit): ProductApi = retrofit.create(ProductApi::class.java)
 }
