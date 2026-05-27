@@ -65,12 +65,4 @@ class CartRepositoryImpl @Inject constructor(
             throw errorHandler.handle(error)
         }
     }
-
-    override suspend fun syncOfflineCart() {
-        try {
-            if (!cartPreferences.hasPendingSync()) return
-        } catch (error: Exception) {
-            throw errorHandler.handle(error)
-        }
-    }
 }
