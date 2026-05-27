@@ -37,7 +37,7 @@ interface CartApi {
     ): CartDto
 
     @DELETE("cart/items")
-    suspend fun deleteAllItems(
+    suspend fun clearCart(
         @Query("device_id") deviceId: String
     ): CartDto
 }
