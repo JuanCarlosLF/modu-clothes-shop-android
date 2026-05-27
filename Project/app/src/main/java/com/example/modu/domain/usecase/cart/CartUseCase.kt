@@ -17,5 +17,4 @@ interface CartUseCase {
     suspend fun updateQuantity(item: CartItem, newQuantity: Int)
     suspend fun deleteItem(id: Int)
     suspend fun clearCart()
-    suspend fun syncCart()
 }
