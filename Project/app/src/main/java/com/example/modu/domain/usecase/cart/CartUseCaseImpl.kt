@@ -50,7 +50,7 @@ class CartUseCaseImpl @Inject constructor(
         cartRepository.clearCartLocal()
     }
 
-    override suspend fun syncCart() {
+    override suspend fun updateCart() {
         cartRepository.syncOfflineCart()
     }
 }
