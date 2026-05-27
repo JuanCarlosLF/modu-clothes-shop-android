@@ -33,7 +33,11 @@ class CartRepositoryImpl @Inject constructor(
             val dboToSave = if (existingDbo != null) {
                 item.copy(id = existingDbo.id).toDbo()
             } else {
-                val newId = (-100000..-1).random()
+                var newId: Int
+                do {
+                    newId = (-100000..-1).random()
+                } while (currentItems.any { it.id == newId })
+
                 item.copy(id = newId).toDbo()
             }
 
