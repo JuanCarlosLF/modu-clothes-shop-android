@@ -10,7 +10,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
     private val api: CartApi
 ) : CartRemoteDataSource {
 
-    override suspend fun getCart(deviceId: String): CartDto = api.getCart(deviceId)
+    override suspend fun getCart(): CartDto = api.getCart()
 
     override suspend fun updateCart(request: UpdateCartRequestDto): CartDto = api.updateCart(request)
 
@@ -18,5 +18,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun deleteItemById(itemId: Int, deviceId: String): CartDto = api.deleteItemById(itemId, deviceId)
 
-    override suspend fun deleteAllItems(deviceId: String): CartDto = api.deleteAllItems(deviceId)
+    override suspend fun clearCart(deviceId: String): CartDto = api.clearCart(deviceId)
+
+    override suspend fun createCart(): CartDto = api.createNewCart()
 }
