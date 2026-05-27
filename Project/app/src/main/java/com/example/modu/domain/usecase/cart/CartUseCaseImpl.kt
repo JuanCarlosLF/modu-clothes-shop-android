@@ -29,7 +29,7 @@ class CartUseCaseImpl @Inject constructor(
             unitPrice = unitPrice,
             totalPrice = unitPrice.multiply(quantity.toBigDecimal())
         )
-        cartRepository.addOrUpdateItemLocal(newItem)
+        cartRepository.addItem(newItem)
     }
 
     override suspend fun updateQuantity(item: CartItem, newQuantity: Int) {
@@ -39,11 +39,11 @@ class CartUseCaseImpl @Inject constructor(
             quantity = newQuantity,
             totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
         )
-        cartRepository.addOrUpdateItemLocal(updatedItem)
+        cartRepository.addItem(updatedItem)
     }
 
     override suspend fun deleteItem(id: Int) {
-        cartRepository.deleteItemLocal(id)
+        cartRepository.deleteItem(id)
     }
 
     override suspend fun clearCart() {
