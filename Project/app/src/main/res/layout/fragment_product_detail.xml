@@ -5,8 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/layout_detail_shimmer" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/top_bar"
+        android:id="@+id/top_bar_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -26,7 +36,6 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:src="@drawable/img_detail"
                 app:layout_collapseMode="parallax" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -71,6 +80,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/contentDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
@@ -95,11 +105,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/white"
-                    android:text="Camiseta UN Limited0"
                     android:textSize="@dimen/text_size_biggest"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Camiseta UN Limited" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_description_detail"
@@ -108,11 +116,9 @@
                     android:layout_marginTop="@dimen/margin_m_plus"
                     android:fontFamily="@font/roboto_regular"
                     android:textColor="@color/white"
-                    android:text="Camiseta ancha UN de la colección Tin-up diseñada para el grupo DNS con la colaboración del design homónimo. Prenda básica con toques degradados en color pastel, evoca el espíritu de la new era del grunge."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_title_detail"
-                    tools:text="Camiseta ancha UN de la colección Tin-up diseñada para el grupo DNS con la colaboración del design homónimo. Prenda básica..." />
+                    app:layout_constraintTop_toBottomOf="@id/text_title_detail" />
 
                 <TextView
                     android:id="@+id/text_price_detail"
@@ -120,7 +126,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_l"
                     android:fontFamily="@font/roboto_bold"
-                    android:text="$ 39,99 unit"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_biggest"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -194,8 +199,7 @@
                         android:textSize="@dimen/text_size_biggest"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="$ 0,00 total" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="@dimen/width_bg_quantity"
@@ -265,15 +269,32 @@
                     android:id="@+id/recycler_carrusel_detail"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/margin_xs_plus"
                     android:layout_marginTop="@dimen/margin_xs_plus"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_similar_detail"
-                    tools:itemCount="20"
-                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_carrusel_detail" />
+                    app:layout_constraintTop_toBottomOf="@id/text_similar_detail" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_card_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_s_m"
+                    android:layout_marginEnd="@dimen/margin_s_m"
+                    android:layout_marginBottom="@dimen/margin_xl_x"
+                    android:text="@string/continuar"
+                    android:textAllCaps="false"
+                    android:textColor="@color/grey_button_disable"
+                    android:textSize="@dimen/text_size_general_extra"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/grey_light_button_background"
+                    app:cornerRadius="100dp"
+                    app:layout_constraintBottom_toBottomOf="@id/recycler_carrusel_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
