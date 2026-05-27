@@ -17,6 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // URLs: https://prune-delta-buckskin.ngrok-free.dev/ https://dragonfly-mutiny-unseen.ngrok-free.dev
         buildConfigField(
             "String",
             "BASE_URL",
@@ -24,7 +25,7 @@ android {
         )
     }
 
-    buildFeatures {
+    buildFeatures{
         viewBinding = true
         buildConfig = true
     }
@@ -87,6 +88,14 @@ dependencies {
 
     // Paging
     implementation(libs.androidx.paging.runtime)
+
+    // Shimmer
+    implementation(libs.shimmer)
+
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
 
     // Room
     implementation(libs.androidx.room.runtime)

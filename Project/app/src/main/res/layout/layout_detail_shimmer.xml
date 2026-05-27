@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_s">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_banner_height"
+            android:background="@color/grey_light_button_background" />
+
+        <View
+            android:layout_width="@dimen/shimmer_title_width"
+            android:layout_height="@dimen/shimmer_text_height"
+            android:layout_marginTop="@dimen/margin_s"
+            android:background="@color/grey_light_button_background" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_description_height"
+            android:layout_marginTop="@dimen/margin_s_plus"
+            android:background="@color/grey_light_button_background" />
+
+        <View
+            android:layout_width="@dimen/shimmer_subtitle_width"
+            android:layout_height="@dimen/shimmer_text_height"
+            android:layout_marginTop="@dimen/margin_s"
+            android:background="@color/grey_light_button_background" />
+
+        <View
+            android:layout_width="@dimen/shimmer_label_width"
+            android:layout_height="@dimen/shimmer_label_height"
+            android:layout_marginTop="@dimen/margin_m"
+            android:background="@color/grey_light_button_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_chip_height"
+            android:layout_marginTop="@dimen/margin_xs_s"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="@dimen/shimmer_chip_width"
+                android:layout_height="@dimen/shimmer_chip_height"
+                android:layout_marginEnd="@dimen/margin_xs_s"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_chip_width"
+                android:layout_height="@dimen/shimmer_chip_height"
+                android:layout_marginEnd="@dimen/margin_xs_s"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_chip_width"
+                android:layout_height="@dimen/shimmer_chip_height"
+                android:background="@color/grey_light_button_background" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/shimmer_label_width"
+            android:layout_height="@dimen/shimmer_label_height"
+            android:layout_marginTop="@dimen/margin_m"
+            android:background="@color/grey_light_button_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_color_item_size"
+            android:layout_marginTop="@dimen/margin_xs_s"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="@dimen/shimmer_color_item_size"
+                android:layout_height="@dimen/shimmer_color_item_size"
+                android:layout_marginEnd="@dimen/margin_xs_s"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_color_item_size"
+                android:layout_height="@dimen/shimmer_color_item_size"
+                android:layout_marginEnd="@dimen/margin_xs_s"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_color_item_size"
+                android:layout_height="@dimen/shimmer_color_item_size"
+                android:background="@color/grey_light_button_background" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_price_container_height"
+            android:layout_marginTop="@dimen/margin_l"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="@dimen/shimmer_price_width"
+                android:layout_height="@dimen/shimmer_price_height"
+                android:layout_gravity="center_vertical"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_price_width"
+                android:layout_height="@dimen/shimmer_chip_height"
+                android:background="@color/grey_light_button_background" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/shimmer_price_width"
+            android:layout_height="@dimen/shimmer_label_height"
+            android:layout_marginTop="@dimen/margin_l"
+            android:background="@color/grey_light_button_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_s_plus"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="@dimen/shimmer_related_item_width"
+                android:layout_height="@dimen/shimmer_related_item_height"
+                android:layout_marginEnd="@dimen/margin_s_plus"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_related_item_width"
+                android:layout_height="@dimen/shimmer_related_item_height"
+                android:layout_marginEnd="@dimen/margin_s_plus"
+                android:background="@color/grey_light_button_background" />
+
+            <View
+                android:layout_width="@dimen/shimmer_related_item_width"
+                android:layout_height="@dimen/shimmer_related_item_height"
+                android:background="@color/grey_light_button_background" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shimmer_button_height"
+            android:layout_marginTop="@dimen/margin_l"
+            android:background="@color/grey_light_button_background" />
+    </LinearLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

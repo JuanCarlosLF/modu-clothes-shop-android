@@ -19,7 +19,9 @@
     <!-- Detail -->
     <string name="size">Talla</string>
     <string name="color">Color</string>
+    <string name="text_total">$ 0.0</string>
     <string name="similar">Similares</string>
+    <string name="continuar">Continuar</string>
 
     <!-- Filter -->
     <string name="filter_title">Filters</string>

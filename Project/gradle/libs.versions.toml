@@ -33,6 +33,10 @@ splash = "1.0.1"
 
 # Coil
 coil = "2.6.0"
+uiTest = "1.11.1"
+
+# Shimmer
+shimmer = "0.5.0"
 
 # Flexbox
 flexbox = "3.0.0"
@@ -76,6 +80,10 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 
 # Coil
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+androidx-ui-test = { group = "androidx.compose.ui", name = "ui-test", version.ref = "uiTest" }
+
+#Shimmer
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 
 # Flexbox
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }

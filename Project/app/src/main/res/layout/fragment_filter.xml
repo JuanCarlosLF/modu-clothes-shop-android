@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filter_title"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_filter_screen_title"
+            android:textSize="@dimen/text_size_general_plus"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
