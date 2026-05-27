@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+private const val RANDOM_ID_MAX_VALUE = -100000
+private const val RANDOM_ID_MIN_VALUE = -1
+
 class CartRepositoryImpl @Inject constructor(
     private val localDataSource: CartLocalDataSource,
     private val cartPreferences: CartPreferences,
@@ -65,4 +68,6 @@ class CartRepositoryImpl @Inject constructor(
             throw errorHandler.handle(error)
         }
     }
+
+    private fun generateRandomId() : Int = (RANDOM_ID_MAX_VALUE..RANDOM_ID_MIN_VALUE).random()
 }
