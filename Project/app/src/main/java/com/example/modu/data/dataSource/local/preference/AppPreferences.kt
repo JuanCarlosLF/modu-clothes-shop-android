@@ -9,6 +9,7 @@ import androidx.core.content.edit
 
 private const val APP_PREFERENCES_KEY = "app_prefs"
 private const val APP_PREFERENCES_DEVICE_KEY = "device_id"
+
 @Singleton
 class AppPreferences @Inject constructor(
     @ApplicationContext context: Context
