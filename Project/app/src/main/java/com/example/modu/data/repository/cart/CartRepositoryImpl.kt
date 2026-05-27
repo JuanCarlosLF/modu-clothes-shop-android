@@ -38,7 +38,7 @@ class CartRepositoryImpl @Inject constructor(
             } else {
                 var newId: Int
                 do {
-                    newId = (-100000..-1).random()
+                    newId = generateRandomId()
                 } while (currentItems.any { it.id == newId })
 
                 item.copy(id = newId).toDbo()
