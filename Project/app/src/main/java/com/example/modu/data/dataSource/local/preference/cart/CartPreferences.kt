@@ -9,6 +9,7 @@ import androidx.core.content.edit
 
 private const val CART_PREFERENCES_KEY = "cart_prefs"
 private const val CART_PREFERENCES_PENDING_SYNC_KEY = "pending_sync"
+
 @Singleton
 class CartPreferences @Inject constructor(
     @ApplicationContext context: Context
