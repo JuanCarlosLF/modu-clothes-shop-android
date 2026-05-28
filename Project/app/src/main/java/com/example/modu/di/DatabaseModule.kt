@@ -24,7 +24,9 @@ object DatabaseModule {
             context,
             CartDatabase::class.java,
             "modu_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

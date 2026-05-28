@@ -33,11 +33,9 @@ interface CartApi {
     @DELETE("cart/items/{itemId}")
     suspend fun deleteItemById(
         @Path("itemId") itemId: Int,
-        @Query("device_id") deviceId: String
     ): CartDto
 
     @DELETE("cart/items")
     suspend fun clearCart(
-        @Query("device_id") deviceId: String
     ): CartDto
 }
