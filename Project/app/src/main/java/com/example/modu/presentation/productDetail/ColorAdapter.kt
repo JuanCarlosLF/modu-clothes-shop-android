@@ -11,14 +11,12 @@ class ColorAdapter(
     private val onSelected: (String) -> Unit
 ) : RecyclerView.Adapter<ColorAdapter.ColorViewHolder>() {
 
-    private var selectedPosition = -1
+    private var selectedColor: String? = null
 
-    fun updateData(newColors: List<String>) {
+    fun updateData(newColors: List<String>, selected: String?) {
         colors = newColors
-        selectedPosition = if (newColors.isNotEmpty()) 0 else -1
+        selectedColor = selected
         notifyDataSetChanged()
-
-        if (selectedPosition == 0) onSelected(newColors[0])
     }
 
     inner class ColorViewHolder(
@@ -32,14 +30,7 @@ class ColorAdapter(
                 binding.itemColor.setBackgroundResource(R.drawable.bg_item_recycle)
             else binding.itemColor.setBackgroundResource(0)
             binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position == RecyclerView.NO_POSITION) return@setOnClickListener
-
-                val oldPosition = selectedPosition
-                selectedPosition = position
-                onSelected(colors[bindingAdapterPosition])
-                notifyItemChanged(oldPosition)
-                notifyItemChanged(selectedPosition)
+                onSelected(color)
             }
         }
     }
@@ -54,7 +45,9 @@ class ColorAdapter(
     }
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
-        holder.bind(colors[position], position == selectedPosition)
+        val color = colors[position]
+        val isSelected = color == selectedColor
+        holder.bind(color, isSelected)
     }
 
     override fun getItemCount(): Int = colors.size

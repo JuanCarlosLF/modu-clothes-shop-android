@@ -11,12 +11,12 @@ class SizesAdapter(
     private var sizes: List<String>,
     private val onSelected: (String) -> Unit
 ) : RecyclerView.Adapter<SizesAdapter.SizeViewHolder>() {
-    private var selectedPosition = -1
-    fun updateData(newSizes: List<String>) {
+
+    private var selecedSize: String? = null
+    fun updateData(newSizes: List<String>, selected: String?) {
         sizes = newSizes
-        selectedPosition = if (newSizes.isNotEmpty()) 0 else -1
+        selecedSize = selected
         notifyDataSetChanged()
-        if (selectedPosition == 0) onSelected(newSizes[0])
     }
 
     inner class SizeViewHolder(
@@ -24,25 +24,28 @@ class SizesAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         val context = binding.root.context
         fun bind(size: String, isSelected: Boolean) {
-            binding.textItemSize.text = size
-            if (isSelected) {
-                binding.root.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-                binding.textItemSize.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.black_background
+            with(binding) {
+                textItemSize.text = size
+                if (isSelected) {
+                    root.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                    textItemSize.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.black_background
+                        )
                     )
-                )
-            } else {
-                binding.root.setBackgroundResource(R.drawable.bg_item_recycle)
-                binding.textItemSize.setTextColor(ContextCompat.getColor(context, R.color.white))
-            }
-            binding.root.setOnClickListener {
-                val oldPosition = selectedPosition
-                selectedPosition = bindingAdapterPosition
-                onSelected(sizes[bindingAdapterPosition])
-                notifyItemChanged(oldPosition)
-                notifyItemChanged(selectedPosition)
+                } else {
+                    root.setBackgroundResource(R.drawable.bg_item_recycle)
+                    textItemSize.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.white
+                        )
+                    )
+                }
+                root.setOnClickListener {
+                    onSelected(size)
+                }
             }
         }
     }
@@ -57,10 +60,9 @@ class SizesAdapter(
     }
 
     override fun onBindViewHolder(holder: SizeViewHolder, position: Int) {
-        holder.bind(
-            sizes[position],
-            position == selectedPosition
-        )
+        val size = sizes[position]
+        val isSelected = size == selecedSize
+        holder.bind(size, isSelected)
     }
 
     override fun getItemCount(): Int = sizes.size

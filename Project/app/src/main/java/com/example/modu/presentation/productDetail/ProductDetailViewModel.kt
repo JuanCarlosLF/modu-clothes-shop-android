@@ -32,11 +32,14 @@ class DetailViewModel @Inject constructor(
             try {
                 delay(500)
                 val detail = useCase.getDetailById(id)
-                Log.d("DETAIL_VMDetail", "Respuesta API: $detail")
+                val firstSize = detail.productVariantsList.firstOrNull()?.size
+                val firstColor = detail.productVariantsList.firstOrNull()?.color
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        detail = detail
+                        detail = detail,
+                        selectedSize = firstSize,
+                        selectedColor = firstColor
                     )
                 }
                 loadRelatedProducts()
@@ -60,11 +63,46 @@ class DetailViewModel @Inject constructor(
                     ?.map { it.name }
                     ?: emptyList()
                 val products = useCase.getRelatedProducts(categories)
-                Log.d("DETAIL_VMCategories", "Respuesta API: $products")
                 _uiState.update { it.copy(similarProducts = products) }
             } catch (error: Exception) {
                 _uiState.update { it.copy(errorMessage = error.message) }
             }
+        }
+    }
+
+    fun onSizeSelected(size: String) = _uiState.update { it ->
+        it.copy(
+            selectedSize = size,
+            quantity = 0
+        )
+    }
+
+    fun onColorSelected(color: String) = _uiState.update { it ->
+        it.copy(
+            selectedColor = color,
+            quantity = 0
+        )
+    }
+
+    fun increaseQuantity() {
+        _uiState.update { state ->
+            val stock = state.detail?.productVariantsList?.find {
+                it.size == state.selectedSize &&
+                        it.color == state.selectedColor
+            }?.stock ?: 0
+            val newQuantity = (state.quantity + 1).coerceAtMost(stock)
+            state.copy(
+                quantity = newQuantity
+            )
+        }
+    }
+
+    fun decreaseQuantity() {
+        _uiState.update { state ->
+            val newQuantity = (state.quantity + -1).coerceAtLeast(0)
+            state.copy(
+                quantity = newQuantity
+            )
         }
     }
 }
