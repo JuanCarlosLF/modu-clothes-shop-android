@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
 import com.example.modu.data.dataSource.remote.product.dto.detail.DetailDto
+import com.example.modu.domain.entity.product.Product
 
 interface ProductDataSource {
     fun getPaginatedProducts(
@@ -15,5 +16,6 @@ interface ProductDataSource {
     ): PagingSource<Int, ProductDto>
 
     suspend fun getCategories(): List<CategoryDto>
+    suspend fun getRelatedProducts(categories: List<String>): List<ProductDto>
     suspend fun getDetailById(id: Int): DetailDto
 }

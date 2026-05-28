@@ -1,7 +1,6 @@
 package com.example.modu.data.dataSource.remote.product
 
 import androidx.paging.PagingSource
-import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import com.example.modu.data.dataSource.remote.product.dto.CategoryDto
 import com.example.modu.data.dataSource.remote.product.dto.ProductDto
@@ -11,7 +10,6 @@ import javax.inject.Inject
 class ProductRemoteDataSourceImpl @Inject constructor(
     private val api: ProductApi
 ) : ProductDataSource {
-
     override fun getPaginatedProducts(
         title: String?,
         orderByPrice: String?,
@@ -27,6 +25,17 @@ class ProductRemoteDataSourceImpl @Inject constructor(
             categories = categories,
             mapException = mapException
         )
+    }
+
+    override suspend fun getRelatedProducts(categories: List<String>): List<ProductDto> {
+        return api.getProductsBy(
+            title = null,
+            orderByPrice = null,
+            maxPrice = null,
+            page = null,
+            size = null,
+            categories = categories
+        ).products
     }
 
     override suspend fun getCategories(): List<CategoryDto> = api.getCategories()
