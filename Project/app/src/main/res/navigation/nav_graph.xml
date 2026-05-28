@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_product_detail"
-        android:name="com.example.modu.presentation.productDetail.ProductDetailFragment">
+        android:name="com.example.modu.presentation.detail.ProductDetailFragment">
         <argument
             android:name="product_id"
             app:argType="integer" />
