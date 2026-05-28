@@ -1,9 +1,9 @@
-package com.example.modu.data.dataSource.local.database.cart.converter
+package com.example.modu.data.dataSource.local.database.cart
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal
 
-class BigDecimalConverter {
+class Converters {
 
     @TypeConverter
     fun fromBigDecimal(value: BigDecimal?): String? {
