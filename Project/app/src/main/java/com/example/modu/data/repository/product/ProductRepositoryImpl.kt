@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
+import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
@@ -53,14 +53,13 @@ class ProductRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getDetailById(id: Int): Detail {
-        return try {
+    override suspend fun getDetailById(id: Int): Detail =
+        try {
             dataSource.getDetailById(id).toDomain()
 
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }
-    }
 
     override suspend fun getCategories(): List<Category> {
         return try {
