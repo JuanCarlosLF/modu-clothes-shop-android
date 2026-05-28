@@ -88,11 +88,10 @@ internal fun CartDto.toDomain(): Cart {
     )
 }
 
-internal fun PriceChangedAlertDto.toDomain(): PriceChangedAlert {
-    return PriceChangedAlert(
+internal fun PriceChangedAlertDto.toDomain(): PriceChangedAlert =
+    PriceChangedAlert(
         items = requireNotNull(this.cartItems).map { it.toDomain() }
     )
-}
 
 internal fun PriceAlertItemDto.toDomain(): PriceAlertItem {
     return PriceAlertItem(
@@ -102,11 +101,10 @@ internal fun PriceAlertItemDto.toDomain(): PriceAlertItem {
     )
 }
 
-internal fun InsufficientStockAlertDto.toDomain(): InsufficientStockAlert {
-    return InsufficientStockAlert(
+internal fun InsufficientStockAlertDto.toDomain(): InsufficientStockAlert =
+    InsufficientStockAlert(
         items = requireNotNull(this.cartItems).map { it.toDomain() }
     )
-}
 
 internal fun StockAlertItemDto.toDomain(): StockAlertItem {
     return StockAlertItem(
@@ -116,11 +114,10 @@ internal fun StockAlertItemDto.toDomain(): StockAlertItem {
     )
 }
 
-internal fun VariantAvailabilityAlertDto.toDomain(): VariantAvailabilityAlert {
-    return VariantAvailabilityAlert(
+internal fun VariantAvailabilityAlertDto.toDomain(): VariantAvailabilityAlert =
+    VariantAvailabilityAlert(
         cartItems = requireNotNull(this.cartItems).map { it.toDomain() }
     )
-}
 
 internal fun VariantAvailabilityItemDto.toDomain(): VariantAvailabilityItem {
     return VariantAvailabilityItem(
