@@ -1,26 +1,32 @@
 package com.example.modu.data.dataSource.local.preference
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.provider.Settings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
-private const val APP_PREFERENCES_KEY = "app_prefs"
-private const val APP_PREFERENCES_DEVICE_KEY = "device_id"
+private const val PREFS_NAME = "modu_app_prefs"
+private const val KEY_CART_GENERATED_PREFIX = "cart_generated_"
 
 @Singleton
 class AppPreferences @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext private val context: Context
 ) {
-    private val prefs: SharedPreferences = context.getSharedPreferences(APP_PREFERENCES_KEY, Context.MODE_PRIVATE)
 
-    fun saveDeviceId(deviceId: String) {
-        prefs.edit { putString(APP_PREFERENCES_DEVICE_KEY, deviceId) }
+    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    fun getDeviceId(): String {
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    fun getDeviceId(): String? {
-        return prefs.getString(APP_PREFERENCES_DEVICE_KEY, null)
+    fun isCartGenerated(): Boolean {
+        val deviceId = getDeviceId()
+        return prefs.getBoolean("$KEY_CART_GENERATED_PREFIX$deviceId", false)
+    }
+
+    fun setCartGenerated(isGenerated: Boolean) {
+        val deviceId = getDeviceId()
+        prefs.edit().putBoolean("$KEY_CART_GENERATED_PREFIX$deviceId", isGenerated).apply()
     }
 }

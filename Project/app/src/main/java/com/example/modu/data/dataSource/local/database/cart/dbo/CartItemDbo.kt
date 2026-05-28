@@ -2,6 +2,7 @@ package com.example.modu.data.dataSource.local.database.cart.dbo
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.math.BigDecimal
 
 @Entity(tableName = "cart_items")
 data class CartItemDbo(
@@ -11,6 +12,6 @@ data class CartItemDbo(
     val productVariantId: Int,
     val currentStock: Int,
     val quantity: Int,
-    val unitPrice: Long,
-    val totalPrice: Long
+    val unitPrice: BigDecimal,
+    val totalPrice: BigDecimal
 )
