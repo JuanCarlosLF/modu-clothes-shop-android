@@ -35,6 +35,5 @@ interface CartApi {
     ): CartDto
 
     @DELETE("cart/items")
-    suspend fun clearCart(
-    ): CartDto
+    suspend fun clearCart(): CartDto
 }

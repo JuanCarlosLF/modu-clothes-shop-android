@@ -1,11 +1,12 @@
 package com.example.modu.domain.usecase.cart
 
+import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 interface CartUseCase {
-    fun getCartFlow(): Flow<List<CartItem>>
+    fun getCartFlow(): Flow<Cart>
     suspend fun addItem(
         productId: Int,
         productVariantId: Int,
@@ -13,7 +14,6 @@ interface CartUseCase {
         quantity: Int,
         unitPrice: BigDecimal
     )
-
     suspend fun updateQuantity(item: CartItem, newQuantity: Int)
     suspend fun deleteItem(id: Int)
     suspend fun clearCart()
