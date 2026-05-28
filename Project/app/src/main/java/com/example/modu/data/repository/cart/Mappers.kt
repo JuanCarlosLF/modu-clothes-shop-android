@@ -1,8 +1,22 @@
 package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
-import com.example.modu.data.dataSource.remote.cart.dto.*
-import com.example.modu.domain.entity.cart.*
+import com.example.modu.data.dataSource.remote.cart.dto.CartDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.InsufficientStockAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.PriceAlertItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.PriceChangedAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.StockAlertItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityItemDto
+import com.example.modu.domain.entity.cart.Cart
+import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.entity.cart.InsufficientStockAlert
+import com.example.modu.domain.entity.cart.PriceAlertItem
+import com.example.modu.domain.entity.cart.PriceChangedAlert
+import com.example.modu.domain.entity.cart.StockAlertItem
+import com.example.modu.domain.entity.cart.VariantAvailabilityAlert
+import com.example.modu.domain.entity.cart.VariantAvailabilityItem
 
 internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
