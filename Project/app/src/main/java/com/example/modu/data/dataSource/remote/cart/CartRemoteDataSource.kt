@@ -9,8 +9,7 @@ interface CartRemoteDataSource {
     suspend fun getCart(): CartDto
     suspend fun updateCart(request: UpdateCartRequestDto): CartDto
     suspend fun addItem(request: AddItemRequestDto): CartDto
-    suspend fun deleteItemById(itemId: Int, deviceId: String): CartDto
-    suspend fun clearCart(deviceId: String): CartDto
-
+    suspend fun deleteItemById(itemId: Int): CartDto
+    suspend fun clearCart(): CartDto
     suspend fun createCart() : CartDto
 }

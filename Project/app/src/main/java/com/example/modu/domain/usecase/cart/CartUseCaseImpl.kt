@@ -1,14 +1,20 @@
 package com.example.modu.domain.usecase.cart
 
+import com.example.modu.domain.entity.cart.CartAlertEvent
 import com.example.modu.domain.repository.cart.CartRepository
 import com.example.modu.domain.entity.cart.CartItem
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
 
+private const val MINIMUM_QUANTITY = 1
+
 class CartUseCaseImpl @Inject constructor(
     private val cartRepository: CartRepository
 ) : CartUseCase {
+
+    override val cartAlertsFlow: Flow<CartAlertEvent>
+        get() = cartRepository.cartAlertsFlow
 
     override fun getCartFlow(): Flow<List<CartItem>> {
         return cartRepository.getCartItemsFlow()
@@ -33,7 +39,7 @@ class CartUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateQuantity(item: CartItem, newQuantity: Int) {
-        if (newQuantity < 1) return
+        if (newQuantity < MINIMUM_QUANTITY) return
 
         val updatedItem = item.copy(
             quantity = newQuantity,
@@ -42,11 +48,11 @@ class CartUseCaseImpl @Inject constructor(
         cartRepository.addItem(updatedItem)
     }
 
-    override suspend fun deleteItem(id: Int) {
-        cartRepository.deleteItem(id)
+    override suspend fun deleteItemById(item: CartItem) {
+        cartRepository.deleteItem(item)
     }
 
     override suspend fun clearCart() {
-        cartRepository.clearCartLocal()
+        cartRepository.clearCart()
     }
 }

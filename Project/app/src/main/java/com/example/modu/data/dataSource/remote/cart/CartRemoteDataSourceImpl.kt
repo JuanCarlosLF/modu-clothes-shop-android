@@ -16,9 +16,9 @@ class CartRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun addItem(request: AddItemRequestDto): CartDto = api.addItem(request)
 
-    override suspend fun deleteItemById(itemId: Int, deviceId: String): CartDto = api.deleteItemById(itemId, deviceId)
+    override suspend fun deleteItemById(itemId: Int): CartDto = api.deleteItemById(itemId)
 
-    override suspend fun clearCart(deviceId: String): CartDto = api.clearCart(deviceId)
+    override suspend fun clearCart(): CartDto = api.clearCart()
 
     override suspend fun createCart(): CartDto = api.createNewCart()
 }
