@@ -1,9 +1,9 @@
 package com.example.modu.domain.usecase.product
 
-import com.example.modu.domain.entity.detail.Detail
 import androidx.paging.PagingData
-import com.example.modu.domain.entity.product.Product
+import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.product.Category
+import com.example.modu.domain.entity.product.Product
 import com.example.modu.domain.repository.product.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -22,4 +22,6 @@ class ProductUseCaseImpl @Inject constructor(
     }
     override suspend fun getDetailById(id: Int): Detail = repository.getDetailById(id)
     override suspend fun getCategories(): List<Category> = repository.getCategories()
+    override suspend fun getRelatedProducts(category: List<String>): List<Product> =
+        repository.getRelatedProducts(category)
 }
