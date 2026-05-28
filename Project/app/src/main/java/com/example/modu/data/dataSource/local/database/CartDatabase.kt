@@ -9,10 +9,9 @@ import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
 
 @Database(
     entities = [CartItemDbo::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
-
 @TypeConverters(Converters::class)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun cartDao(): CartDao
