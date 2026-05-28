@@ -16,17 +16,19 @@ class AppPreferences @Inject constructor(
 
     private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun getDeviceId(): String {
+    fun getDeviceId(): String? {
         return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     fun isCartGenerated(): Boolean {
         val deviceId = getDeviceId()
+        if (deviceId == null) return false
         return prefs.getBoolean("$KEY_CART_GENERATED_PREFIX$deviceId", false)
     }
 
     fun setCartGenerated(isGenerated: Boolean) {
         val deviceId = getDeviceId()
+        if (deviceId == null) return
         prefs.edit().putBoolean("$KEY_CART_GENERATED_PREFIX$deviceId", isGenerated).apply()
     }
 }
