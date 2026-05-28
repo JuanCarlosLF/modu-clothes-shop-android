@@ -1,8 +1,34 @@
 package com.example.modu.data.repository.cart
 
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
+import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
+import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import java.math.BigDecimal
+
+internal fun CartDto.toCartDbo(): CartDbo {
+    return CartDbo(
+        subTotal = this.subTotalPrice ?: BigDecimal.ZERO,
+        shippingCost = this.shippingCost ?: BigDecimal.ZERO,
+        total = this.totalPrice ?: BigDecimal.ZERO,
+        createdAt = this.createdAt.orEmpty(),
+        updatedAt = this.updatedAt.orEmpty()
+    )
+}
+
+internal fun CartWithItemsDbo.toDomain(): Cart {
+    return Cart(
+        createdAt = this.cart.createdAt,
+        updatedAt = this.cart.updatedAt,
+        subTotal = this.cart.subTotal,
+        shippingCost = this.cart.shippingCost,
+        total = this.cart.total,
+        items = this.items.map { it.toDomain() }
+    )
+}
 
 internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
