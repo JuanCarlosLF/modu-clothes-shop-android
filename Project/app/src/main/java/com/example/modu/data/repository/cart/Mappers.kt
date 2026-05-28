@@ -4,7 +4,7 @@ import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
 import com.example.modu.data.dataSource.remote.cart.dto.*
 import com.example.modu.domain.entity.cart.*
 
-fun CartItemDto.toDomain(): CartItem {
+internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
         id = this.id,
         productId = requireNotNull(this.productId),
@@ -16,7 +16,7 @@ fun CartItemDto.toDomain(): CartItem {
     )
 }
 
-fun CartItemDto.toDbo(): CartItemDbo {
+internal fun CartItemDto.toDbo(): CartItemDbo {
     return CartItemDbo(
         id = this.id,
         productId = requireNotNull(this.productId),
@@ -28,7 +28,7 @@ fun CartItemDto.toDbo(): CartItemDbo {
     )
 }
 
-fun CartItem.toDto(): CartItemDto {
+internal fun CartItem.toDto(): CartItemDto {
     return CartItemDto(
         id = this.id,
         productId = this.productId,
@@ -40,7 +40,7 @@ fun CartItem.toDto(): CartItemDto {
     )
 }
 
-fun CartItem.toDbo(): CartItemDbo {
+internal fun CartItem.toDbo(): CartItemDbo {
     return CartItemDbo(
         id = this.id,
         productId = this.productId,
@@ -52,7 +52,7 @@ fun CartItem.toDbo(): CartItemDbo {
     )
 }
 
-fun CartItemDbo.toDomain(): CartItem {
+internal fun CartItemDbo.toDomain(): CartItem {
     return CartItem(
         id = this.id,
         productId = this.productId,
@@ -64,7 +64,7 @@ fun CartItemDbo.toDomain(): CartItem {
     )
 }
 
-fun CartDto.toDomain(): Cart {
+internal fun CartDto.toDomain(): Cart {
     return Cart(
         createdAt = requireNotNull(this.createdAt),
         updatedAt = requireNotNull(this.updatedAt),
@@ -74,13 +74,13 @@ fun CartDto.toDomain(): Cart {
     )
 }
 
-fun PriceChangedAlertDto.toDomain(): PriceChangedAlert {
+internal fun PriceChangedAlertDto.toDomain(): PriceChangedAlert {
     return PriceChangedAlert(
         items = requireNotNull(this.cartItems).map { it.toDomain() }
     )
 }
 
-fun PriceAlertItemDto.toDomain(): PriceAlertItem {
+internal fun PriceAlertItemDto.toDomain(): PriceAlertItem {
     return PriceAlertItem(
         productVariantId = this.productVariantId,
         oldPrice = requireNotNull(this.oldPrice),
@@ -88,13 +88,13 @@ fun PriceAlertItemDto.toDomain(): PriceAlertItem {
     )
 }
 
-fun InsufficientStockAlertDto.toDomain(): InsufficientStockAlert {
+internal fun InsufficientStockAlertDto.toDomain(): InsufficientStockAlert {
     return InsufficientStockAlert(
         items = requireNotNull(this.cartItems).map { it.toDomain() }
     )
 }
 
-fun StockAlertItemDto.toDomain(): StockAlertItem {
+internal fun StockAlertItemDto.toDomain(): StockAlertItem {
     return StockAlertItem(
         productVariantId = requireNotNull(this.productVariantId),
         requestedQuantity = requireNotNull(this.requestedQuantity),
@@ -102,13 +102,13 @@ fun StockAlertItemDto.toDomain(): StockAlertItem {
     )
 }
 
-fun VariantAvailabilityAlertDto.toDomain(): VariantAvailabilityAlert {
+internal fun VariantAvailabilityAlertDto.toDomain(): VariantAvailabilityAlert {
     return VariantAvailabilityAlert(
         cartItems = requireNotNull(this.cartItems).map { it.toDomain() }
     )
 }
 
-fun VariantAvailabilityItemDto.toDomain(): VariantAvailabilityItem {
+internal fun VariantAvailabilityItemDto.toDomain(): VariantAvailabilityItem {
     return VariantAvailabilityItem(
         cartItemId = requireNotNull(this.cartItemId),
         productVariantId = requireNotNull(this.productVariantId),

@@ -13,6 +13,8 @@ interface ProductRepository {
         maxPrice: Int?,
         categories: List<String>?
     ): Flow<PagingData<Product>>
-    suspend fun getDetailById(id: Int): Detail
+
     suspend fun getCategories(): List<Category>
+    suspend fun getDetailById(id: Int): Detail
+    suspend fun getRelatedProducts(category: List<String>): List<Product>
 }
