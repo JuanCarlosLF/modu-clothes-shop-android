@@ -4,7 +4,7 @@ import com.example.modu.data.dataSource.remote.cart.api.CartApi
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class CartRemoteDataSourceImpl @Inject constructor(
     private val api: CartApi

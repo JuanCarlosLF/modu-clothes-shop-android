@@ -4,16 +4,24 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
+
+private const val DEFAULT_CART_ID = 1
 
 @Dao
 interface CartDao {
 
-    @Query("SELECT * FROM cart_items")
-    fun getCartItemsFlow(): Flow<List<CartItemDbo>>
+    @Transaction
+    @Query("SELECT * FROM cart WHERE id = $DEFAULT_CART_ID")
+    fun getCartWithItemsFlow(): Flow<CartWithItemsDbo?>
 
-    @Query("SELECT * FROM cart_items")
-    suspend fun getCartItems(): List<CartItemDbo>
+    @Transaction
+    @Query("SELECT * FROM cart WHERE id = $DEFAULT_CART_ID")
+    suspend fun getCartWithItems(): CartWithItemsDbo?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCart(cart: CartDbo)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<CartItemDbo>)
@@ -22,5 +30,14 @@ interface CartDao {
     suspend fun deleteItem(itemId: Int)
 
     @Query("DELETE FROM cart_items")
+    suspend fun clearCartItems()
+
+    @Query("DELETE FROM cart")
     suspend fun clearCart()
+
+    @Transaction
+    suspend fun clearEntireCart() {
+        clearCartItems()
+        clearCart()
+    }
 }
