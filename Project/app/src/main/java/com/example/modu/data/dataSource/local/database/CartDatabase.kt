@@ -9,7 +9,7 @@ import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
 
 @Database(
     entities = [CartItemDbo::class],
-    version = 2,
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
