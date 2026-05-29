@@ -1,16 +1,17 @@
 package com.example.modu.data.dataSource.local.database.cart.dbo
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
-private const val DEFAULT_CART_ID = 1
-
-@Entity(tableName = "cart_items")
+@Entity(
+    tableName = "cart_items",
+    indices = [Index(value = ["productId"]), Index(value = ["productVariantId"])]
+)
 data class CartItemDbo(
-    @PrimaryKey
-    val id: Int,
-    val cartId: Int = DEFAULT_CART_ID,
+    @PrimaryKey val id: Int,
+    val cartId: Int = 1,
     val productId: Int,
     val productVariantId: Int,
     val currentStock: Int,

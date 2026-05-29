@@ -140,7 +140,7 @@ class CartRepositoryImpl @Inject constructor(
 
         localDataSource.insertCart(response.toCartDbo())
 
-        val itemsDto = response.cartItems ?: emptyList()
+        val itemsDto = response.cartSummary?.cartItems ?: emptyList()
         val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
         val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
         val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
@@ -161,13 +161,13 @@ class CartRepositoryImpl @Inject constructor(
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
         val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
-            (item.id != DEFAULT_ID && it.id == item.id) || it.productVariantId == item.productVariantId
+            (item.id != DEFAULT_ID && it.cartItem.id == item.id) || it.cartItem.productVariantId == item.productVariantId
         }
 
         val dboToSave = if (existingDbo != null) {
-            item.copy(id = existingDbo.id).toDbo()
+            item.copy(id = existingDbo.cartItem.id).toDbo()
         } else {
-            val currentMinId = currentItems.minOfOrNull { it.id } ?: DEFAULT_ID
+            val currentMinId = currentItems.minOfOrNull { it.cartItem.id } ?: DEFAULT_ID
             val newId = if (currentMinId < DEFAULT_ID) currentMinId - ID_DECREMENT_STEP else FALLBACK_NEW_ID
             item.copy(id = newId).toDbo()
         }

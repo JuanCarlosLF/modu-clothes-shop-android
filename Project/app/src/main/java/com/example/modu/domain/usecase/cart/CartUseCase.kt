@@ -7,13 +7,19 @@ import java.math.BigDecimal
 
 interface CartUseCase {
     fun getCartFlow(): Flow<Cart>
+
     suspend fun addItem(
         productId: Int,
         productVariantId: Int,
         currentStock: Int,
         quantity: Int,
-        unitPrice: BigDecimal
+        unitPrice: BigDecimal,
+        title: String,
+        imageUrl: String,
+        size: String,
+        color: String
     )
+
     suspend fun updateQuantity(item: CartItem, newQuantity: Int)
     suspend fun deleteItem(id: Int)
     suspend fun clearCart()
