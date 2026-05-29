@@ -9,5 +9,8 @@ data class CartItem(
     val currentStock: Int,
     val quantity: Int,
     val unitPrice: BigDecimal,
-    val totalPrice: BigDecimal
+    val totalPrice: BigDecimal,
+    val oldPriceAlert: BigDecimal? = null,
+    val stockAlertAvailable: Int? = null,
+    val isAvailableAlert: Boolean? = null
 )

@@ -10,7 +10,6 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface CartApi {
 
@@ -33,11 +32,9 @@ interface CartApi {
     @DELETE("cart/items/{itemId}")
     suspend fun deleteItemById(
         @Path("itemId") itemId: Int,
-        @Query("device_id") deviceId: String
     ): CartDto
 
     @DELETE("cart/items")
     suspend fun clearCart(
-        @Query("device_id") deviceId: String
     ): CartDto
 }
