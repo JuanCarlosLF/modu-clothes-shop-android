@@ -23,6 +23,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 @AndroidEntryPoint
 class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
@@ -76,7 +77,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             state.detail?.let { detail ->
                 textTitleDetail.text = detail.name
                 textDescriptionDetail.text = detail.description
-                textPriceDetail.text = "$ ${detail.price}"
+                textPriceDetail.text = getString(R.string.text_price, detail.price)
                 imgBackground.load(detail.imageUrl)
 
                 renderSizes(state)
@@ -84,23 +85,25 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             }
             textQuantityDetail.text = state.quantity.toString()
             icRemoveQuantityDetail.setBackgroundResource(
-                if (state.quantity == 0)
-                    R.drawable.ic_remove_quantity
-                else
-                    R.drawable.ic_remove_quantity_white
+                state.isButtonQuantityEnabled.toColorRes(
+                    enabled = R.drawable.ic_remove_quantity_white,
+                    disabled = R.drawable.ic_remove_quantity
+                )
             )
-            val price = state.detail?.price ?: 0.0F
-            textTotal.text = String.format("$ %.2f", price * state.quantity)
+            val price = state.detail?.price ?: BigDecimal.ZERO
+            val total = price.multiply(state.quantity.toBigDecimal())
+            textTotal.text = getString(R.string.text_total_format, total)
             btnAddCardItem.isEnabled = state.isAddButtonEnabled
-            val bgColor = if (state.isAddButtonEnabled)
-                R.color.orange_primary
-            else
-                R.color.grey_light_button_background
 
-            val textColor = if (state.isAddButtonEnabled)
-                R.color.white
-            else
-                R.color.grey_button_disable
+            val bgColor = state.isAddButtonEnabled.toColorRes(
+                enabled = R.color.orange_primary,
+                disabled = R.color.grey_light_button_background
+            )
+
+            val textColor = state.isAddButtonEnabled.toColorRes(
+                enabled = R.color.white,
+                disabled = R.color.grey_button_disable
+            )
 
             btnAddCardItem.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(requireContext(), bgColor)
@@ -112,6 +115,11 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             carruselAdapter?.submitList(state.similarProducts)
         }
     }
+
+    private fun Boolean.toColorRes(
+        enabled: Int,
+        disabled: Int
+    ) = if (this) enabled else disabled
 
     private fun setupAdapters() {
         sizesAdapter = SizesAdapter(emptyList()) { size ->

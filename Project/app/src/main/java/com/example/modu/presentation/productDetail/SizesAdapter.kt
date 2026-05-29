@@ -12,10 +12,10 @@ class SizesAdapter(
     private val onSelected: (String) -> Unit
 ) : RecyclerView.Adapter<SizesAdapter.SizeViewHolder>() {
 
-    private var selecedSize: String? = null
+    private var selectedSize: String? = null
     fun updateData(newSizes: List<String>, selected: String?) {
         sizes = newSizes
-        selecedSize = selected
+        selectedSize = selected
         notifyDataSetChanged()
     }
 
@@ -61,7 +61,7 @@ class SizesAdapter(
 
     override fun onBindViewHolder(holder: SizeViewHolder, position: Int) {
         val size = sizes[position]
-        val isSelected = size == selecedSize
+        val isSelected = size == selectedSize
         holder.bind(size, isSelected)
     }
 

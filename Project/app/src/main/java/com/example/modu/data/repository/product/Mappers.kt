@@ -8,6 +8,7 @@ import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.detail.ProductVariant
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
+import java.math.BigDecimal
 
 internal fun ProductDto.toDomain(): Product {
     return Product(
@@ -21,7 +22,7 @@ internal fun DetailDto.toDomain(): Detail = Detail(
     name = this.name.orEmpty(),
     description = this.description.orEmpty(),
     imageUrl = this.imageUrl.orEmpty(),
-    price = this.price ?: 0f,
+    price = this.price ?: BigDecimal.ZERO,
     categoriesSet = this.categories?.map { it.toDomain() } ?: emptyList(),
     productVariantsList = this.productVariants?.map { it.toDomain() } ?: emptyList(),
 )

@@ -1,6 +1,5 @@
 package com.example.modu.presentation.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.usecase.product.ProductUseCase
@@ -22,8 +21,8 @@ class DetailViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun loadDetail(id: Int) {
-        _uiState.update {
-            it.copy(
+        _uiState.update { state ->
+            state.copy(
                 isLoading = true,
                 errorMessage = null
             )
@@ -34,8 +33,8 @@ class DetailViewModel @Inject constructor(
                 val detail = useCase.getDetailById(id)
                 val firstSize = detail.productVariantsList.firstOrNull()?.size
                 val firstColor = detail.productVariantsList.firstOrNull()?.color
-                _uiState.update {
-                    it.copy(
+                _uiState.update { state ->
+                    state.copy(
                         isLoading = false,
                         detail = detail,
                         selectedSize = firstSize,
@@ -44,7 +43,6 @@ class DetailViewModel @Inject constructor(
                 }
                 loadRelatedProducts()
             } catch (error: Exception) {
-                Log.e("DETAIL_VMError", "Error: ${error.message}", error)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -63,32 +61,36 @@ class DetailViewModel @Inject constructor(
                     ?.map { it.name }
                     ?: emptyList()
                 val products = useCase.getRelatedProducts(categories)
-                _uiState.update { it.copy(similarProducts = products) }
+                _uiState.update { state ->
+                    state.copy(similarProducts = products)
+                }
             } catch (error: Exception) {
-                _uiState.update { it.copy(errorMessage = error.message) }
+                _uiState.update { state ->
+                    state.copy(errorMessage = error.message)
+                }
             }
         }
     }
 
-    fun onSizeSelected(size: String) = _uiState.update { it ->
-        it.copy(
-            selectedSize = size,
+    fun onSizeSelected(selectedSize: String) = _uiState.update { size ->
+        size.copy(
+            selectedSize = selectedSize,
             quantity = 0
         )
     }
 
-    fun onColorSelected(color: String) = _uiState.update { it ->
-        it.copy(
-            selectedColor = color,
+    fun onColorSelected(selectedColor: String) = _uiState.update { color ->
+        color.copy(
+            selectedColor = selectedColor,
             quantity = 0
         )
     }
 
     fun increaseQuantity() {
         _uiState.update { state ->
-            val stock = state.detail?.productVariantsList?.find {
-                it.size == state.selectedSize &&
-                        it.color == state.selectedColor
+            val stock = state.detail?.productVariantsList?.find { productVariant ->
+                productVariant.size == state.selectedSize &&
+                        productVariant.color == state.selectedColor
             }?.stock ?: 0
             val newQuantity = (state.quantity + 1).coerceAtMost(stock)
             state.copy(
@@ -99,7 +101,7 @@ class DetailViewModel @Inject constructor(
 
     fun decreaseQuantity() {
         _uiState.update { state ->
-            val newQuantity = (state.quantity + -1).coerceAtLeast(0)
+            val newQuantity = (state.quantity - 1).coerceAtLeast(0)
             state.copy(
                 quantity = newQuantity
             )
