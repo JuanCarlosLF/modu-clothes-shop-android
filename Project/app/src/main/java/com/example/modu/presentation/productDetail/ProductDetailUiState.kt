@@ -7,7 +7,7 @@ import java.math.BigDecimal
 data class ProductDetailUiState(
     val isLoading: Boolean = false,
     val detail: Detail? = null,
-    val relatedProducts: List<Product> = emptyList(),
+    val suggestionProducts: List<Product> = emptyList(),
     val selectedSize: String? = null,
     val selectedColor: String? = null,
     val quantity: Int = 0,

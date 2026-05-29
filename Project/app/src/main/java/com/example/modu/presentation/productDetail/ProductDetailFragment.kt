@@ -112,7 +112,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             btnAddCardItem.setTextColor(
                 ContextCompat.getColor(requireContext(), textColor)
             )
-            carruselAdapter?.submitList(state.relatedProducts)
+            carruselAdapter?.submitList(state.suggestionProducts)
         }
     }
 

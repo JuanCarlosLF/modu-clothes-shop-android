@@ -6,7 +6,6 @@ import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.presentation.productDetail.ProductDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,7 +28,6 @@ class DetailViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                delay(500)
                 val detail = useCase.getDetailById(id)
                 val firstSize = detail.productVariantsList.firstOrNull()?.size
                 val firstColor = detail.productVariantsList.firstOrNull()?.color
@@ -62,7 +60,7 @@ class DetailViewModel @Inject constructor(
                     ?: emptyList()
                 val products = useCase.getRelatedProducts(categories)
                 _uiState.update { state ->
-                    state.copy(relatedProducts = products)
+                    state.copy(suggestionProducts = products)
                 }
             } catch (error: Exception) {
                 _uiState.update { state ->
