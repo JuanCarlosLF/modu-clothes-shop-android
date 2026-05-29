@@ -203,7 +203,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="@dimen/width_bg_quantity"
-                        android:layout_height="@dimen/height_gb_quantity"
+                        android:layout_height="@dimen/height_bg_quantity"
                         android:background="@drawable/bg_quantity"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent">

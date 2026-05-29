@@ -35,4 +35,9 @@
         <item name="android:textSize">@dimen/text_size_general</item>
         <item name="closeIconTint">@color/white</item>
     </style>
+
+    <style name="roundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
 </resources>
