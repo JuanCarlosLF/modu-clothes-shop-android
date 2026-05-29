@@ -42,6 +42,17 @@
     <string name="filter_slider_max_valu">1000</string>
     <string name="filter_info_desc">Selecting multiple filters will refine your search results to match all criteria simultaneously.</string>
 
+    <!-- Cart -->
+    <string name="cart_tob_bar">Carrito</string>
+    <string name="cart_summary">RESUMEN DEL PEDIDO</string>
+    <string name="cart_text_special_instructions">Instrucciones especiales</string>
+    <string name="cart_text_hint_instructions">Escribe aquí cualquier nota sobre tu pedido...</string>
+    <string name="cart_text_subtotal">Subtotal</string>
+    <string name="cart_text_shipping">Envío</string>
+    <string name="cart_text_value_shipping">GRATIS</string>
+    <string name="cart_text_total">Total</string>
+    <string name="cart_text_button">Ir al checkout</string>
+
     <!-- Error -->
     <string name="error_no_internet_title">No Internet Connection</string>
     <string name="error_no_internet_msg">Please check your network settings and try again.</string>
@@ -55,4 +66,9 @@
     <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
     <string name="error_generic_oops">Oops! Something went wrong.</string>
     <string name="button_retry">Retry</string>
+    <string name="error_sync_failed_title">Sincronización pendiente</string>
+    <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>
+
+    <string name="snackbar_item_deleted">Producto eliminado.</string>
+    <string name="snackbar_undo">Deshacer</string>
 </resources>

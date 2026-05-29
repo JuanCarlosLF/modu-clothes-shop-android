@@ -25,10 +25,12 @@
     <dimen name="margin_xl">32dp</dimen>
     <dimen name="margin_xl_x">35dp</dimen>
     <dimen name="margin_xl_plus">40dp</dimen>
+    <dimen name="margin_xxx">48dp</dimen>
     <dimen name="margin_xxxl">50dp</dimen>
     <dimen name="margin_negative">-24dp</dimen>
     <dimen name="margin_top_bar">52dp</dimen>
     <dimen name="margin_xxxxl">60dp</dimen>
+    <dimen name="margin_snackbar_bottom">26dp</dimen>
 
     <!-- Padding -->
     <dimen name="padding_xxxs">2dp</dimen>
@@ -38,6 +40,7 @@
     <dimen name="padding_m">20dp</dimen>
     <dimen name="padding_l">24dp</dimen>
     <dimen name="padding_xl">32dp</dimen>
+    <dimen name="padding_snackbar_vertical">13dp</dimen>
 
     <!-- Component Size -->
     <dimen name="button_size_min">48dp</dimen>
@@ -50,6 +53,9 @@
     <dimen name="stroke_width_default">1dp</dimen>
     <dimen name="item_carrusel_detail_width">114dp</dimen>
     <dimen name="item_carrusel_detail_height">196dp</dimen>
+    <dimen name="edit_text_cart_min_height">112dp</dimen>
+    <dimen name="height_divider">1dp</dimen>
+    <dimen name="height_bg_quantity">48dp</dimen>
 
     <!-- Corner Radius -->
     <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
@@ -59,11 +65,13 @@
     <dimen name="corner_radius_filter_by_category">99dp</dimen>
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_filter_save_filters">100dp</dimen>
+    <dimen name="corner_radius_snackbar">8dp</dimen>
 
     <!-- Other -->
     <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
     <dimen name="width_bg_quantity">107dp</dimen>
     <dimen name="height_gb_quantity">48dp</dimen>
+    <dimen name="elevation_snackbar">6dp</dimen>
 
     <!-- Line spacing -->
     <dimen name="line_spacing_filter_info_desc">4dp</dimen>
