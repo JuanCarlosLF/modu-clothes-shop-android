@@ -2,6 +2,8 @@ package com.example.modu.di
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSourceImpl
+import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
+import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSourceImpl
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.dataSource.remote.product.ProductRemoteDataSourceImpl
 import com.example.modu.data.dataSource.remote.exception.DataErrorHandlerImpl
@@ -35,6 +37,10 @@ abstract class ErrorHandlerModule {
     @Binds
     @Singleton
     abstract fun bindCartLocalDataSource(dataSourceImpl: CartLocalDataSourceImpl) : CartLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCartRemoteDataSource(dataSourceImpl: CartRemoteDataSourceImpl) : CartRemoteDataSource
 
     @Binds
     @Singleton
