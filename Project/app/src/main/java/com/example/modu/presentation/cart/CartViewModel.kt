@@ -76,7 +76,11 @@ class CartViewModel @Inject constructor(
 
         _uiState.value.itemToUndo?.let { previousItem ->
             viewModelScope.launch {
-                cartUseCase.deleteItem(previousItem.id)
+                try {
+                    cartUseCase.deleteItem(previousItem.id)
+                } catch (error: AppError) {
+                    _uiState.update { it.copy(error = error) }
+                }
             }
         }
 
