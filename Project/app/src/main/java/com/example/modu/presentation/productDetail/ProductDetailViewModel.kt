@@ -62,7 +62,7 @@ class DetailViewModel @Inject constructor(
                     ?: emptyList()
                 val products = useCase.getRelatedProducts(categories)
                 _uiState.update { state ->
-                    state.copy(similarProducts = products)
+                    state.copy(relatedProducts = products)
                 }
             } catch (error: Exception) {
                 _uiState.update { state ->
