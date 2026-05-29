@@ -3,6 +3,7 @@
 
     <!-- Detail Fragment -->
     <string name="mosaic">Mosaic</string>
+    <string name="alert_stock">No hay suficiente stock</string>
 
     <!-- Common -->
     <string name="common_search_hint">Buscador</string>
@@ -55,4 +56,8 @@
     <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
     <string name="error_generic_oops">Oops! Something went wrong.</string>
     <string name="button_retry">Retry</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_item_deleted">Producto eliminado.</string>
+    <string name="snackbar_undo">Deshacer</string>
 </resources>

@@ -11,7 +11,7 @@ data class ProductDetailUiState(
     val selectedColor: String? = null,
     val quantity: Int = 0,
     val unitPrice: Float = 0.0F,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 ) {
     val isAddButtonEnabled : Boolean
         get() = selectedColor != null && selectedSize != null && quantity > 0

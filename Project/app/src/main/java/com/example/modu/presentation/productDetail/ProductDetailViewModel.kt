@@ -1,14 +1,16 @@
 package com.example.modu.presentation.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.usecase.product.ProductUseCase
+import com.example.modu.presentation.productDetail.ProductDetailUiEvent
 import com.example.modu.presentation.productDetail.ProductDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,6 +22,8 @@ class DetailViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ProductDetailUiState())
     val uiState = _uiState.asStateFlow()
+    private val _uiEvent = MutableSharedFlow<ProductDetailUiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     fun loadDetail(id: Int) {
         _uiState.update {
@@ -44,7 +48,6 @@ class DetailViewModel @Inject constructor(
                 }
                 loadRelatedProducts()
             } catch (error: Exception) {
-                Log.e("DETAIL_VMError", "Error: ${error.message}", error)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -85,21 +88,32 @@ class DetailViewModel @Inject constructor(
     }
 
     fun increaseQuantity() {
-        _uiState.update { state ->
-            val stock = state.detail?.productVariantsList?.find {
-                it.size == state.selectedSize &&
-                        it.color == state.selectedColor
-            }?.stock ?: 0
-            val newQuantity = (state.quantity + 1).coerceAtMost(stock)
-            state.copy(
-                quantity = newQuantity
+        val state = _uiState.value
+        val stock = state.detail?.productVariantsList?.find {
+            it.size == state.selectedSize &&
+                    it.color == state.selectedColor
+        }?.stock ?: 0
+
+        if (state.quantity >= stock) {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    ProductDetailUiEvent(
+                        message = "No hay más stock disponible"
+                    )
+                )
+            }
+            return
+        }
+        _uiState.update {
+            it.copy(
+                quantity = it.quantity + 1
             )
         }
     }
 
     fun decreaseQuantity() {
         _uiState.update { state ->
-            val newQuantity = (state.quantity + -1).coerceAtLeast(0)
+            val newQuantity = (state.quantity - 1).coerceAtLeast(0)
             state.copy(
                 quantity = newQuantity
             )

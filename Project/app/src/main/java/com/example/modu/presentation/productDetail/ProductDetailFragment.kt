@@ -21,6 +21,7 @@ import com.example.modu.presentation.productDetail.ProductDetailUiState
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -36,6 +37,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as? MainActivity)?.setBottomNavVisible(false)
         binding = FragmentProductDetailBinding.bind(view)
         (activity as? MainActivity)?.setBottomNavVisible(false)
@@ -43,6 +45,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
         setupRecyclerViews()
         setupListeners()
         observeUiState()
+        observeEvents()
         viewModel.loadDetail(args.productId)
     }
 
@@ -65,6 +68,20 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
 
                     renderDetail(state)
 
+                }
+            }
+        }
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    Snackbar.make(
+                        requireView(),
+                        event.message,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
