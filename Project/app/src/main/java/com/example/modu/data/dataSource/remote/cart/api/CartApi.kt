@@ -17,7 +17,7 @@ interface CartApi {
     suspend fun getCart(): CartDto
 
     @PUT("cart")
-    suspend fun createNewCart(): CartDto
+    suspend fun createCart(): CartDto
 
     @PATCH("cart/update")
     suspend fun updateCart(

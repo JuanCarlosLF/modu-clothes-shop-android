@@ -159,21 +159,7 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
-        val currentCart = localDataSource.getCartWithItems()
-
-        if (currentCart == null) {
-            localDataSource.insertCart(
-                CartDbo(
-                    subTotal = BigDecimal.ZERO,
-                    shippingCost = BigDecimal.ZERO,
-                    total = BigDecimal.ZERO,
-                    createdAt = "",
-                    updatedAt = ""
-                )
-            )
-        }
-
-        val currentItems = currentCart?.items ?: emptyList()
+        val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
             (item.id != DEFAULT_ID && it.id == item.id) || it.productVariantId == item.productVariantId
         }

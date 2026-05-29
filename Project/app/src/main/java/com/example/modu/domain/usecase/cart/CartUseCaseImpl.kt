@@ -13,9 +13,8 @@ class CartUseCaseImpl @Inject constructor(
     private val cartRepository: CartRepository
 ) : CartUseCase {
 
-    override fun getCartFlow(): Flow<Cart> {
-        return cartRepository.getCartFlow()
-    }
+    override fun getCartFlow(): Flow<Cart> = cartRepository.getCartFlow()
+
 
     override suspend fun addItem(
         productId: Int,
