@@ -97,9 +97,7 @@ class CartRepositoryImpl @Inject constructor(
             if (!cartPreferences.hasPendingSync()) return
 
             ensureCartExistsOnServer()
-
-            val currentCart = localDataSource.getCartWithItems()
-            val currentItems = currentCart?.items ?: emptyList()
+            val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
             val request = UpdateCartRequestDto(cartItems = currentItems.map { it.toDomain().toDto() })
             val response = remoteDataSource.updateCart(request)
 
