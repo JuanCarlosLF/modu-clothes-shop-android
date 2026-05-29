@@ -152,22 +152,18 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
     }
 
     private fun setupCarrusel() {
-
         carruselAdapter = CarruselAdapter { product ->
-
             val action =
                 ProductDetailFragmentDirections.actionFragmentProductDetailSelf(product.id)
 
             findNavController().navigate(action)
         }
-
         binding?.recyclerCarruselDetail?.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
-
             adapter = carruselAdapter
         }
     }
