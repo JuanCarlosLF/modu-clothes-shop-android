@@ -33,11 +33,11 @@ interface CartDao {
     suspend fun clearCartItems()
 
     @Query("DELETE FROM cart")
-    suspend fun clearCart()
+    suspend fun clearCartSummary()
 
     @Transaction
     suspend fun clearEntireCart() {
         clearCartItems()
-        clearCart()
+        clearCartSummary()
     }
 }
