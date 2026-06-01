@@ -11,7 +11,7 @@ data class CartUiState(
     val shippingCost: BigDecimal = BigDecimal.ZERO,
     val total: BigDecimal = BigDecimal.ZERO,
     val isCartEmpty: Boolean = false,
-    val error: AppError? = null,
+    val errorMessageRes: Int? = null,
     val showClearCartDialog: Boolean = false,
     val itemToUndo: CartItem? = null
 )

@@ -66,4 +66,4 @@
     <string name="general_error_msg">An unexpected error occurred. Please try again.</string>
     <string name="error_generic_oops">Oops! Something went wrong.</string>
     <string name="button_retry">Retry</string>
-</resources>
+    <string name="error_sync_pending_message">We could not sync your changes with the server.\nYour changes will be saved on the device</string></resources>

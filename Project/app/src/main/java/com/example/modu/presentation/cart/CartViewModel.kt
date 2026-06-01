@@ -2,8 +2,10 @@ package com.example.modu.presentation.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.modu.R
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.exception.AppError
+import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.usecase.cart.CartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -45,7 +47,8 @@ class CartViewModel @Inject constructor(
                         cart.items
                     }
 
-                    val filteredSubTotal = filteredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
+                    val filteredSubTotal =
+                        filteredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
                     val filteredTotal = filteredSubTotal + cart.shippingCost
 
                     state.copy(
@@ -66,7 +69,7 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.updateQuantity(item, newQuantity)
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                handleError(error)
             }
         }
     }
@@ -79,7 +82,7 @@ class CartViewModel @Inject constructor(
                 try {
                     cartUseCase.deleteItem(previousItem.id)
                 } catch (error: AppError) {
-                    _uiState.update { it.copy(error = error) }
+                    handleError(error)
                 }
             }
         }
@@ -102,7 +105,7 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.deleteItem(item.id)
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                handleError(error)
             } finally {
                 _uiState.update { it.copy(itemToUndo = null) }
             }
@@ -114,7 +117,8 @@ class CartViewModel @Inject constructor(
 
         _uiState.update { state ->
             val restoredItems = currentRoomCartItems
-            val restoredSubTotal = restoredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
+            val restoredSubTotal =
+                restoredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
 
             state.copy(
                 itemToUndo = null,
@@ -144,12 +148,22 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.clearCart()
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                handleError(error)
             }
         }
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(error = null) }
+        _uiState.update { it.copy(errorMessageRes = null) }
+    }
+
+    private fun handleError(error: AppError) {
+        if (error.type == ErrorType.NO_INTERNET) {
+            _uiState.update {
+                it.copy(
+                    errorMessageRes = R.string.error_sync_pending_message
+                )
+            }
+        }
     }
 }
