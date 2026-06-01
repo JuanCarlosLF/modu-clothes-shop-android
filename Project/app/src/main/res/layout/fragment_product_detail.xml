@@ -282,9 +282,7 @@
                     android:id="@+id/btn_add_card_item"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_s"
-                    android:layout_marginEnd="@dimen/margin_s"
-                    android:layout_marginTop="@dimen/margin_s"
+
                     android:layout_marginBottom="@dimen/margin_xl"
                     android:text="@string/continuar"
                     android:textAllCaps="false"

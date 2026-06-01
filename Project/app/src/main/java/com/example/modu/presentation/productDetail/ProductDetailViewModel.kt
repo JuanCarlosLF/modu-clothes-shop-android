@@ -1,5 +1,6 @@
 package com.example.modu.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.usecase.cart.CartUseCase
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -116,19 +118,38 @@ class DetailViewModel @Inject constructor(
                 val productVariant = detail?.productVariantsList?.find {
                     it.size == _uiState.value.selectedSize && it.color == _uiState.value.selectedColor
                 }
+
+                Log.d(
+                    "CART_REQUEST", """
+    productId=${detail?.id}
+    productVariantId=${productVariant?.id}
+    currentStock=${productVariant?.stock}
+    quantity=${_uiState.value.quantity}
+    unitPrice=${detail?.price ?: BigDecimal.ZERO}
+    title=${productVariant?.name}
+    imageUrl=${detail?.imageUrl}
+    size=${_uiState.value.selectedSize}
+    color=${_uiState.value.selectedColor}
+""".trimIndent()
+                )
                 useCaseCart.addItem(
                     productId = detail?.id ?: 0,
                     productVariantId = productVariant?.id ?: 0,
                     currentStock = productVariant?.stock ?: 0,
                     quantity = _uiState.value.quantity,
-                    unitPrice = _uiState.value.unitPrice,
+                    unitPrice = detail?.price ?: BigDecimal.ZERO,
                     title = productVariant?.name ?: "",
                     imageUrl = detail?.imageUrl ?: "",
                     size = _uiState.value.selectedSize ?: "",
                     color = _uiState.value.selectedColor ?: ""
                 )
 
+                Log.d("VMADD", "OK")
+
             } catch (error: Exception) {
+                Log.d("VMADDERROR", "REAL ERROR", error)
+
+
                 _uiState.update { state ->
                     state.copy(errorMessage = error.message)
                 }

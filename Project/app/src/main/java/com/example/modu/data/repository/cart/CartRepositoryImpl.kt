@@ -1,5 +1,6 @@
 package com.example.modu.data.repository.cart
 
+import android.util.Log
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
@@ -59,15 +60,17 @@ class CartRepositoryImpl @Inject constructor(
                 updateCart()
                 return
             }
-
             ensureCartExistsOnServer()
 
+            Log.d("SYNC_CART", "Haciendo la request")
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
             val response = remoteDataSource.addItem(request)
+            Log.d("SYNC_CARTrr", "Respuesta $response")
 
-            saveRemoteCartToLocal(response)
-
+            (Log.d("SYNC_CART", "Guardando en local... $request"))
+            saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
+            Log.e("CART_REPO", "Add item failed", error)
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
                 addOrUpdateItemLocal(item)
@@ -77,6 +80,7 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
+    //llega bien el id
     override suspend fun deleteItem(id: Int) {
         try {
             if (id < DEFAULT_ID || cartPreferences.hasPendingSync()) {
@@ -88,7 +92,7 @@ class CartRepositoryImpl @Inject constructor(
             ensureCartExistsOnServer()
 
             val response = remoteDataSource.deleteItemById(id)
-            saveRemoteCartToLocal(response)
+            saveRemoteCartToLocal(response.toCartDto())
 
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
@@ -102,15 +106,80 @@ class CartRepositoryImpl @Inject constructor(
 
     override suspend fun updateCart() {
         try {
-            if (!cartPreferences.hasPendingSync()) return
 
+            Log.d("UPDATE_CART", "=== START updateCart ===")
+
+            val hasPending = cartPreferences.hasPendingSync()
+            Log.d("UPDATE_CART", "hasPendingSync=$hasPending")
+
+            if (!hasPending) {
+                Log.d("UPDATE_CART", "EXIT: no pending sync")
+                return
+            }
+
+            Log.d("UPDATE_CART", "Ensuring cart exists on server")
             ensureCartExistsOnServer()
-            val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
-            val request = UpdateCartRequestDto(cartItems = currentItems.map { it.toDomain().toDto() })
+
+            Log.d("UPDATE_CART", "Fetching cart from local DB")
+            val cartWithItems = localDataSource.getCartWithItems()
+
+            Log.d(
+                "UPDATE_CART",
+                "cartFromDB=${cartWithItems != null}"
+            )
+
+            val currentItems = cartWithItems?.items ?: emptyList()
+
+            Log.d(
+                "UPDATE_CART",
+                "localItemsCount=${currentItems.size}"
+            )
+
+            currentItems.forEachIndexed { index, item ->
+                Log.d(
+                    "UPDATE_CART",
+                    "LOCAL_ITEM[$index] variantId=${item.cartItem.productVariantId} quantity=${item.cartItem.quantity}"
+                )
+            }
+
+            val shipping = cartWithItems?.cart?.shippingCost ?: BigDecimal.ZERO
+
+            Log.d(
+                "UPDATE_CART",
+                "shipping=$shipping"
+            )
+
+            Log.d("UPDATE_CART", "Mapping DTO request")
+
+            val request = UpdateCartRequestDto(
+                cartItems = currentItems.map { it.toDomain().toDto() },
+                shippingCosts = shipping
+            )
+
+            Log.d(
+                "UPDATE_CART",
+                "requestItems=${request.cartItems?.size ?: 0}"
+            )
+
+            Log.d("UPDATE_CART", "Calling remote updateCart API")
+
             val response = remoteDataSource.updateCart(request)
 
+            Log.d(
+                "UPDATE_CART",
+                "API response received = $response"
+            )
+
+            Log.d("UPDATE_CART", "Saving remote cart to local DB")
+
             saveRemoteCartToLocal(response)
+
+            Log.d("UPDATE_CART", "=== END updateCart SUCCESS ===")
+
         } catch (error: Exception) {
+
+            Log.e("UPDATE_CART", "ERROR in updateCart", error)
+
             throw errorHandler.handle(error)
         }
     }
@@ -120,7 +189,7 @@ class CartRepositoryImpl @Inject constructor(
             ensureCartExistsOnServer()
 
             val response = remoteDataSource.clearCart()
-            saveRemoteCartToLocal(response)
+            saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
@@ -146,15 +215,27 @@ class CartRepositoryImpl @Inject constructor(
         localDataSource.insertCart(response.toCartDbo())
 
         val itemsDto = response.cartSummary?.cartItems ?: emptyList()
+        itemsDto.forEachIndexed { index, item ->
+            Log.d(
+                "CART_SYNC",
+                "Item[$index] variantId=${item.productVariantId} quantity=${item.quantity}"
+            )
+        }
 
         fetchAndCacheMissingProducts(itemsDto)
 
-        val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
-        val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
-        val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
+        val priceAlerts =
+            response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
 
+        val stockAlerts =
+            response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
+
+        val availAlerts =
+            response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
         val mergedDbos = itemsDto.map { dto ->
+
             val variantId = dto.productVariantId ?: DEFAULT_ID
+
             dto.toDbo().copy(
                 oldPriceAlert = priceAlerts?.get(variantId)?.oldPrice,
                 stockAlertAvailable = stockAlerts?.get(variantId)?.availableStock,
@@ -162,8 +243,32 @@ class CartRepositoryImpl @Inject constructor(
             )
         }
 
+        Log.d(
+            "CART_SYNC",
+            "Merged dbos count=${mergedDbos.size}"
+        )
+
+        Log.d("CART_SYNC", "Inserting cart items")
         localDataSource.insertCartItems(mergedDbos)
+
+        Log.d("CART_SYNC", "Setting pendingSync=false")
         cartPreferences.setPendingSync(false)
+
+        val localCart = localDataSource.getCartWithItems()
+
+        Log.d(
+            "CART_SYNC",
+            "Local cart after save -> items=${localCart?.items?.size ?: 0}"
+        )
+
+        localCart?.items?.forEachIndexed { index, item ->
+            Log.d(
+                "CART_SYNC",
+                "LocalItem[$index] id=${item.cartItem.id} variantId=${item.cartItem.productVariantId} quantity=${item.cartItem.quantity}"
+            )
+        }
+
+        Log.d("CART_SYNC", "=== END saveRemoteCartToLocal ===")
     }
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
@@ -191,7 +296,8 @@ class CartRepositoryImpl @Inject constructor(
             item.copy(id = existingDbo.cartItem.id).toDbo()
         } else {
             val currentMinId = currentItems.minOfOrNull { it.cartItem.id } ?: DEFAULT_ID
-            val newId = if (currentMinId < DEFAULT_ID) currentMinId - ID_DECREMENT_STEP else FALLBACK_NEW_ID
+            val newId =
+                if (currentMinId < DEFAULT_ID) currentMinId - ID_DECREMENT_STEP else FALLBACK_NEW_ID
             item.copy(id = newId).toDbo()
         }
 

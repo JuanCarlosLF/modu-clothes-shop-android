@@ -43,6 +43,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
         setupAdapters()
         setupRecyclerViews()
         observeUiState()
+        setupListeners()
         viewModel.loadDetail(args.productId)
     }
 
@@ -166,7 +167,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
         }
     }
 
-    private fun setupListeners(state: ProductDetailUiState) {
+    private fun setupListeners() {
         binding?.apply {
             icBack.setOnClickListener {
                 findNavController().popBackStack(R.id.fragment_home, false)

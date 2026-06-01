@@ -3,22 +3,29 @@ package com.example.modu.presentation.cart
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.modu.R
 import com.example.modu.databinding.FragmentCartBinding
-import com.example.modu.domain.entity.cart.CartItem
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CartFragment : Fragment(R.layout.fragment_cart) {
 
     private lateinit var cartAdapter: CartAdapter
     private var binding: FragmentCartBinding? = null
+    private val viewModel: CartViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentCartBinding.bind(view)
         setupAdapter()
-        loadData()
+        setupObservers()
     }
 
     override fun onDestroyView() {
@@ -29,8 +36,10 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
     private fun setupAdapter() {
         cartAdapter = CartAdapter(
             onDeleteClick = { item ->
+                viewModel.onDeleteItemClicked(item)
             },
-            onAddQuantityClick = { item -> },
+            onAddQuantityClick = { item ->
+            },
             onRemoveQuantityClick = { item -> }
         )
 
@@ -44,24 +53,13 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         }
     }
 
-    private fun loadData() {
-
-        val items = listOf(
-            CartItem(
-                id = 1,
-                imageUrl = "https://images.unsplash.com/photo-1608063615781-e2ef8c73d114?auto=format&fit=crop&w=800&q=80",
-                title = "Camiseta UN Limited",
-                size = "L",
-                color = "Negro",
-                unitPrice = 39.99.toBigDecimal(),
-                totalPrice = 79.98.toBigDecimal(),
-                quantity = 2,
-                currentStock = 20,
-                productId = 12,
-                productVariantId = 5
-            )
-        )
-
-        cartAdapter.submitList(items)
+    private fun setupObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    cartAdapter.submitList(state.items)
+                }
+            }
+        }
     }
 }
