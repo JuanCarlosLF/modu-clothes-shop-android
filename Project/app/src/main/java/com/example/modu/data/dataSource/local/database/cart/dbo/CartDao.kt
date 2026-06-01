@@ -52,4 +52,7 @@ interface CartDao {
 
     @Query("DELETE FROM product_variants WHERE productId = :productId")
     suspend fun deleteVariantsByProductId(productId: Int)
+
+    @Query("SELECT id FROM product_details WHERE id IN (:productIds)")
+    suspend fun getExistingProductDetails(productIds: List<Int>): List<Int>
 }

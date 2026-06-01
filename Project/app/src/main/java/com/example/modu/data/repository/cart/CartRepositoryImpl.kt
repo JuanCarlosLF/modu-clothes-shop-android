@@ -1,18 +1,26 @@
 package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
 import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
 import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
+import com.example.modu.data.dataSource.remote.product.ProductDataSource
+import com.example.modu.data.repository.product.toDomain
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.repository.cart.CartRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
@@ -27,6 +35,7 @@ class CartRepositoryImpl @Inject constructor(
     private val remoteDataSource: CartRemoteDataSource,
     private val cartPreferences: CartPreferences,
     private val appPreferences: AppPreferences,
+    private val productRemoteDataSource: ProductDataSource,
     private val errorHandler: ErrorHandler
 ) : CartRepository {
 
@@ -134,10 +143,12 @@ class CartRepositoryImpl @Inject constructor(
 
     private suspend fun saveRemoteCartToLocal(response: CartDto) {
         localDataSource.clearCart()
-
         localDataSource.insertCart(response.toCartDbo())
 
         val itemsDto = response.cartSummary?.cartItems ?: emptyList()
+
+        fetchAndCacheMissingProducts(itemsDto)
+
         val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
         val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
         val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
@@ -156,6 +167,21 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
+        val detailDbo = CartItemDetailDbo(
+            id = item.productId,
+            name = item.title,
+            imageUrl = item.imageUrl
+        )
+        val variantDbo = ProductVariantDbo(
+            id = item.productVariantId,
+            productId = item.productId,
+            size = item.size,
+            color = item.color
+        )
+
+        localDataSource.insertProductDetails(listOf(detailDbo))
+        localDataSource.insertProductVariants(listOf(variantDbo))
+
         val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
             (item.id != DEFAULT_ID && it.cartItem.id == item.id) || it.cartItem.productVariantId == item.productVariantId
@@ -176,5 +202,42 @@ class CartRepositoryImpl @Inject constructor(
     private suspend fun deleteItemLocal(id: Int) {
         localDataSource.deleteCartItem(id)
         cartPreferences.setPendingSync(true)
+    }
+
+    private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
+        val allProductIdsInCart = itemsDto.mapNotNull { it.productId }.distinct()
+        val existingIds = localDataSource.getExistingProductDetails(allProductIdsInCart)
+        val missingIds = allProductIdsInCart - existingIds.toSet()
+
+        if (missingIds.isEmpty()) return
+
+        coroutineScope {
+            missingIds.map { id ->
+                async {
+                    try {
+                        val detailDto = productRemoteDataSource.getDetailById(id)
+                        val domainModel = detailDto.toDomain()
+
+                        val detailDbo = CartItemDetailDbo(
+                            id = domainModel.id,
+                            name = domainModel.name,
+                            imageUrl = domainModel.imageUrl
+                        )
+                        val variantDbos = domainModel.productVariantsList.map {
+                            ProductVariantDbo(
+                                id = it.id,
+                                productId = domainModel.id,
+                                size = it.size,
+                                color = it.color
+                            )
+                        }
+
+                        localDataSource.insertProductDetails(listOf(detailDbo))
+                        localDataSource.insertProductVariants(variantDbos)
+                    } catch (e: Exception) {
+                    }
+                }
+            }.awaitAll()
+        }
     }
 }
