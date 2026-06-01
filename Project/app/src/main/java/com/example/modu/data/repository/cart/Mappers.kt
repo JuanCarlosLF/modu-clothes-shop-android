@@ -33,7 +33,7 @@ internal fun CartWithItemsDbo.toDomain(): Cart {
 
 internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
-        id = this.id ?: 0,
+        id = this.id,
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
         currentStock = requireNotNull(this.currentStock),
@@ -49,7 +49,7 @@ internal fun CartItemDto.toDomain(): CartItem {
 
 internal fun CartItemDto.toDbo(): CartItemDbo {
     return CartItemDbo(
-        id = this.id ?: 0,
+        id = this.id,
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
         currentStock = requireNotNull(this.currentStock),
