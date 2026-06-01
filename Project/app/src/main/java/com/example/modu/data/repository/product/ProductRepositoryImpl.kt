@@ -22,7 +22,6 @@ private const val PAGING_INITIAL_SIZE = 20
 
 class ProductRepositoryImpl @Inject constructor(
     private val dataSource: ProductDataSource,
-    private val localCartDataSource: CartLocalDataSource,
     private val errorHandler: ErrorHandler
 ) : ProductRepository {
 
@@ -59,28 +58,7 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun getDetailById(id: Int): Detail {
         return try {
-            val dto = dataSource.getDetailById(id)
-            val domainModel = dto.toDomain()
-
-            val detailDbo = CartItemDetailDbo(
-                id = domainModel.id,
-                name = domainModel.name,
-                imageUrl = domainModel.imageUrl
-            )
-
-            val variantDbos = domainModel.productVariantsList.map {
-                ProductVariantDbo(
-                    id = it.id,
-                    productId = domainModel.id,
-                    size = it.size,
-                    color = it.color
-                )
-            }
-            localCartDataSource.deleteVariantsByProductId(domainModel.id)
-            localCartDataSource.insertProductDetails(listOf(detailDbo))
-            localCartDataSource.insertProductVariants(variantDbos)
-
-            domainModel
+            dataSource.getDetailById(id).toDomain()
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }
