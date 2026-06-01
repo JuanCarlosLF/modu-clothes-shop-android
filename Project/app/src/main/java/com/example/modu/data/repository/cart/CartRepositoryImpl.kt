@@ -8,6 +8,7 @@ import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
 import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
@@ -146,41 +147,7 @@ class CartRepositoryImpl @Inject constructor(
 
         val itemsDto = response.cartSummary?.cartItems ?: emptyList()
 
-        val allProductIdsInCart = itemsDto.mapNotNull { it.productId }.distinct()
-        val existingIds = localDataSource.getExistingProductDetails(allProductIdsInCart)
-        val missingIds = allProductIdsInCart - existingIds.toSet()
-
-        if (missingIds.isNotEmpty()) {
-            coroutineScope {
-                missingIds.map { id ->
-                    async {
-                        try {
-                            val detailDto = productRemoteDataSource.getDetailById(id)
-                            val domainModel = detailDto.toDomain()
-
-                            val detailDbo = CartItemDetailDbo(
-                                id = domainModel.id,
-                                name = domainModel.name,
-                                imageUrl = domainModel.imageUrl
-                            )
-                            val variantDbos = domainModel.productVariantsList.map {
-                                ProductVariantDbo(
-                                    id = it.id,
-                                    productId = domainModel.id,
-                                    size = it.size,
-                                    color = it.color
-                                )
-                            }
-
-                            localDataSource.insertProductDetails(listOf(detailDbo))
-                            localDataSource.insertProductVariants(variantDbos)
-                        } catch (error: Exception) {
-                            errorHandler.handle(error)
-                        }
-                    }
-                }.awaitAll()
-            }
-        }
+        fetchAndCacheMissingProducts(itemsDto)
 
         val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
         val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
@@ -235,5 +202,43 @@ class CartRepositoryImpl @Inject constructor(
     private suspend fun deleteItemLocal(id: Int) {
         localDataSource.deleteCartItem(id)
         cartPreferences.setPendingSync(true)
+    }
+
+    private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
+        val allProductIdsInCart = itemsDto.mapNotNull { it.productId }.distinct()
+        val existingIds = localDataSource.getExistingProductDetails(allProductIdsInCart)
+        val missingIds = allProductIdsInCart - existingIds.toSet()
+
+        if (missingIds.isEmpty()) return
+
+        coroutineScope {
+            missingIds.map { id ->
+                async {
+                    try {
+                        val detailDto = productRemoteDataSource.getDetailById(id)
+                        val domainModel = detailDto.toDomain()
+
+                        val detailDbo = CartItemDetailDbo(
+                            id = domainModel.id,
+                            name = domainModel.name,
+                            imageUrl = domainModel.imageUrl
+                        )
+                        val variantDbos = domainModel.productVariantsList.map {
+                            ProductVariantDbo(
+                                id = it.id,
+                                productId = domainModel.id,
+                                size = it.size,
+                                color = it.color
+                            )
+                        }
+
+                        localDataSource.insertProductDetails(listOf(detailDbo))
+                        localDataSource.insertProductVariants(variantDbos)
+                    } catch (error: Exception) {
+                        errorHandler.handle(error)
+                    }
+                }
+            }.awaitAll()
+        }
     }
 }
