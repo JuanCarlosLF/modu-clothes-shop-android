@@ -1,7 +1,7 @@
 package com.example.modu.domain.repository.product
 
-import com.example.modu.domain.entity.detail.Detail
 import androidx.paging.PagingData
+import com.example.modu.domain.entity.detail.Detail
 import com.example.modu.domain.entity.product.Category
 import com.example.modu.domain.entity.product.Product
 import kotlinx.coroutines.flow.Flow

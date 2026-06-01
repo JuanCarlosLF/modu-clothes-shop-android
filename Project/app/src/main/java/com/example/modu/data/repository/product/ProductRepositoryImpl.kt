@@ -4,9 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
-import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
-import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.domain.entity.detail.Detail
