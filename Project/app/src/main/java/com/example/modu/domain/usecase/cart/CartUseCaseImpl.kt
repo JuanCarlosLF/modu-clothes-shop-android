@@ -3,8 +3,6 @@ package com.example.modu.domain.usecase.cart
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.repository.cart.CartRepository
-import com.example.modu.domain.exception.AppError
-import com.example.modu.domain.exception.ErrorType
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -16,7 +14,6 @@ class CartUseCaseImpl @Inject constructor(
 ) : CartUseCase {
 
     override fun getCartFlow(): Flow<Cart> = cartRepository.getCartFlow()
-
 
     override suspend fun addItem(
         productId: Int,
@@ -45,11 +42,7 @@ class CartUseCaseImpl @Inject constructor(
             color = color
         )
 
-        try {
-            cartRepository.addItem(newItem)
-        } catch (error: AppError) {
-            throw handleNetworkError(error)
-        }
+        cartRepository.addItem(newItem)
     }
 
     override suspend fun updateQuantity(item: CartItem, newQuantity: Int) {
@@ -62,37 +55,14 @@ class CartUseCaseImpl @Inject constructor(
             totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
         )
 
-        try {
-            cartRepository.addItem(updatedItem)
-        } catch (error: AppError) {
-            throw handleNetworkError(error)
-        }
+        cartRepository.addItem(updatedItem)
     }
 
     override suspend fun deleteItem(id: Int) {
-        try {
-            cartRepository.deleteItem(id)
-        } catch (error: AppError) {
-            throw handleNetworkError(error)
-        }
+        cartRepository.deleteItem(id)
     }
 
     override suspend fun clearCart() {
-        try {
-            cartRepository.clearCart()
-        } catch (error: AppError) {
-            throw handleNetworkError(error)
-        }
-    }
-
-    private fun handleNetworkError(error: AppError): Exception {
-        return if (error.type == ErrorType.NO_INTERNET) {
-            error.copy(
-                title = "Sincronización pendiente",
-                message = "No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo"
-            )
-        } else {
-            error
-        }
+        cartRepository.clearCart()
     }
 }
