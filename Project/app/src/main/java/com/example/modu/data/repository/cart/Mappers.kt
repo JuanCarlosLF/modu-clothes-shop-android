@@ -2,20 +2,21 @@ package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemWithDetailsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
-import java.math.BigDecimal
 
 internal fun CartDto.toCartDbo(): CartDbo {
+    val summary = requireNotNull(this.cartSummary)
     return CartDbo(
-        subTotal = this.subTotalPrice ?: BigDecimal.ZERO,
-        shippingCost = this.shippingCost ?: BigDecimal.ZERO,
-        total = this.totalPrice ?: BigDecimal.ZERO,
-        createdAt = this.createdAt.orEmpty(),
-        updatedAt = this.updatedAt.orEmpty()
+        subTotal = requireNotNull(summary.subTotalPrice),
+        shippingCost = requireNotNull(summary.shippingCosts),
+        total = requireNotNull(summary.totalPrice),
+        createdAt = requireNotNull(summary.createdAt),
+        updatedAt = requireNotNull(summary.updatedAt)
     )
 }
 
@@ -38,7 +39,11 @@ internal fun CartItemDto.toDomain(): CartItem {
         currentStock = requireNotNull(this.currentStock),
         quantity = requireNotNull(this.quantity),
         unitPrice = requireNotNull(this.unitPrice),
-        totalPrice = requireNotNull(this.totalPrice)
+        totalPrice = requireNotNull(this.totalPrice),
+        title = "",
+        imageUrl = "",
+        size = "",
+        color = ""
     )
 }
 
@@ -50,7 +55,10 @@ internal fun CartItemDto.toDbo(): CartItemDbo {
         currentStock = requireNotNull(this.currentStock),
         quantity = requireNotNull(this.quantity),
         unitPrice = requireNotNull(this.unitPrice),
-        totalPrice = requireNotNull(this.totalPrice)
+        totalPrice = requireNotNull(this.totalPrice),
+        oldPriceAlert = null,
+        stockAlertAvailable = null,
+        isAvailableAlert = null
     )
 }
 
@@ -81,17 +89,21 @@ internal fun CartItem.toDbo(): CartItemDbo {
     )
 }
 
-internal fun CartItemDbo.toDomain(): CartItem {
+internal fun CartItemWithDetailsDbo.toDomain(): CartItem {
     return CartItem(
-        id = this.id,
-        productId = this.productId,
-        productVariantId = this.productVariantId,
-        currentStock = this.currentStock,
-        quantity = this.quantity,
-        unitPrice = this.unitPrice,
-        totalPrice = this.totalPrice,
-        oldPriceAlert = this.oldPriceAlert,
-        stockAlertAvailable = this.stockAlertAvailable,
-        isAvailableAlert = this.isAvailableAlert
+        id = this.cartItem.id,
+        productId = this.cartItem.productId,
+        productVariantId = this.cartItem.productVariantId,
+        currentStock = this.cartItem.currentStock,
+        quantity = this.cartItem.quantity,
+        unitPrice = this.cartItem.unitPrice,
+        totalPrice = this.cartItem.totalPrice,
+        title = this.productDetail.firstOrNull()?.name.orEmpty(),
+        imageUrl = this.productDetail.firstOrNull()?.imageUrl.orEmpty(),
+        size = this.productVariant.firstOrNull()?.size.orEmpty(),
+        color = this.productVariant.firstOrNull()?.color.orEmpty(),
+        oldPriceAlert = this.cartItem.oldPriceAlert,
+        stockAlertAvailable = this.cartItem.stockAlertAvailable,
+        isAvailableAlert = this.cartItem.isAvailableAlert
     )
 }

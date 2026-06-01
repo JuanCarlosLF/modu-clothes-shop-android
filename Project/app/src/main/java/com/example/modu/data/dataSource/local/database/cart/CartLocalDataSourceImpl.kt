@@ -32,4 +32,6 @@ class CartLocalDataSourceImpl @Inject constructor(
     override suspend fun hasProductDetail(productId: Int): Boolean = cartDao.hasProductDetail(productId)
 
     override suspend fun deleteVariantsByProductId(productId: Int) = cartDao.deleteVariantsByProductId(productId)
+
+    override suspend fun getExistingProductDetails(productIds: List<Int>): List<Int> = cartDao.getExistingProductDetails(productIds)
 }
