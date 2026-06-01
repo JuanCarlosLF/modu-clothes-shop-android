@@ -234,8 +234,7 @@ class CartRepositoryImpl @Inject constructor(
 
                         localDataSource.insertProductDetails(listOf(detailDbo))
                         localDataSource.insertProductVariants(variantDbos)
-                    } catch (error: Exception) {
-                        errorHandler.handle(error)
+                    } catch (e: Exception) {
                     }
                 }
             }.awaitAll()
