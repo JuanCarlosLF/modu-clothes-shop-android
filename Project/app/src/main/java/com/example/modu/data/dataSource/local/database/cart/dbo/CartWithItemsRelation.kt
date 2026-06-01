@@ -5,9 +5,11 @@ import androidx.room.Relation
 
 data class CartWithItemsDbo(
     @Embedded val cart: CartDbo,
+
     @Relation(
+        entity = CartItemDbo::class,
         parentColumn = "id",
         entityColumn = "cartId"
     )
-    val items: List<CartItemDbo>
+    val items: List<CartItemWithDetailsDbo>
 )

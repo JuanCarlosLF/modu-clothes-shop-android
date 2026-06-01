@@ -53,13 +53,13 @@ class ProductRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getDetailById(id: Int): Detail =
-        try {
+    override suspend fun getDetailById(id: Int): Detail {
+        return try {
             dataSource.getDetailById(id).toDomain()
-
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }
+    }
 
     override suspend fun getCategories(): List<Category> {
         return try {

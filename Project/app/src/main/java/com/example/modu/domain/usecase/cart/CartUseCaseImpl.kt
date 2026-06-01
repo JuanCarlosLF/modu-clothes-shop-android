@@ -15,7 +15,6 @@ class CartUseCaseImpl @Inject constructor(
 
     override fun getCartFlow(): Flow<Cart> = cartRepository.getCartFlow()
 
-
     override suspend fun addItem(
         productId: Int,
         productVariantId: Int,
@@ -47,12 +46,15 @@ class CartUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateQuantity(item: CartItem, newQuantity: Int) {
+        if (newQuantity == item.quantity) return
         if (newQuantity < MINIMUM_QUANTITY) return
+        if (newQuantity > item.currentStock) return
 
         val updatedItem = item.copy(
             quantity = newQuantity,
             totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
         )
+
         cartRepository.addItem(updatedItem)
     }
 

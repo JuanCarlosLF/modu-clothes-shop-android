@@ -2,10 +2,10 @@ package com.example.modu.data.dataSource.local.preference.cart
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
 private const val CART_PREFERENCES_KEY = "cart_prefs"
 private const val CART_PREFERENCES_PENDING_SYNC_KEY = "pending_sync"
