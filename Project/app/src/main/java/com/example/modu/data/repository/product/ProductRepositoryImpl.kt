@@ -22,7 +22,7 @@ private const val PAGING_INITIAL_SIZE = 20
 
 class ProductRepositoryImpl @Inject constructor(
     private val dataSource: ProductDataSource,
-    private val localDataSource: CartLocalDataSource,
+    private val localCartDataSource: CartLocalDataSource,
     private val errorHandler: ErrorHandler
 ) : ProductRepository {
 
@@ -76,9 +76,9 @@ class ProductRepositoryImpl @Inject constructor(
                     color = it.color
                 )
             }
-
-            localDataSource.insertProductDetails(listOf(detailDbo))
-            localDataSource.insertProductVariants(variantDbos)
+            localCartDataSource.deleteVariantsByProductId(domainModel.id)
+            localCartDataSource.insertProductDetails(listOf(detailDbo))
+            localCartDataSource.insertProductVariants(variantDbos)
 
             domainModel
         } catch (error: Exception) {

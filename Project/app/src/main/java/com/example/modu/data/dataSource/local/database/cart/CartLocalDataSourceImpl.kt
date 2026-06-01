@@ -24,11 +24,12 @@ class CartLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteCartItem(itemId: Int) = cartDao.deleteItem(itemId)
 
     override suspend fun clearCart() = cartDao.clearCart()
-    override suspend fun clearEntireCart() = cartDao.clearEntireCart()
 
     override suspend fun insertProductDetails(details: List<CartItemDetailDbo>) = cartDao.insertProductDetails(details)
 
     override suspend fun insertProductVariants(variants: List<ProductVariantDbo>) = cartDao.insertProductVariants(variants)
 
     override suspend fun hasProductDetail(productId: Int): Boolean = cartDao.hasProductDetail(productId)
+
+    override suspend fun deleteVariantsByProductId(productId: Int) = cartDao.deleteVariantsByProductId(productId)
 }
