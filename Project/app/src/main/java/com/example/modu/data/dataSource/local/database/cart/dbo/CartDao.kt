@@ -40,4 +40,16 @@ interface CartDao {
         clearCartItems()
         clearCartSummary()
     }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProductDetails(details: List<CartItemDetailDbo>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProductVariants(variants: List<ProductVariantDbo>)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM product_details WHERE id = :productId)")
+    suspend fun hasProductDetail(productId: Int): Boolean
+
+    @Query("DELETE FROM product_variants WHERE productId = :productId")
+    suspend fun deleteVariantsByProductId(productId: Int)
 }

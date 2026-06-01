@@ -3,7 +3,9 @@ package com.example.modu.data.dataSource.local.database.cart
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartDao
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -22,4 +24,12 @@ class CartLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteCartItem(itemId: Int) = cartDao.deleteItem(itemId)
 
     override suspend fun clearCart() = cartDao.clearCart()
+
+    override suspend fun insertProductDetails(details: List<CartItemDetailDbo>) = cartDao.insertProductDetails(details)
+
+    override suspend fun insertProductVariants(variants: List<ProductVariantDbo>) = cartDao.insertProductVariants(variants)
+
+    override suspend fun hasProductDetail(productId: Int): Boolean = cartDao.hasProductDetail(productId)
+
+    override suspend fun deleteVariantsByProductId(productId: Int) = cartDao.deleteVariantsByProductId(productId)
 }
