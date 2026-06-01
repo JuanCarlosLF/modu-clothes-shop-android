@@ -1,11 +1,13 @@
 package com.example.modu.domain.repository.cart
 
+import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 import kotlinx.coroutines.flow.Flow
 
 interface CartRepository {
-    fun getCartItemsFlow(): Flow<List<CartItem>>
-    suspend fun addOrUpdateItemLocal(item: CartItem)
-    suspend fun deleteItemLocal(id: Int)
-    suspend fun clearCartLocal()
+    fun getCartFlow(): Flow<Cart>
+    suspend fun addItem(item: CartItem)
+    suspend fun deleteItem(id: Int)
+    suspend fun updateCart()
+    suspend fun clearCart()
 }

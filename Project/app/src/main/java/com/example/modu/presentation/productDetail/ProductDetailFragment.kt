@@ -77,13 +77,13 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             state.detail?.let { detail ->
                 textTitleDetail.text = detail.name
                 textDescriptionDetail.text = detail.description
-                textPriceDetail.text = getString(R.string.text_price, detail.price)
+                textPriceDetail.text = getString(R.string.text_price_format, detail.price)
                 imgBackground.load(detail.imageUrl)
 
                 renderSizes(state)
                 renderColors(state)
             }
-            textQuantityDetail.text = state.quantity.toString()
+            textQuantityDetail.text = "${state.quantity}"
             icRemoveQuantityDetail.setBackgroundResource(
                 state.isButtonQuantityEnabled.toColorRes(
                     enabled = R.drawable.ic_remove_quantity_white,
@@ -92,7 +92,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             )
             val price = state.detail?.price ?: BigDecimal.ZERO
             val total = price.multiply(state.quantity.toBigDecimal())
-            textTotal.text = getString(R.string.text_total_format, total)
+            textTotal.text = getString(R.string.text_price_format, total)
             btnAddCardItem.isEnabled = state.isAddButtonEnabled
 
             val bgColor = state.isAddButtonEnabled.toColorRes(
@@ -112,7 +112,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             btnAddCardItem.setTextColor(
                 ContextCompat.getColor(requireContext(), textColor)
             )
-            carruselAdapter?.submitList(state.suggestionProducts)
+            carruselAdapter?.submitList(state.suggestedProducts)
         }
     }
 

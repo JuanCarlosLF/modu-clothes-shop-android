@@ -1,18 +1,20 @@
 package com.example.modu.domain.usecase.cart
 
-import com.example.modu.domain.repository.cart.CartRepository
+import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.repository.cart.CartRepository
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
+
+private const val MINIMUM_QUANTITY = 1
 
 class CartUseCaseImpl @Inject constructor(
     private val cartRepository: CartRepository
 ) : CartUseCase {
 
-    override fun getCartFlow(): Flow<List<CartItem>> {
-        return cartRepository.getCartItemsFlow()
-    }
+    override fun getCartFlow(): Flow<Cart> = cartRepository.getCartFlow()
+
 
     override suspend fun addItem(
         productId: Int,
@@ -22,6 +24,7 @@ class CartUseCaseImpl @Inject constructor(
         unitPrice: BigDecimal
     ) {
         val newItem = CartItem(
+            id = 0,
             productId = productId,
             productVariantId = productVariantId,
             currentStock = currentStock,
@@ -29,24 +32,24 @@ class CartUseCaseImpl @Inject constructor(
             unitPrice = unitPrice,
             totalPrice = unitPrice.multiply(quantity.toBigDecimal())
         )
-        cartRepository.addOrUpdateItemLocal(newItem)
+        cartRepository.addItem(newItem)
     }
 
     override suspend fun updateQuantity(item: CartItem, newQuantity: Int) {
-        if (newQuantity < 1) return
+        if (newQuantity < MINIMUM_QUANTITY) return
 
         val updatedItem = item.copy(
             quantity = newQuantity,
             totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
         )
-        cartRepository.addOrUpdateItemLocal(updatedItem)
+        cartRepository.addItem(updatedItem)
     }
 
     override suspend fun deleteItem(id: Int) {
-        cartRepository.deleteItemLocal(id)
+        cartRepository.deleteItem(id)
     }
 
     override suspend fun clearCart() {
-        cartRepository.clearCartLocal()
+        cartRepository.clearCart()
     }
 }

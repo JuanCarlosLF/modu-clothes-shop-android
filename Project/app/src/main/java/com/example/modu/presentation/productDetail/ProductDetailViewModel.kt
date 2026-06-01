@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.presentation.productDetail.ProductDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
@@ -60,7 +60,7 @@ class DetailViewModel @Inject constructor(
                     ?: emptyList()
                 val products = useCase.getRelatedProducts(categories)
                 _uiState.update { state ->
-                    state.copy(suggestionProducts = products)
+                    state.copy(suggestedProducts = products)
                 }
             } catch (error: Exception) {
                 _uiState.update { state ->
