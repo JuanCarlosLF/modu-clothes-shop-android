@@ -36,7 +36,7 @@ interface CartDao {
     suspend fun clearCartSummary()
 
     @Transaction
-    suspend fun clearEntireCart() {
+    suspend fun clearCart() {
         clearCartItems()
         clearCartSummary()
     }
