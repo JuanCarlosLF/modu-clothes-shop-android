@@ -1,6 +1,5 @@
 package com.example.modu.data.dataSource.remote.cart.dto
 
-import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class CartSummaryDto(
