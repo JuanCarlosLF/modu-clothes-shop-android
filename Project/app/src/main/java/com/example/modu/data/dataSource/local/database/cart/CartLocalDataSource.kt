@@ -17,6 +17,6 @@ interface CartLocalDataSource {
     suspend fun insertProductDetails(details: List<CartItemDetailDbo>)
     suspend fun insertProductVariants(variants: List<ProductVariantDbo>)
     suspend fun hasProductDetail(productId: Int): Boolean
-
     suspend fun deleteVariantsByProductId(productId: Int)
+    suspend fun getExistingProductDetails(productIds: List<Int>): List<Int>
 }

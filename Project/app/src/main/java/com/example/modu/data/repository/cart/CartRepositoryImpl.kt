@@ -10,11 +10,16 @@ import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
+import com.example.modu.data.dataSource.remote.product.ProductDataSource
+import com.example.modu.data.repository.product.toDomain
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.repository.cart.CartRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
@@ -29,6 +34,7 @@ class CartRepositoryImpl @Inject constructor(
     private val remoteDataSource: CartRemoteDataSource,
     private val cartPreferences: CartPreferences,
     private val appPreferences: AppPreferences,
+    private val productRemoteDataSource: ProductDataSource,
     private val errorHandler: ErrorHandler
 ) : CartRepository {
 
@@ -136,10 +142,46 @@ class CartRepositoryImpl @Inject constructor(
 
     private suspend fun saveRemoteCartToLocal(response: CartDto) {
         localDataSource.clearCart()
-
         localDataSource.insertCart(response.toCartDbo())
 
         val itemsDto = response.cartSummary?.cartItems ?: emptyList()
+
+        val allProductIdsInCart = itemsDto.mapNotNull { it.productId }.distinct()
+        val existingIds = localDataSource.getExistingProductDetails(allProductIdsInCart)
+        val missingIds = allProductIdsInCart - existingIds.toSet()
+
+        if (missingIds.isNotEmpty()) {
+            coroutineScope {
+                missingIds.map { id ->
+                    async {
+                        try {
+                            val detailDto = productRemoteDataSource.getDetailById(id)
+                            val domainModel = detailDto.toDomain()
+
+                            val detailDbo = CartItemDetailDbo(
+                                id = domainModel.id,
+                                name = domainModel.name,
+                                imageUrl = domainModel.imageUrl
+                            )
+                            val variantDbos = domainModel.productVariantsList.map {
+                                ProductVariantDbo(
+                                    id = it.id,
+                                    productId = domainModel.id,
+                                    size = it.size,
+                                    color = it.color
+                                )
+                            }
+
+                            localDataSource.insertProductDetails(listOf(detailDbo))
+                            localDataSource.insertProductVariants(variantDbos)
+                        } catch (error: Exception) {
+                            errorHandler.handle(error)
+                        }
+                    }
+                }.awaitAll()
+            }
+        }
+
         val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
         val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
         val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
