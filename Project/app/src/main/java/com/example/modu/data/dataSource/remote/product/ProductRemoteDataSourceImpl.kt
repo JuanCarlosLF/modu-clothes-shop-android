@@ -10,6 +10,7 @@ import javax.inject.Inject
 class ProductRemoteDataSourceImpl @Inject constructor(
     private val api: ProductApi
 ) : ProductDataSource {
+
     override fun getPaginatedProducts(
         title: String?,
         orderByPrice: String?,

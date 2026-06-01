@@ -19,7 +19,7 @@ interface ProductApi {
         @Query("category") categories: List<String>?
     ): ProductWrapperDto
 
-    @GET("product/{id}")
+    @GET("products/{id}")
     suspend fun getDetailById(@Path("id") id: Int): DetailDto
 
     @GET("categories")

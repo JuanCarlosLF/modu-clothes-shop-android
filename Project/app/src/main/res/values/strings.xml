@@ -22,7 +22,7 @@
     <string name="text_total">$ 0.0</string>
     <string name="similar">Similares</string>
     <string name="continuar">Continuar</string>
-
+    <string name="text_price_format">$ %1$.2f</string>
     <!-- Filter -->
     <string name="filter_title">Filters</string>
     <string name="filter_button_reset_text">RESET</string>
