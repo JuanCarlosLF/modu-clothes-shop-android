@@ -52,6 +52,9 @@
     <string name="cart_text_value_shipping">GRATIS</string>
     <string name="cart_text_total">Total</string>
     <string name="cart_text_button">Ir al checkout</string>
+    <string name="cart_text_size_and_color">Talla: %1$s · Color: %2$s</string>
+    <string name="cart_text_price">$ %1$.2f</string>
+    <string name="cart_text_total_price">$ %1$.2f</string>
 
     <!-- Error -->
     <string name="error_no_internet_title">No Internet Connection</string>

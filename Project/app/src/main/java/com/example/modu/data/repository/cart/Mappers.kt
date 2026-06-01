@@ -30,18 +30,6 @@ internal fun CartWithItemsDbo.toDomain(): Cart {
     )
 }
 
-internal fun CartItemDto.toDomain(): CartItem {
-    return CartItem(
-        id = this.id,
-        productId = requireNotNull(this.productId),
-        productVariantId = requireNotNull(this.productVariantId),
-        currentStock = requireNotNull(this.currentStock),
-        quantity = requireNotNull(this.quantity),
-        unitPrice = requireNotNull(this.unitPrice),
-        totalPrice = requireNotNull(this.totalPrice)
-    )
-}
-
 internal fun CartItemDto.toDbo(): CartItemDbo {
     return CartItemDbo(
         id = this.id,
@@ -90,6 +78,10 @@ internal fun CartItemDbo.toDomain(): CartItem {
         quantity = this.quantity,
         unitPrice = this.unitPrice,
         totalPrice = this.totalPrice,
+        title = "",
+        imageUrl = "",
+        size = "",
+        color = "",
         oldPriceAlert = this.oldPriceAlert,
         stockAlertAvailable = this.stockAlertAvailable,
         isAvailableAlert = this.isAvailableAlert

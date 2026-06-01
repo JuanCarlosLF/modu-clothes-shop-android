@@ -42,7 +42,6 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
         (activity as? MainActivity)?.setBottomNavVisible(false)
         setupAdapters()
         setupRecyclerViews()
-        setupListeners()
         observeUiState()
         viewModel.loadDetail(args.productId)
     }
@@ -63,7 +62,6 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                         if (state.isLoading) shimmerDetail.startShimmer()
                         else shimmerDetail.stopShimmer()
                     }
-
                     renderDetail(state)
 
                 }
@@ -168,7 +166,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
         }
     }
 
-    private fun setupListeners() {
+    private fun setupListeners(state: ProductDetailUiState) {
         binding?.apply {
             icBack.setOnClickListener {
                 findNavController().popBackStack(R.id.fragment_home, false)
@@ -181,6 +179,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                 viewModel.decreaseQuantity()
             }
             btnAddCardItem.setOnClickListener {
+                viewModel.addItemToCart()
             }
         }
     }

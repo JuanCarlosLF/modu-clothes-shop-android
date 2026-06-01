@@ -2,6 +2,7 @@ package com.example.modu.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.modu.domain.usecase.cart.CartUseCase
 import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.presentation.productDetail.ProductDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val useCase: ProductUseCase
+    private val useCaseProduct: ProductUseCase,
+    private val useCaseCart: CartUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductDetailUiState())
@@ -28,7 +30,7 @@ class DetailViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                val detail = useCase.getDetailById(id)
+                val detail = useCaseProduct.getDetailById(id)
                 val firstSize = detail.productVariantsList.firstOrNull()?.size
                 val firstColor = detail.productVariantsList.firstOrNull()?.color
                 _uiState.update { state ->
@@ -58,7 +60,7 @@ class DetailViewModel @Inject constructor(
                     ?.categoriesSet
                     ?.map { it.name }
                     ?: emptyList()
-                val products = useCase.getRelatedProducts(categories)
+                val products = useCaseProduct.getRelatedProducts(categories)
                 _uiState.update { state ->
                     state.copy(suggestedProducts = products)
                 }
@@ -103,6 +105,34 @@ class DetailViewModel @Inject constructor(
             state.copy(
                 quantity = newQuantity
             )
+        }
+    }
+
+    fun addItemToCart() {
+        viewModelScope.launch {
+            try {
+
+                val detail = _uiState.value.detail
+                val productVariant = detail?.productVariantsList?.find {
+                    it.size == _uiState.value.selectedSize && it.color == _uiState.value.selectedColor
+                }
+                useCaseCart.addItem(
+                    productId = detail?.id ?: 0,
+                    productVariantId = productVariant?.id ?: 0,
+                    currentStock = productVariant?.stock ?: 0,
+                    quantity = _uiState.value.quantity,
+                    unitPrice = _uiState.value.unitPrice,
+                    title = productVariant?.name ?: "",
+                    imageUrl = detail?.imageUrl ?: "",
+                    size = _uiState.value.selectedSize ?: "",
+                    color = _uiState.value.selectedColor ?: ""
+                )
+
+            } catch (error: Exception) {
+                _uiState.update { state ->
+                    state.copy(errorMessage = error.message)
+                }
+            }
         }
     }
 }
