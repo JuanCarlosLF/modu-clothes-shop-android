@@ -1,7 +1,6 @@
 package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
-import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
 import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
 import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
@@ -116,7 +115,7 @@ class CartRepositoryImpl @Inject constructor(
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
-                localDataSource.clearEntireCart()
+                localDataSource.clearCart()
                 cartPreferences.setPendingSync(true)
             } else {
                 throw handledError
@@ -134,7 +133,7 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun saveRemoteCartToLocal(response: CartDto) {
-        localDataSource.clearEntireCart()
+        localDataSource.clearCart()
 
         localDataSource.insertCart(response.toCartDbo())
 

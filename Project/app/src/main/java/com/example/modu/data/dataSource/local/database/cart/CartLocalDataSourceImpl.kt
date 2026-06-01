@@ -21,5 +21,5 @@ class CartLocalDataSourceImpl @Inject constructor(
 
     override suspend fun deleteCartItem(itemId: Int) = cartDao.deleteItem(itemId)
 
-    override suspend fun clearEntireCart() = cartDao.clearEntireCart()
+    override suspend fun clearCart() = cartDao.clearCart()
 }
