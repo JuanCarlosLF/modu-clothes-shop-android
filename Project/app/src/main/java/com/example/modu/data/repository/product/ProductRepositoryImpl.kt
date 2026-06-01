@@ -56,6 +56,7 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getDetailById(id: Int): Detail =
         try {
             dataSource.getDetailById(id).toDomain()
+
         } catch (error: Exception) {
             throw errorHandler.handle(error)
         }

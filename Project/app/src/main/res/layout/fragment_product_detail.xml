@@ -273,7 +273,7 @@
                     android:layout_marginBottom="@dimen/margin_xs"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/btn_add_card_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_similar_detail" />
@@ -282,9 +282,10 @@
                     android:id="@+id/btn_add_card_item"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_s_m"
-                    android:layout_marginEnd="@dimen/margin_s_m"
-                    android:layout_marginBottom="@dimen/margin_xl_x"
+                    android:layout_marginStart="@dimen/margin_s"
+                    android:layout_marginEnd="@dimen/margin_s"
+                    android:layout_marginTop="@dimen/margin_s"
+                    android:layout_marginBottom="@dimen/margin_xl"
                     android:text="@string/continuar"
                     android:textAllCaps="false"
                     android:textColor="@color/grey_button_disable"
@@ -292,7 +293,8 @@
                     android:textStyle="bold"
                     app:backgroundTint="@color/grey_light_button_background"
                     app:cornerRadius="100dp"
-                    app:layout_constraintBottom_toBottomOf="@id/recycler_carrusel_detail"
+                    app:layout_constraintTop_toBottomOf="@id/recycler_carrusel_detail"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
