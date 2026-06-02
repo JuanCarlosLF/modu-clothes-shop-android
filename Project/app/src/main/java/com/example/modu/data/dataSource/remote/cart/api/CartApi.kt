@@ -41,7 +41,7 @@ interface CartApi {
     suspend fun clearCart(): CartResponseDto
 
     @POST("checkout")
-    suspend fun executeCheckout(
+    suspend fun checkout(
         @Body request: CartCheckoutRequestDto
     ): CartCheckoutResponseDto
 }
