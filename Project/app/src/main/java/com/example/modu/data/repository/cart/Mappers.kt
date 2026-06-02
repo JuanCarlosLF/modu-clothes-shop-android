@@ -2,8 +2,10 @@ package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemWithDetailsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
@@ -140,5 +142,22 @@ internal fun Cart.toCheckoutRequestDto(
         cartToOrder = CartToOrderDto(
             cartItems = this.items.map { it.toDto() }
         )
+    )
+}
+
+internal fun CartItem.toDetailDbo(): CartItemDetailDbo {
+    return CartItemDetailDbo(
+        id = this.productId,
+        name = this.title,
+        imageUrl = this.imageUrl
+    )
+}
+
+internal fun CartItem.toVariantDbo(): ProductVariantDbo {
+    return ProductVariantDbo(
+        id = this.productVariantId,
+        productId = this.productId,
+        size = this.size,
+        color = this.color
     )
 }

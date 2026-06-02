@@ -2,7 +2,6 @@ package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
-import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
 import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
@@ -10,14 +9,7 @@ import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
-import com.example.modu.data.dataSource.remote.cart.dto.CartSummaryDto
-import com.example.modu.data.dataSource.remote.cart.dto.InsufficientStockAlertDto
-import com.example.modu.data.dataSource.remote.cart.dto.PriceAlertItemDto
-import com.example.modu.data.dataSource.remote.cart.dto.PriceChangedAlertDto
-import com.example.modu.data.dataSource.remote.cart.dto.StockAlertItemDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
-import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityAlertDto
-import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityItemDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.repository.product.toDomain
@@ -72,7 +64,6 @@ class CartRepositoryImpl @Inject constructor(
             }
 
             addOrUpdateItemLocal(item)
-
             ensureCartExistsOnServer()
 
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
@@ -156,12 +147,6 @@ class CartRepositoryImpl @Inject constructor(
             val cartWithItems = localDataSource.getCartWithItems() ?: return CheckoutResult.ALERTS_TRIGGERED
             val cart = cartWithItems.toDomain()
 
-            if (specialInstructions == "MOCK_ALERTS") {
-                val mockResponse = generateMockAlertResponse(cartWithItems)
-                saveRemoteCartToLocal(mockResponse)
-                return CheckoutResult.ALERTS_TRIGGERED
-            }
-
             val request = cart.toCheckoutRequestDto(isPaid, specialInstructions)
             val response = remoteDataSource.checkout(request)
 
@@ -225,7 +210,7 @@ class CartRepositoryImpl @Inject constructor(
             }?.cartItem?.currentStock ?: dto.currentStock
 
             dto.toDbo().copy(
-                currentStock = preservedStock,
+                currentStock = preservedStock ?: 0,
                 oldPriceAlert = priceAlerts?.get(variantId)?.oldPrice,
                 stockAlertAvailable = stockAlerts?.get(variantId)?.availableStock,
                 isAvailableAlert = availAlerts?.get(variantId)?.isVariantAvailable
@@ -263,20 +248,8 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun cacheItemDetailsLocally(item: CartItem) {
-        val detailDbo = CartItemDetailDbo(
-            id = item.productId,
-            name = item.title,
-            imageUrl = item.imageUrl
-        )
-        val variantDbo = ProductVariantDbo(
-            id = item.productVariantId,
-            productId = item.productId,
-            size = item.size,
-            color = item.color
-        )
-
-        localDataSource.insertProductDetails(listOf(detailDbo))
-        localDataSource.insertProductVariants(listOf(variantDbo))
+        localDataSource.insertProductDetails(listOf(item.toDetailDbo()))
+        localDataSource.insertProductVariants(listOf(item.toVariantDbo()))
     }
 
     private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
@@ -315,75 +288,5 @@ class CartRepositoryImpl @Inject constructor(
                 }
             }.awaitAll()
         }
-    }
-
-    private fun generateMockAlertResponse(cartWithItems: CartWithItemsDbo): CartDto {
-        val currentItems = cartWithItems.items
-
-        val itemsDto = currentItems.map { dbo ->
-            CartItemDto(
-                id = dbo.cartItem.id,
-                productId = dbo.cartItem.productId,
-                productVariantId = dbo.cartItem.productVariantId,
-                currentStock = dbo.cartItem.currentStock,
-                quantity = dbo.cartItem.quantity,
-                unitPrice = dbo.cartItem.unitPrice,
-                totalPrice = dbo.cartItem.totalPrice
-            )
-        }
-
-        val cartSummary = CartSummaryDto(
-            deviceId = "mock_device",
-            createdAt = cartWithItems.cart.createdAt,
-            updatedAt = cartWithItems.cart.updatedAt,
-            subTotalPrice = cartWithItems.cart.subTotal,
-            shippingCosts = cartWithItems.cart.shippingCost,
-            totalPrice = cartWithItems.cart.total,
-            cartItems = itemsDto
-        )
-
-        val priceAlerts = mutableListOf<PriceAlertItemDto>()
-        val stockAlerts = mutableListOf<StockAlertItemDto>()
-        val availAlerts = mutableListOf<VariantAvailabilityItemDto>()
-
-        if (currentItems.isNotEmpty()) {
-            val firstItem = currentItems[0].cartItem
-            priceAlerts.add(
-                PriceAlertItemDto(
-                    productVariantId = firstItem.productVariantId,
-                    oldPrice = firstItem.unitPrice.add(BigDecimal("20.00")),
-                    newPrice = firstItem.unitPrice
-                )
-            )
-        }
-
-        if (currentItems.size > 1) {
-            val secondItem = currentItems[1].cartItem
-            stockAlerts.add(
-                StockAlertItemDto(
-                    productVariantId = secondItem.productVariantId,
-                    requestedQuantity = secondItem.quantity,
-                    availableStock = 0
-                )
-            )
-        }
-
-        if (currentItems.size > 2) {
-            val thirdItem = currentItems[2].cartItem
-            availAlerts.add(
-                VariantAvailabilityItemDto(
-                    cartItemId = thirdItem.id,
-                    productVariantId = thirdItem.productVariantId,
-                    isVariantAvailable = false
-                )
-            )
-        }
-
-        return CartDto(
-            cartSummary = cartSummary,
-            priceChangedAlert = if (priceAlerts.isNotEmpty()) PriceChangedAlertDto(priceAlerts) else null,
-            insufficientStockAlert = if (stockAlerts.isNotEmpty()) InsufficientStockAlertDto(stockAlerts) else null,
-            variantAvailabilityAlert = if (availAlerts.isNotEmpty()) VariantAvailabilityAlertDto(availAlerts) else null
-        )
     }
 }
