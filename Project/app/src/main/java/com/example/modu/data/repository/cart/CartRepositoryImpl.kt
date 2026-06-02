@@ -248,20 +248,8 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun cacheItemDetailsLocally(item: CartItem) {
-        val detailDbo = CartItemDetailDbo(
-            id = item.productId,
-            name = item.title,
-            imageUrl = item.imageUrl
-        )
-        val variantDbo = ProductVariantDbo(
-            id = item.productVariantId,
-            productId = item.productId,
-            size = item.size,
-            color = item.color
-        )
-
-        localDataSource.insertProductDetails(listOf(detailDbo))
-        localDataSource.insertProductVariants(listOf(variantDbo))
+        localDataSource.insertProductDetails(listOf(item.toDetailDbo()))
+        localDataSource.insertProductVariants(listOf(item.toVariantDbo()))
     }
 
     private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
