@@ -65,7 +65,6 @@ class CartRepositoryImpl @Inject constructor(
             }
 
             addOrUpdateItemLocal(item)
-
             ensureCartExistsOnServer()
 
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
