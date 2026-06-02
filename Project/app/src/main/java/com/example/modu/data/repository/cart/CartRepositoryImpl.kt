@@ -2,7 +2,6 @@ package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
-import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
 import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
