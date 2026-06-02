@@ -212,7 +212,7 @@ class CartRepositoryImpl @Inject constructor(
             }?.cartItem?.currentStock ?: dto.currentStock
 
             dto.toDbo().copy(
-                currentStock = preservedStock,
+                currentStock = preservedStock ?: 0,
                 oldPriceAlert = priceAlerts?.get(variantId)?.oldPrice,
                 stockAlertAvailable = stockAlerts?.get(variantId)?.availableStock,
                 isAvailableAlert = availAlerts?.get(variantId)?.isVariantAvailable

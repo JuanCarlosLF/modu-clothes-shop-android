@@ -8,7 +8,7 @@ data class CartItemDto(
     val productId: Int? = null,
     val productVariantId: Int? = null,
     @SerializedName("stock")
-    val currentStock: Int,
+    val currentStock: Int? = null,
     val quantity: Int? = null,
     val unitPrice: BigDecimal? = null,
     val totalPrice: BigDecimal? = null
