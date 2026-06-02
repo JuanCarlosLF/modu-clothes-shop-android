@@ -15,6 +15,7 @@ import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.repository.product.toDomain
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.repository.cart.CartRepository
@@ -54,24 +55,24 @@ class CartRepositoryImpl @Inject constructor(
 
     override suspend fun addItem(item: CartItem) {
         try {
+            cacheItemDetailsLocally(item)
+
             if (cartPreferences.hasPendingSync()) {
                 addOrUpdateItemLocal(item)
                 updateCart()
                 return
             }
 
+            addOrUpdateItemLocal(item)
             ensureCartExistsOnServer()
 
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
             val response = remoteDataSource.addItem(request)
 
-            saveRemoteCartToLocal(response)
-
+            saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
-            if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
-                addOrUpdateItemLocal(item)
-            } else {
+            if (handledError !is AppError || handledError.type != ErrorType.NO_INTERNET) {
                 throw handledError
             }
         }
@@ -88,8 +89,7 @@ class CartRepositoryImpl @Inject constructor(
             ensureCartExistsOnServer()
 
             val response = remoteDataSource.deleteItemById(id)
-            saveRemoteCartToLocal(response)
-
+            saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
@@ -105,10 +105,17 @@ class CartRepositoryImpl @Inject constructor(
             if (!cartPreferences.hasPendingSync()) return
 
             ensureCartExistsOnServer()
-            val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
-            val request = UpdateCartRequestDto(cartItems = currentItems.map { it.toDomain().toDto() })
-            val response = remoteDataSource.updateCart(request)
 
+            val cartWithItems = localDataSource.getCartWithItems()
+            val currentItems = cartWithItems?.items ?: emptyList()
+            val shipping = cartWithItems?.cart?.shippingCost ?: BigDecimal.ZERO
+
+            val request = UpdateCartRequestDto(
+                cartItems = currentItems.map { it.toDomain().toDto() },
+                shippingCosts = shipping
+            )
+
+            val response = remoteDataSource.updateCart(request)
             saveRemoteCartToLocal(response)
         } catch (error: Exception) {
             throw errorHandler.handle(error)
@@ -120,11 +127,12 @@ class CartRepositoryImpl @Inject constructor(
             ensureCartExistsOnServer()
 
             val response = remoteDataSource.clearCart()
-            saveRemoteCartToLocal(response)
+            saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
                 localDataSource.clearCart()
+                appPreferences.setCartGenerated(false)
                 cartPreferences.setPendingSync(true)
             } else {
                 throw handledError
@@ -132,16 +140,58 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkout(isPaid: Boolean, specialInstructions: String): CheckoutResult {
+        try {
+            ensureCartExistsOnServer()
+
+            val cartWithItems = localDataSource.getCartWithItems() ?: return CheckoutResult.ALERTS_TRIGGERED
+            val cart = cartWithItems.toDomain()
+
+            val request = cart.toCheckoutRequestDto(isPaid, specialInstructions)
+            val response = remoteDataSource.checkout(request)
+
+            return if (response.orderPlaced == true) {
+                localDataSource.clearCart()
+                CheckoutResult.SUCCESS
+            } else {
+                saveRemoteCartToLocal(requireNotNull(response.cartResponse))
+                CheckoutResult.ALERTS_TRIGGERED
+            }
+        } catch (error: Exception) {
+            throw errorHandler.handle(error)
+        }
+    }
+
+    override suspend fun syncCart() {
+        try {
+            if (cartPreferences.hasPendingSync()) {
+                updateCart()
+                return
+            }
+            ensureCartExistsOnServer()
+            val response = remoteDataSource.getCart()
+            saveRemoteCartToLocal(response)
+            cartPreferences.setPendingSync(false)
+        } catch (error: Exception) {
+            throw errorHandler.handle(error)
+        }
+    }
+
+    override suspend fun updateQuantityLocal(item: CartItem, quantity: Int) {
+        val newItem = item.copy(quantity = quantity)
+        addOrUpdateItemLocal(newItem)
+        cartPreferences.setPendingSync(true)
+    }
+
     private suspend fun ensureCartExistsOnServer() {
         if (appPreferences.isCartGenerated()) return
-
-        val request = UpdateCartRequestDto(cartItems = emptyList())
-        remoteDataSource.updateCart(request)
-
+        remoteDataSource.createCart()
         appPreferences.setCartGenerated(true)
     }
 
     private suspend fun saveRemoteCartToLocal(response: CartDto) {
+        val currentLocalItems = localDataSource.getCartWithItems()?.items ?: emptyList()
+
         localDataSource.clearCart()
         localDataSource.insertCart(response.toCartDbo())
 
@@ -155,7 +205,12 @@ class CartRepositoryImpl @Inject constructor(
 
         val mergedDbos = itemsDto.map { dto ->
             val variantId = dto.productVariantId ?: DEFAULT_ID
+            val preservedStock = currentLocalItems.find {
+                it.cartItem.productVariantId == variantId
+            }?.cartItem?.currentStock ?: dto.currentStock
+
             dto.toDbo().copy(
+                currentStock = preservedStock ?: 0,
                 oldPriceAlert = priceAlerts?.get(variantId)?.oldPrice,
                 stockAlertAvailable = stockAlerts?.get(variantId)?.availableStock,
                 isAvailableAlert = availAlerts?.get(variantId)?.isVariantAvailable
@@ -167,20 +222,7 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
-        val detailDbo = CartItemDetailDbo(
-            id = item.productId,
-            name = item.title,
-            imageUrl = item.imageUrl
-        )
-        val variantDbo = ProductVariantDbo(
-            id = item.productVariantId,
-            productId = item.productId,
-            size = item.size,
-            color = item.color
-        )
-
-        localDataSource.insertProductDetails(listOf(detailDbo))
-        localDataSource.insertProductVariants(listOf(variantDbo))
+        cacheItemDetailsLocally(item)
 
         val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
@@ -191,7 +233,8 @@ class CartRepositoryImpl @Inject constructor(
             item.copy(id = existingDbo.cartItem.id).toDbo()
         } else {
             val currentMinId = currentItems.minOfOrNull { it.cartItem.id } ?: DEFAULT_ID
-            val newId = if (currentMinId < DEFAULT_ID) currentMinId - ID_DECREMENT_STEP else FALLBACK_NEW_ID
+            val newId =
+                if (currentMinId < DEFAULT_ID) currentMinId - ID_DECREMENT_STEP else FALLBACK_NEW_ID
             item.copy(id = newId).toDbo()
         }
 
@@ -202,6 +245,11 @@ class CartRepositoryImpl @Inject constructor(
     private suspend fun deleteItemLocal(id: Int) {
         localDataSource.deleteCartItem(id)
         cartPreferences.setPendingSync(true)
+    }
+
+    private suspend fun cacheItemDetailsLocally(item: CartItem) {
+        localDataSource.insertProductDetails(listOf(item.toDetailDbo()))
+        localDataSource.insertProductVariants(listOf(item.toVariantDbo()))
     }
 
     private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
@@ -235,6 +283,7 @@ class CartRepositoryImpl @Inject constructor(
                         localDataSource.insertProductDetails(listOf(detailDbo))
                         localDataSource.insertProductVariants(variantDbos)
                     } catch (e: Exception) {
+                        errorHandler.handle(e)
                     }
                 }
             }.awaitAll()

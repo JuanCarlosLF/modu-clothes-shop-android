@@ -1,7 +1,10 @@
 package com.example.modu.data.dataSource.remote.cart.api
 
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -27,13 +30,18 @@ interface CartApi {
     @POST("cart/addItem")
     suspend fun addItem(
         @Body request: AddItemRequestDto
-    ): CartDto
+    ): CartResponseDto
 
     @DELETE("cart/items/{itemId}")
     suspend fun deleteItemById(
         @Path("itemId") itemId: Int,
-    ): CartDto
+    ): CartResponseDto
 
     @DELETE("cart/items")
-    suspend fun clearCart(): CartDto
+    suspend fun clearCart(): CartResponseDto
+
+    @POST("checkout")
+    suspend fun checkout(
+        @Body request: CartCheckoutRequestDto
+    ): CartCheckoutResponseDto
 }
