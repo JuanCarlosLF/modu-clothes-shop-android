@@ -1,6 +1,8 @@
 package com.example.modu.data.dataSource.remote.cart.api
 
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
@@ -37,4 +39,9 @@ interface CartApi {
 
     @DELETE("cart/items")
     suspend fun clearCart(): CartResponseDto
+
+    @POST("checkout")
+    suspend fun checkout(
+        @Body request: CartCheckoutRequestDto
+    ): CartCheckoutResponseDto
 }

@@ -3,6 +3,7 @@ package com.example.modu.presentation.detail
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,24 +32,33 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
     private val viewModel: DetailViewModel by viewModels()
     private var binding: FragmentProductDetailBinding? = null
     private val args: ProductDetailFragmentArgs by navArgs()
-    private var carruselAdapter: CarruselAdapter? = null
-    private lateinit var sizesAdapter: SizesAdapter
-    private lateinit var colorsAdapter: ColorAdapter
+
+    private var carrouselAdapter: CarruselAdapter? = null
+    private var sizesAdapter: SizesAdapter? = null
+    private var colorsAdapter: ColorAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? MainActivity)?.setBottomNavVisible(false)
         binding = FragmentProductDetailBinding.bind(view)
-        (activity as? MainActivity)?.setBottomNavVisible(false)
+
         setupAdapters()
         setupRecyclerViews()
-        observeUiState()
         setupListeners()
+        observeUiState()
+        observeEvents()
+
         viewModel.loadDetail(args.productId)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding?.recyclerSizes?.adapter = null
+        binding?.recyclerColors?.adapter = null
+        binding?.recyclerCarruselDetail?.adapter = null
+        sizesAdapter = null
+        colorsAdapter = null
+        carrouselAdapter = null
         binding = null
     }
 
@@ -64,14 +74,26 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                         else shimmerDetail.stopShimmer()
                     }
                     renderDetail(state)
+                }
+            }
+        }
+    }
 
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    Toast.makeText(
+                        requireContext(),
+                        event.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
 
     private fun renderDetail(state: ProductDetailUiState) {
-
         binding?.apply {
             state.detail?.let { detail ->
                 textTitleDetail.text = detail.name
@@ -79,19 +101,26 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                 textPriceDetail.text = getString(R.string.text_price_format, detail.price)
                 imgBackground.load(detail.imageUrl)
 
-                renderSizes(state)
-                renderColors(state)
+                val sizes = detail.productVariantsList.mapNotNull { it.size }.distinct()
+                sizesAdapter?.updateData(sizes, state.selectedSize)
+
+                val colors = detail.productVariantsList.mapNotNull { it.color }.distinct()
+                colorsAdapter?.updateData(colors, state.selectedColor)
             }
-            textQuantityDetail.text = "${state.quantity}"
+
+            textQuantityDetail.text = state.quantity.toString()
+
             icRemoveQuantityDetail.setBackgroundResource(
                 state.isButtonQuantityEnabled.toColorRes(
                     enabled = R.drawable.ic_remove_quantity_white,
                     disabled = R.drawable.ic_remove_quantity
                 )
             )
+
             val price = state.detail?.price ?: BigDecimal.ZERO
             val total = price.multiply(state.quantity.toBigDecimal())
             textTotal.text = getString(R.string.text_price_format, total)
+
             btnAddCardItem.isEnabled = state.isAddButtonEnabled
 
             val bgColor = state.isAddButtonEnabled.toColorRes(
@@ -111,59 +140,48 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             btnAddCardItem.setTextColor(
                 ContextCompat.getColor(requireContext(), textColor)
             )
-            carruselAdapter?.submitList(state.suggestedProducts)
+
+            carrouselAdapter?.submitList(state.suggestedProducts)
         }
     }
 
-    private fun Boolean.toColorRes(
-        enabled: Int,
-        disabled: Int
-    ) = if (this) enabled else disabled
+    private fun Boolean.toColorRes(enabled: Int, disabled: Int) = if (this) enabled else disabled
 
     private fun setupAdapters() {
         sizesAdapter = SizesAdapter(emptyList()) { size ->
             viewModel.onSizeSelected(size)
         }
-
         colorsAdapter = ColorAdapter(emptyList()) { color ->
             viewModel.onColorSelected(color)
+        }
+        carrouselAdapter = CarruselAdapter { product ->
+            val action = ProductDetailFragmentDirections.actionFragmentProductDetailSelf(product.id)
+            findNavController().navigate(action)
         }
     }
 
     private fun setupRecyclerViews() {
-        binding?.recyclerSizes?.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
-                flexDirection = FlexDirection.ROW
-                flexWrap = FlexWrap.WRAP
+        binding?.apply {
+            recyclerSizes.apply {
+                layoutManager = FlexboxLayoutManager(requireContext()).apply {
+                    flexDirection = FlexDirection.ROW
+                    flexWrap = FlexWrap.WRAP
+                }
+                adapter = sizesAdapter
             }
-            adapter = sizesAdapter
-        }
 
-        binding?.recyclerColors?.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
-                flexDirection = FlexDirection.ROW
-                flexWrap = FlexWrap.WRAP
+            recyclerColors.apply {
+                layoutManager = FlexboxLayoutManager(requireContext()).apply {
+                    flexDirection = FlexDirection.ROW
+                    flexWrap = FlexWrap.WRAP
+                }
+                adapter = colorsAdapter
             }
-            adapter = colorsAdapter
-        }
 
-        setupCarrusel()
-    }
-
-    private fun setupCarrusel() {
-        carruselAdapter = CarruselAdapter { product ->
-            val action =
-                ProductDetailFragmentDirections.actionFragmentProductDetailSelf(product.id)
-
-            findNavController().navigate(action)
-        }
-        binding?.recyclerCarruselDetail?.apply {
-            layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            adapter = carruselAdapter
+            recyclerCarruselDetail.apply {
+                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                adapter = carrouselAdapter
+            }
         }
     }
 
@@ -181,28 +199,6 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             }
             btnAddCardItem.setOnClickListener {
                 viewModel.addItemToCart()
-            }
-        }
-    }
-
-    private fun renderSizes(state: ProductDetailUiState) {
-        binding?.apply {
-            state.detail?.let { detail ->
-                val sizes = detail.productVariantsList
-                    .map { it.size }
-                    .distinct()
-                sizesAdapter.updateData(sizes, state.selectedSize)
-            }
-        }
-    }
-
-    private fun renderColors(state: ProductDetailUiState) {
-        binding?.apply {
-            state.detail?.let { detail ->
-                val colors = detail.productVariantsList
-                    .map { it.color }
-                    .distinct()
-                colorsAdapter.updateData(colors, state.selectedColor)
             }
         }
     }

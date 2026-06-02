@@ -3,6 +3,7 @@ package com.example.modu.di
 import com.example.modu.BuildConfig
 import com.example.modu.data.dataSource.remote.cart.api.CartApi
 import com.example.modu.data.dataSource.remote.interceptor.DeviceIdInterceptor
+import com.example.modu.data.dataSource.remote.interceptor.MockInterceptor
 import com.example.modu.data.dataSource.remote.product.api.ProductApi
 import dagger.Module
 import dagger.Provides
@@ -22,10 +23,10 @@ object NetworkModule {
     @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
-            if (BuildConfig.DEBUG) {
-                level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
             } else {
-                level = HttpLoggingInterceptor.Level.NONE
+                HttpLoggingInterceptor.Level.NONE
             }
         }
     }
@@ -34,7 +35,8 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        deviceIdInterceptor: DeviceIdInterceptor
+        deviceIdInterceptor: DeviceIdInterceptor,
+        mockInterceptor: MockInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(deviceIdInterceptor)

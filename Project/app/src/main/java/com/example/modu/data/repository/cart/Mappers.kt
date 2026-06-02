@@ -4,10 +4,12 @@ import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemWithDetailsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartSummaryDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartToOrderDto
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
 
@@ -69,7 +71,7 @@ internal fun CartItem.toDto(): CartItemDto {
         id = this.id,
         productId = this.productId,
         productVariantId = this.productVariantId,
-        currentStock = this.currentStock?: 0,
+        currentStock = this.currentStock ?: 0,
         quantity = this.quantity,
         unitPrice = this.unitPrice,
         totalPrice = this.totalPrice
@@ -124,5 +126,19 @@ internal fun CartResponseDto.toCartDto(): CartDto {
         priceChangedAlert = null,
         insufficientStockAlert = null,
         variantAvailabilityAlert = null
+    )
+}
+
+internal fun Cart.toCheckoutRequestDto(
+    isPaid: Boolean,
+    specialInstructions: String
+): CartCheckoutRequestDto {
+    return CartCheckoutRequestDto(
+        isPaid = isPaid,
+        specialInstructions = specialInstructions,
+        shippingCosts = this.shippingCost,
+        cartToOrder = CartToOrderDto(
+            cartItems = this.items.map { it.toDto() }
+        )
     )
 }

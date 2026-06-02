@@ -2,6 +2,8 @@ package com.example.modu.data.dataSource.remote.cart
 
 import com.example.modu.data.dataSource.remote.cart.api.CartApi
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartCheckoutResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartResponseDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
@@ -22,4 +24,6 @@ class CartRemoteDataSourceImpl @Inject constructor(
     override suspend fun clearCart(): CartResponseDto = api.clearCart()
 
     override suspend fun createCart(): CartDto = api.createCart()
+
+    override suspend fun checkout(request: CartCheckoutRequestDto): CartCheckoutResponseDto = api.checkout(request)
 }

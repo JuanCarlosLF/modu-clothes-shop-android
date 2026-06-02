@@ -14,17 +14,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_product"
+        <FrameLayout
+            android:id="@+id/layout_image_container"
             android:layout_width="96dp"
             android:layout_height="0dp"
             android:padding="@dimen/padding_xxs"
-            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImage"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_product"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/roundedImage"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <FrameLayout
+                android:id="@+id/overlay_unavailable"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/padding_xxs"
+                android:background="#B3000000"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/text_unavailable_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="bold"
+                    tools:text="Sin stock" />
+            </FrameLayout>
+        </FrameLayout>
 
         <TextView
             android:id="@+id/text_item_cart_title"
@@ -36,7 +63,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_general_plus"
             app:layout_constraintEnd_toStartOf="@id/ic_delete_item_cart"
-            app:layout_constraintStart_toEndOf="@id/img_product"
+            app:layout_constraintStart_toEndOf="@id/layout_image_container"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Camiseta UN Limited" />
 
@@ -74,6 +101,21 @@
             tools:text="$ 39,99" />
 
         <TextView
+            android:id="@+id/text_old_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_s"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="#E57373"
+            android:textSize="@dimen/text_size_small"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/text_item_cart_price"
+            app:layout_constraintStart_toEndOf="@id/text_item_cart_price"
+            app:layout_constraintTop_toTopOf="@id/text_item_cart_price"
+            tools:text="$ 49,99"
+            tools:visibility="visible" />
+
+        <TextView
             android:id="@+id/text_item_cart_total_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageButton
-                android:id="@+id/btn_cart_add_quantity"
+                android:id="@+id/btn_cart_remove_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_xs_plus"
@@ -115,13 +157,13 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_general_plus"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_cart_remove_quantity"
-                app:layout_constraintStart_toEndOf="@id/btn_cart_add_quantity"
+                app:layout_constraintEnd_toStartOf="@id/btn_cart_add_quantity"
+                app:layout_constraintStart_toEndOf="@id/btn_cart_remove_quantity"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="2" />
 
             <ImageButton
-                android:id="@+id/btn_cart_remove_quantity"
+                android:id="@+id/btn_cart_add_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/margin_xs_plus"

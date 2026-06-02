@@ -1,7 +1,10 @@
 package com.example.modu.presentation.cart
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +18,12 @@ class CartAdapter(
     private val onAddQuantityClick: (CartItem) -> Unit,
     private val onRemoveQuantityClick: (CartItem) -> Unit
 ) : ListAdapter<CartItem, CartAdapter.CartViewHolder>(DiffCallback()) {
+
+    private var currentToast: Toast? = null
+
     inner class CartViewHolder(private val binding: ItemProductCartBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: CartItem) = with(binding) {
             imgProduct.load(item.imageUrl)
             textItemCartTitle.text = item.title
@@ -27,12 +34,47 @@ class CartAdapter(
             textItemCartTotalPrice.text =
                 root.context.getString(R.string.cart_text_total_price, item.totalPrice)
             txtQuantityCart.text = item.quantity.toString()
+
+            val isUnavailable = item.isAvailableAlert == false
+            val isOutOfStock = item.stockAlertAvailable != null
+
+            overlayUnavailable.isVisible = isUnavailable || isOutOfStock
+
+            if (isUnavailable) {
+                textUnavailableBadge.text = root.context.getString(R.string.alert_unavailable)
+            } else if (isOutOfStock) {
+                textUnavailableBadge.text = root.context.getString(R.string.alert_out_of_stock)
+            }
+
+            if (item.oldPriceAlert != null) {
+                textOldPrice.isVisible = true
+                textOldPrice.paintFlags = textOldPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                textOldPrice.text = root.context.getString(R.string.cart_text_price, item.oldPriceAlert)
+            } else {
+                textOldPrice.isVisible = false
+            }
+
+            val isMaxStock = item.quantity >= item.currentStock
+            btnCartAddQuantity.alpha = if (isMaxStock) 0.5f else 1.0f
+
             icDeleteItemCart.setOnClickListener {
                 onDeleteClick(item)
             }
+
             btnCartAddQuantity.setOnClickListener {
-                onAddQuantityClick(item)
+                if (isMaxStock) {
+                    currentToast?.cancel()
+                    currentToast = Toast.makeText(
+                        root.context,
+                        R.string.cart_max_stock_reached,
+                        Toast.LENGTH_SHORT
+                    )
+                    currentToast?.show()
+                } else {
+                    onAddQuantityClick(item)
+                }
             }
+
             btnCartRemoveQuantity.setOnClickListener {
                 onRemoveQuantityClick(item)
             }
@@ -59,7 +101,6 @@ class CartAdapter(
     }
 
     class DiffCallback : DiffUtil.ItemCallback<CartItem>() {
-
         override fun areItemsTheSame(
             oldItem: CartItem,
             newItem: CartItem

@@ -3,12 +3,15 @@ package com.example.modu.presentation.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.usecase.cart.CartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,6 +19,10 @@ import java.math.BigDecimal
 import javax.inject.Inject
 
 private const val JOB_DELAY_MS: Long = 5000
+
+sealed interface CartUiEvent {
+    object CheckoutSuccess : CartUiEvent
+}
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
@@ -25,11 +32,25 @@ class CartViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CartUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _uiEvent = MutableSharedFlow<CartUiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
     private var currentRoomCartItems: List<CartItem> = emptyList()
     private var undoJob: Job? = null
 
     init {
+
         observeCart()
+    }
+
+    private fun verifyPendingChanges() {
+        viewModelScope.launch {
+            try {
+                cartUseCase.verifyPendingChanges()
+            } catch (error: AppError) {
+                _uiState.update { it.copy(error = error) }
+            }
+        }
     }
 
     private fun observeCart() {
@@ -125,6 +146,19 @@ class CartViewModel @Inject constructor(
                 total = restoredSubTotal + state.shippingCost,
                 isCartEmpty = restoredItems.isEmpty()
             )
+        }
+    }
+
+    fun checkout(specialInstructions: String) {
+        viewModelScope.launch {
+            try {
+                val result = cartUseCase.checkout(specialInstructions)
+                if (result == CheckoutResult.SUCCESS) {
+                    _uiEvent.emit(CartUiEvent.CheckoutSuccess)
+                }
+            } catch (error: AppError) {
+                _uiState.update { it.copy(error = error) }
+            }
         }
     }
 

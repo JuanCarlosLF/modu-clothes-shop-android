@@ -40,4 +40,17 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+
+    <style name="CustomDarkDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/grey_dark</item>
+        <item name="android:backgroundTint">@color/grey_dark</item>
+
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+
+        <item name="colorOnSurfaceVariant">@color/grey_light</item>
+        <item name="android:textColorSecondary">@color/grey_light</item>
+
+        <item name="colorPrimary">@color/orange_primary</item>
+    </style>
 </resources>

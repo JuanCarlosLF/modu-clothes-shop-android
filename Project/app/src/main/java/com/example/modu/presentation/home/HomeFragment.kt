@@ -115,9 +115,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         state.orderByPrice?.takeIf { it.isNotBlank() }?.let { order ->
-            val displayOrder = if (order == PRICE_SORT_ASC) R.string.home_filter_order_lowest else R.string.home_filter_order_highest
+            val displayOrderResId = if (order == PRICE_SORT_ASC) R.string.home_filter_order_lowest else R.string.home_filter_order_highest
+
             val prefix = getString(R.string.home_filter_prefix_order)
-            chipGroup.addView(createCloseableChip("$prefix$displayOrder") {
+            val displayOrderText = getString(displayOrderResId)
+
+            chipGroup.addView(createCloseableChip("$prefix$displayOrderText") {
                 viewModel.removeFilter(HomeViewModel.ActiveFilter.Order)
             })
         }

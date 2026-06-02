@@ -2,6 +2,7 @@ package com.example.modu.domain.usecase.cart
 
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.repository.cart.CartRepository
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
@@ -29,7 +30,7 @@ class CartUseCaseImpl @Inject constructor(
         val validQuantity = quantity.coerceIn(MINIMUM_QUANTITY, currentStock)
 
         val newItem = CartItem(
-            id = 0,
+            id = productId,
             productId = productId,
             productVariantId = productVariantId,
             currentStock = currentStock,
@@ -50,12 +51,7 @@ class CartUseCaseImpl @Inject constructor(
         if (newQuantity < MINIMUM_QUANTITY) return
         if (newQuantity > item.currentStock) return
 
-        val updatedItem = item.copy(
-            quantity = newQuantity,
-            totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
-        )
-
-        cartRepository.addItem(updatedItem)
+        cartRepository.updateQuantityLocal(item,newQuantity)
     }
 
     override suspend fun deleteItem(id: Int) {
@@ -64,5 +60,16 @@ class CartUseCaseImpl @Inject constructor(
 
     override suspend fun clearCart() {
         cartRepository.clearCart()
+    }
+
+    override suspend fun checkout(specialInstructions: String): CheckoutResult {
+        return cartRepository.checkout(
+            isPaid = true,
+            specialInstructions = specialInstructions
+        )
+    }
+
+    override suspend fun verifyPendingChanges() {
+        cartRepository.syncCart()
     }
 }

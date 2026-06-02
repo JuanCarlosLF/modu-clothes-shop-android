@@ -1,8 +1,8 @@
 package com.example.modu.data.repository.cart
 
-import android.util.Log
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartWithItemsDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
 import com.example.modu.data.dataSource.local.preference.cart.CartPreferences
@@ -10,12 +10,20 @@ import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.CartSummaryDto
+import com.example.modu.data.dataSource.remote.cart.dto.InsufficientStockAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.PriceAlertItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.PriceChangedAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.StockAlertItemDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityItemDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.repository.product.toDomain
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.repository.cart.CartRepository
@@ -55,32 +63,30 @@ class CartRepositoryImpl @Inject constructor(
 
     override suspend fun addItem(item: CartItem) {
         try {
+            cacheItemDetailsLocally(item)
+
             if (cartPreferences.hasPendingSync()) {
                 addOrUpdateItemLocal(item)
                 updateCart()
                 return
             }
+
+            addOrUpdateItemLocal(item)
+
             ensureCartExistsOnServer()
 
-            Log.d("SYNC_CART", "Haciendo la request")
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
             val response = remoteDataSource.addItem(request)
-            Log.d("SYNC_CARTrr", "Respuesta $response")
 
-            (Log.d("SYNC_CART", "Guardando en local... $request"))
             saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
-            Log.e("CART_REPO", "Add item failed", error)
             val handledError = errorHandler.handle(error)
-            if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
-                addOrUpdateItemLocal(item)
-            } else {
+            if (handledError !is AppError || handledError.type != ErrorType.NO_INTERNET) {
                 throw handledError
             }
         }
     }
 
-    //llega bien el id
     override suspend fun deleteItem(id: Int) {
         try {
             if (id < DEFAULT_ID || cartPreferences.hasPendingSync()) {
@@ -93,7 +99,6 @@ class CartRepositoryImpl @Inject constructor(
 
             val response = remoteDataSource.deleteItemById(id)
             saveRemoteCartToLocal(response.toCartDto())
-
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
@@ -106,80 +111,22 @@ class CartRepositoryImpl @Inject constructor(
 
     override suspend fun updateCart() {
         try {
+            if (!cartPreferences.hasPendingSync()) return
 
-            Log.d("UPDATE_CART", "=== START updateCart ===")
-
-            val hasPending = cartPreferences.hasPendingSync()
-            Log.d("UPDATE_CART", "hasPendingSync=$hasPending")
-
-            if (!hasPending) {
-                Log.d("UPDATE_CART", "EXIT: no pending sync")
-                return
-            }
-
-            Log.d("UPDATE_CART", "Ensuring cart exists on server")
             ensureCartExistsOnServer()
 
-            Log.d("UPDATE_CART", "Fetching cart from local DB")
             val cartWithItems = localDataSource.getCartWithItems()
-
-            Log.d(
-                "UPDATE_CART",
-                "cartFromDB=${cartWithItems != null}"
-            )
-
             val currentItems = cartWithItems?.items ?: emptyList()
-
-            Log.d(
-                "UPDATE_CART",
-                "localItemsCount=${currentItems.size}"
-            )
-
-            currentItems.forEachIndexed { index, item ->
-                Log.d(
-                    "UPDATE_CART",
-                    "LOCAL_ITEM[$index] variantId=${item.cartItem.productVariantId} quantity=${item.cartItem.quantity}"
-                )
-            }
-
             val shipping = cartWithItems?.cart?.shippingCost ?: BigDecimal.ZERO
-
-            Log.d(
-                "UPDATE_CART",
-                "shipping=$shipping"
-            )
-
-            Log.d("UPDATE_CART", "Mapping DTO request")
 
             val request = UpdateCartRequestDto(
                 cartItems = currentItems.map { it.toDomain().toDto() },
                 shippingCosts = shipping
             )
 
-            Log.d(
-                "UPDATE_CART",
-                "requestItems=${request.cartItems?.size ?: 0}"
-            )
-
-            Log.d("UPDATE_CART", "Calling remote updateCart API")
-
             val response = remoteDataSource.updateCart(request)
-
-            Log.d(
-                "UPDATE_CART",
-                "API response received = $response"
-            )
-
-            Log.d("UPDATE_CART", "Saving remote cart to local DB")
-
             saveRemoteCartToLocal(response)
-
-            Log.d("UPDATE_CART", "=== END updateCart SUCCESS ===")
-
         } catch (error: Exception) {
-
-            Log.e("UPDATE_CART", "ERROR in updateCart", error)
-
             throw errorHandler.handle(error)
         }
     }
@@ -194,6 +141,7 @@ class CartRepositoryImpl @Inject constructor(
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NO_INTERNET) {
                 localDataSource.clearCart()
+                appPreferences.setCartGenerated(false)
                 cartPreferences.setPendingSync(true)
             } else {
                 throw handledError
@@ -201,91 +149,95 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkout(isPaid: Boolean, specialInstructions: String): CheckoutResult {
+        try {
+            ensureCartExistsOnServer()
+
+            val cartWithItems = localDataSource.getCartWithItems() ?: return CheckoutResult.ALERTS_TRIGGERED
+            val cart = cartWithItems.toDomain()
+
+            if (specialInstructions == "MOCK_ALERTS") {
+                val mockResponse = generateMockAlertResponse(cartWithItems)
+                saveRemoteCartToLocal(mockResponse)
+                return CheckoutResult.ALERTS_TRIGGERED
+            }
+
+            val request = cart.toCheckoutRequestDto(isPaid, specialInstructions)
+            val response = remoteDataSource.checkout(request)
+
+            return if (response.orderPlaced == true) {
+                localDataSource.clearCart()
+                CheckoutResult.SUCCESS
+            } else {
+                saveRemoteCartToLocal(requireNotNull(response.cartResponse))
+                CheckoutResult.ALERTS_TRIGGERED
+            }
+        } catch (error: Exception) {
+            throw errorHandler.handle(error)
+        }
+    }
+
+    override suspend fun syncCart() {
+        try {
+            if (cartPreferences.hasPendingSync()) {
+                updateCart()
+                return
+            }
+            ensureCartExistsOnServer()
+            val response = remoteDataSource.getCart()
+            saveRemoteCartToLocal(response)
+            cartPreferences.setPendingSync(false)
+        } catch (error: Exception) {
+            throw errorHandler.handle(error)
+        }
+    }
+
+    override suspend fun updateQuantityLocal(item: CartItem, quantity: Int) {
+        val newItem = item.copy(quantity = quantity)
+        addOrUpdateItemLocal(newItem)
+        cartPreferences.setPendingSync(true)
+    }
+
     private suspend fun ensureCartExistsOnServer() {
         if (appPreferences.isCartGenerated()) return
-
-        val request = UpdateCartRequestDto(cartItems = emptyList())
-        remoteDataSource.updateCart(request)
-
+        remoteDataSource.createCart()
         appPreferences.setCartGenerated(true)
     }
 
     private suspend fun saveRemoteCartToLocal(response: CartDto) {
+        val currentLocalItems = localDataSource.getCartWithItems()?.items ?: emptyList()
+
         localDataSource.clearCart()
         localDataSource.insertCart(response.toCartDbo())
 
         val itemsDto = response.cartSummary?.cartItems ?: emptyList()
-        itemsDto.forEachIndexed { index, item ->
-            Log.d(
-                "CART_SYNC",
-                "Item[$index] variantId=${item.productVariantId} quantity=${item.quantity}"
-            )
-        }
 
         fetchAndCacheMissingProducts(itemsDto)
 
-        val priceAlerts =
-            response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
+        val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
+        val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
+        val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
 
-        val stockAlerts =
-            response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
-
-        val availAlerts =
-            response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
         val mergedDbos = itemsDto.map { dto ->
-
             val variantId = dto.productVariantId ?: DEFAULT_ID
+            val preservedStock = currentLocalItems.find {
+                it.cartItem.productVariantId == variantId
+            }?.cartItem?.currentStock ?: dto.currentStock
 
             dto.toDbo().copy(
+                currentStock = preservedStock,
                 oldPriceAlert = priceAlerts?.get(variantId)?.oldPrice,
                 stockAlertAvailable = stockAlerts?.get(variantId)?.availableStock,
                 isAvailableAlert = availAlerts?.get(variantId)?.isVariantAvailable
             )
         }
 
-        Log.d(
-            "CART_SYNC",
-            "Merged dbos count=${mergedDbos.size}"
-        )
-
-        Log.d("CART_SYNC", "Inserting cart items")
         localDataSource.insertCartItems(mergedDbos)
-
-        Log.d("CART_SYNC", "Setting pendingSync=false")
         cartPreferences.setPendingSync(false)
-
-        val localCart = localDataSource.getCartWithItems()
-
-        Log.d(
-            "CART_SYNC",
-            "Local cart after save -> items=${localCart?.items?.size ?: 0}"
-        )
-
-        localCart?.items?.forEachIndexed { index, item ->
-            Log.d(
-                "CART_SYNC",
-                "LocalItem[$index] id=${item.cartItem.id} variantId=${item.cartItem.productVariantId} quantity=${item.cartItem.quantity}"
-            )
-        }
-
-        Log.d("CART_SYNC", "=== END saveRemoteCartToLocal ===")
     }
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
-        val detailDbo = CartItemDetailDbo(
-            id = item.productId,
-            name = item.title,
-            imageUrl = item.imageUrl
-        )
-        val variantDbo = ProductVariantDbo(
-            id = item.productVariantId,
-            productId = item.productId,
-            size = item.size,
-            color = item.color
-        )
-
-        localDataSource.insertProductDetails(listOf(detailDbo))
-        localDataSource.insertProductVariants(listOf(variantDbo))
+        cacheItemDetailsLocally(item)
 
         val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
@@ -308,6 +260,23 @@ class CartRepositoryImpl @Inject constructor(
     private suspend fun deleteItemLocal(id: Int) {
         localDataSource.deleteCartItem(id)
         cartPreferences.setPendingSync(true)
+    }
+
+    private suspend fun cacheItemDetailsLocally(item: CartItem) {
+        val detailDbo = CartItemDetailDbo(
+            id = item.productId,
+            name = item.title,
+            imageUrl = item.imageUrl
+        )
+        val variantDbo = ProductVariantDbo(
+            id = item.productVariantId,
+            productId = item.productId,
+            size = item.size,
+            color = item.color
+        )
+
+        localDataSource.insertProductDetails(listOf(detailDbo))
+        localDataSource.insertProductVariants(listOf(variantDbo))
     }
 
     private suspend fun fetchAndCacheMissingProducts(itemsDto: List<CartItemDto>) {
@@ -341,9 +310,80 @@ class CartRepositoryImpl @Inject constructor(
                         localDataSource.insertProductDetails(listOf(detailDbo))
                         localDataSource.insertProductVariants(variantDbos)
                     } catch (e: Exception) {
+                        errorHandler.handle(e)
                     }
                 }
             }.awaitAll()
         }
+    }
+
+    private fun generateMockAlertResponse(cartWithItems: CartWithItemsDbo): CartDto {
+        val currentItems = cartWithItems.items
+
+        val itemsDto = currentItems.map { dbo ->
+            CartItemDto(
+                id = dbo.cartItem.id,
+                productId = dbo.cartItem.productId,
+                productVariantId = dbo.cartItem.productVariantId,
+                currentStock = dbo.cartItem.currentStock,
+                quantity = dbo.cartItem.quantity,
+                unitPrice = dbo.cartItem.unitPrice,
+                totalPrice = dbo.cartItem.totalPrice
+            )
+        }
+
+        val cartSummary = CartSummaryDto(
+            deviceId = "mock_device",
+            createdAt = cartWithItems.cart.createdAt,
+            updatedAt = cartWithItems.cart.updatedAt,
+            subTotalPrice = cartWithItems.cart.subTotal,
+            shippingCosts = cartWithItems.cart.shippingCost,
+            totalPrice = cartWithItems.cart.total,
+            cartItems = itemsDto
+        )
+
+        val priceAlerts = mutableListOf<PriceAlertItemDto>()
+        val stockAlerts = mutableListOf<StockAlertItemDto>()
+        val availAlerts = mutableListOf<VariantAvailabilityItemDto>()
+
+        if (currentItems.isNotEmpty()) {
+            val firstItem = currentItems[0].cartItem
+            priceAlerts.add(
+                PriceAlertItemDto(
+                    productVariantId = firstItem.productVariantId,
+                    oldPrice = firstItem.unitPrice.add(BigDecimal("20.00")),
+                    newPrice = firstItem.unitPrice
+                )
+            )
+        }
+
+        if (currentItems.size > 1) {
+            val secondItem = currentItems[1].cartItem
+            stockAlerts.add(
+                StockAlertItemDto(
+                    productVariantId = secondItem.productVariantId,
+                    requestedQuantity = secondItem.quantity,
+                    availableStock = 0
+                )
+            )
+        }
+
+        if (currentItems.size > 2) {
+            val thirdItem = currentItems[2].cartItem
+            availAlerts.add(
+                VariantAvailabilityItemDto(
+                    cartItemId = thirdItem.id,
+                    productVariantId = thirdItem.productVariantId,
+                    isVariantAvailable = false
+                )
+            )
+        }
+
+        return CartDto(
+            cartSummary = cartSummary,
+            priceChangedAlert = if (priceAlerts.isNotEmpty()) PriceChangedAlertDto(priceAlerts) else null,
+            insufficientStockAlert = if (stockAlerts.isNotEmpty()) InsufficientStockAlertDto(stockAlerts) else null,
+            variantAvailabilityAlert = if (availAlerts.isNotEmpty()) VariantAvailabilityAlertDto(availAlerts) else null
+        )
     }
 }
