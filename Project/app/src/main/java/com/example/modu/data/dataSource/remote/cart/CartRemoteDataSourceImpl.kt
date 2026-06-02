@@ -25,5 +25,5 @@ class CartRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun createCart(): CartDto = api.createCart()
 
-    override suspend fun checkout(request: CartCheckoutRequestDto): CartCheckoutResponseDto = api.checkout(request)
+    override suspend fun executeCheckout(request: CartCheckoutRequestDto): CartCheckoutResponseDto = api.executeCheckout(request)
 }

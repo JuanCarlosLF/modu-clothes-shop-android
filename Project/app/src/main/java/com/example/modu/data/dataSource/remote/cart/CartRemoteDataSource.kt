@@ -14,5 +14,5 @@ interface CartRemoteDataSource {
     suspend fun deleteItemById(itemId: Int): CartResponseDto
     suspend fun clearCart(): CartResponseDto
     suspend fun createCart(): CartDto
-    suspend fun checkout(request: CartCheckoutRequestDto): CartCheckoutResponseDto
+    suspend fun executeCheckout(request: CartCheckoutRequestDto): CartCheckoutResponseDto
 }

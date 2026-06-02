@@ -140,7 +140,7 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun checkout(isPaid: Boolean, specialInstructions: String): CheckoutResult {
+    override suspend fun executeCheckout(isPaid: Boolean, specialInstructions: String): CheckoutResult {
         try {
             ensureCartExistsOnServer()
 
@@ -148,7 +148,7 @@ class CartRepositoryImpl @Inject constructor(
             val cart = cartWithItems.toDomain()
 
             val request = cart.toCheckoutRequestDto(isPaid, specialInstructions)
-            val response = remoteDataSource.checkout(request)
+            val response = remoteDataSource.executeCheckout(request)
 
             return if (response.orderPlaced == true) {
                 localDataSource.clearCart()
