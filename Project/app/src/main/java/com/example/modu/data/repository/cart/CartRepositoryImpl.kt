@@ -72,6 +72,10 @@ class CartRepositoryImpl @Inject constructor(
             saveRemoteCartToLocal(response.toCartDto())
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
+
+            if (handledError is AppError && handledError.type == ErrorType.NOT_FOUND) {
+                appPreferences.setCartGenerated(false)
+            }
             if (handledError !is AppError || handledError.type != ErrorType.NO_INTERNET) {
                 throw handledError
             }
@@ -118,7 +122,11 @@ class CartRepositoryImpl @Inject constructor(
             val response = remoteDataSource.updateCart(request)
             saveRemoteCartToLocal(response)
         } catch (error: Exception) {
-            throw errorHandler.handle(error)
+            val handledError = errorHandler.handle(error)
+            if (handledError is AppError && handledError.type == ErrorType.NOT_FOUND) {
+                appPreferences.setCartGenerated(false)
+            }
+            throw handledError
         }
     }
 
@@ -144,7 +152,8 @@ class CartRepositoryImpl @Inject constructor(
         try {
             ensureCartExistsOnServer()
 
-            val cartWithItems = localDataSource.getCartWithItems() ?: return CheckoutResult.ALERTS_TRIGGERED
+            val cartWithItems =
+                localDataSource.getCartWithItems() ?: return CheckoutResult.ALERTS_TRIGGERED
             val cart = cartWithItems.toDomain()
 
             val request = cart.toCheckoutRequestDto(isPaid, specialInstructions)
@@ -174,7 +183,12 @@ class CartRepositoryImpl @Inject constructor(
             saveRemoteCartToLocal(response)
             cartPreferences.setPendingSync(false)
         } catch (error: Exception) {
-            throw errorHandler.handle(error)
+            val handledError = errorHandler.handle(error)
+            if (handledError is AppError && handledError.type == ErrorType.NOT_FOUND) {
+                appPreferences.setCartGenerated(false)
+                localDataSource.clearCart()
+            }
+            throw handledError
         }
     }
 
@@ -201,8 +215,10 @@ class CartRepositoryImpl @Inject constructor(
         fetchAndCacheMissingProducts(itemsDto)
 
         val priceAlerts = response.priceChangedAlert?.cartItems?.associateBy { it.productVariantId }
-        val stockAlerts = response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
-        val availAlerts = response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
+        val stockAlerts =
+            response.insufficientStockAlert?.cartItems?.associateBy { it.productVariantId }
+        val availAlerts =
+            response.variantAvailabilityAlert?.cartItems?.associateBy { it.productVariantId }
 
         val mergedDbos = itemsDto.map { dto ->
             val variantId = dto.productVariantId ?: DEFAULT_ID
