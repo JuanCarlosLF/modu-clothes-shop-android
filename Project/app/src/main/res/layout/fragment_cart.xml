@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_top_bar"
         android:background="@color/black_background"
+        android:fitsSystemWindows="true"
         app:elevation="0dp"
-        app:liftOnScroll="false"
-        android:fitsSystemWindows="true">
+        app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
@@ -57,9 +57,9 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:paddingBottom="160dp"
         android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/padding_button_cart"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -226,7 +226,7 @@
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/margin_s"
         android:layout_marginEnd="@dimen/margin_s"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="@dimen/margin_xxxl"
         android:fontFamily="@font/roboto_regular"
         android:text="@string/cart_text_button"
         android:textAllCaps="false"
@@ -234,6 +234,6 @@
         android:textSize="@dimen/text_size_general_plus"
         android:textStyle="bold"
         app:backgroundTint="@color/orange_primary"
-        app:cornerRadius="100dp" />
+        app:cornerRadius="@dimen/corner_radius_button" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

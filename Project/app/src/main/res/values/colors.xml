@@ -21,4 +21,6 @@
     <color name="grey_medium">#6B7280</color>
     <color name="green">#10B981</color>
     <color name="red">#F44336</color>
+    <color name="img_out_stock_item_caret">#B3000000</color>
+    <color name="red_change_price_cart">#E57373</color>
 </resources>

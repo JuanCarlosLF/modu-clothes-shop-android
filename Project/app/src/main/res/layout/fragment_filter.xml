@@ -66,7 +66,7 @@
         android:padding="@dimen/padding_s"
         android:text="@string/filter_button_save_text"
         android:textColor="@color/white"
-        app:cornerRadius="@dimen/corner_radius_filter_save_filters"
+        app:cornerRadius="@dimen/corner_radius_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
