@@ -26,6 +26,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
     private var binding: FragmentCartBinding? = null
     private val viewModel: CartViewModel by viewModels()
     private var customSnackbar: Snackbar? = null
+    private var maxStockToast: Toast? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +62,15 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                 } else {
                     viewModel.onDeleteItemClicked(item)
                 }
+            },
+            onMaxStockReached = {
+                maxStockToast?.cancel()
+                maxStockToast = Toast.makeText(
+                    requireContext(),
+                    R.string.cart_max_stock_reached,
+                    Toast.LENGTH_SHORT
+                )
+                maxStockToast?.show()
             }
         )
 
@@ -198,6 +208,8 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         cartAdapter = null
         customSnackbar?.dismiss()
         customSnackbar = null
+        maxStockToast?.cancel()
+        maxStockToast = null
         binding = null
     }
 }

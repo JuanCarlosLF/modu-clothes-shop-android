@@ -3,7 +3,6 @@ package com.example.modu.presentation.cart
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,10 +15,9 @@ import com.example.modu.domain.entity.cart.CartItem
 class CartAdapter(
     private val onDeleteClick: (CartItem) -> Unit,
     private val onAddQuantityClick: (CartItem) -> Unit,
-    private val onRemoveQuantityClick: (CartItem) -> Unit
+    private val onRemoveQuantityClick: (CartItem) -> Unit,
+    private val onMaxStockReached: () -> Unit
 ) : ListAdapter<CartItem, CartAdapter.CartViewHolder>(DiffCallback()) {
-
-    private var currentToast: Toast? = null
 
     inner class CartViewHolder(private val binding: ItemProductCartBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,10 +38,9 @@ class CartAdapter(
 
             overlayUnavailable.isVisible = isUnavailable || isOutOfStock
 
-            if (isUnavailable) {
-                textUnavailableBadge.text = root.context.getString(R.string.alert_unavailable)
-            } else if (isOutOfStock) {
-                textUnavailableBadge.text = root.context.getString(R.string.alert_out_of_stock)
+            when {
+                isUnavailable -> textUnavailableBadge.text = root.context.getString(R.string.alert_unavailable)
+                isOutOfStock -> textUnavailableBadge.text = root.context.getString(R.string.alert_out_of_stock)
             }
 
             if (item.oldPriceAlert != null) {
@@ -63,13 +60,7 @@ class CartAdapter(
 
             btnCartAddQuantity.setOnClickListener {
                 if (isMaxStock) {
-                    currentToast?.cancel()
-                    currentToast = Toast.makeText(
-                        root.context,
-                        R.string.cart_max_stock_reached,
-                        Toast.LENGTH_SHORT
-                    )
-                    currentToast?.show()
+                    onMaxStockReached()
                 } else {
                     onAddQuantityClick(item)
                 }
