@@ -210,9 +210,8 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateQuantityLocal(item: CartItem, quantity: Int) {
-        val newItem = item.copy(quantity = quantity)
-        addOrUpdateItemLocal(newItem)
+    override suspend fun updateQuantityLocal(item: CartItem) {
+        addOrUpdateItemLocal(item)
         cartPreferences.setPendingSync(true)
     }
 

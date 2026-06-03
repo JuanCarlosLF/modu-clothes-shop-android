@@ -56,7 +56,7 @@ class CartUseCaseImpl @Inject constructor(
             totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
         )
 
-        cartRepository.updateQuantityLocal(updatedItem, newQuantity)
+        cartRepository.updateQuantityLocal(updatedItem)
     }
 
     override suspend fun deleteItem(id: Int) {
