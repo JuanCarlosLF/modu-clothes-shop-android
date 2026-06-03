@@ -151,6 +151,9 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
             val snackbarBinding = LayoutSnackbarBinding.inflate(layoutInflater)
 
+            snackbarBinding.textUndo.paintFlags = snackbarBinding.textUndo.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+            snackbarBinding.textUndo.setTypeface(null, android.graphics.Typeface.BOLD)
+
             snackbarBinding.textUndo.setOnClickListener {
                 viewModel.onUndoDeleteClicked()
                 dismiss()
