@@ -57,8 +57,8 @@ class CartAdapter(
             btnCartAddQuantity.isEnabled = !hasAlert
             btnCartRemoveQuantity.isEnabled = !hasAlert
 
-            btnCartAddQuantity.alpha = if (hasAlert || isMaxStock) 0.5f else 1.0f
-            btnCartRemoveQuantity.alpha = if (hasAlert) 0.5f else 1.0f
+            btnCartAddQuantity.alpha = if (hasAlert || isMaxStock) COMPONENT_DISABLED_OPACITY else COMPONENT_ENABLED_OPACITY
+            btnCartRemoveQuantity.alpha = if (hasAlert) COMPONENT_DISABLED_OPACITY else COMPONENT_ENABLED_OPACITY
 
             icDeleteItemCart.setOnClickListener {
                 onDeleteClick(item)
