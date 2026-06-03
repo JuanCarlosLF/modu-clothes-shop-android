@@ -1,6 +1,7 @@
 package com.example.modu.data.repository.cart
 
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
+import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.ProductVariantDbo
 import com.example.modu.data.dataSource.local.preference.AppPreferences
@@ -240,6 +241,17 @@ class CartRepositoryImpl @Inject constructor(
 
     private suspend fun addOrUpdateItemLocal(item: CartItem) {
         cacheItemDetailsLocally(item)
+
+        if (localDataSource.getCartWithItems() == null) {
+            val dummyCart = CartDbo(
+                subTotal = BigDecimal.ZERO,
+                shippingCost = BigDecimal.ZERO,
+                total = BigDecimal.ZERO,
+                createdAt = "",
+                updatedAt = ""
+            )
+            localDataSource.insertCart(dummyCart)
+        }
 
         val currentItems = localDataSource.getCartWithItems()?.items ?: emptyList()
         val existingDbo = currentItems.find {
