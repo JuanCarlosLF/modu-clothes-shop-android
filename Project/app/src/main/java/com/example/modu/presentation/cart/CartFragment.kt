@@ -31,6 +31,12 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentCartBinding.bind(view)
 
+        setupListeners()
+        setupAdapter()
+        setupObservers()
+    }
+
+    private fun setupListeners() {
         binding?.btnClearCart?.setOnClickListener {
             viewModel.onClearCartClicked()
         }
@@ -39,18 +45,6 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             val specialInstructions = binding?.editTextCart?.text?.toString() ?: ""
             viewModel.checkout(specialInstructions)
         }
-
-        setupAdapter()
-        setupObservers()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding?.recyclerItems?.adapter = null
-        cartAdapter = null
-        customSnackbar?.dismiss()
-        customSnackbar = null
-        binding = null
     }
 
     private fun setupAdapter() {
@@ -196,5 +190,14 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                 }
                 .show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding?.recyclerItems?.adapter = null
+        cartAdapter = null
+        customSnackbar?.dismiss()
+        customSnackbar = null
+        binding = null
     }
 }
