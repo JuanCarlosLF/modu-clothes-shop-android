@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class CartItemDto(
-    val id: Int,
+    val id: Int? = null,
     val productId: Int? = null,
     val productVariantId: Int? = null,
     @SerializedName("stock")
