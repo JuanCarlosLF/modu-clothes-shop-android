@@ -53,27 +53,13 @@
                         android:id="@+id/ic_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
+                        android:padding="8dp"
+                        android:background="@drawable/bg_icon_overlay"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_back" />
-
-                    <TextView
-                        android:id="@+id/text_top_bar_detail"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_s"
-                        android:fontFamily="@font/roboto_medium"
-                        android:text="@string/mosaic"
-                        android:textColor="@color/grey_soft"
-                        android:textSize="@dimen/text_size_big"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/ic_back"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Mosaic" />
-
+                        app:srcCompat="@drawable/ic_back"
+                        app:tint="@android:color/white" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -205,18 +191,15 @@
                         android:layout_width="@dimen/width_bg_quantity"
                         android:layout_height="@dimen/height_bg_quantity"
                         android:background="@drawable/bg_quantity"
-                        android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent">
 
                         <ImageButton
                             android:id="@+id/ic_remove_quantity_detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_xs_plus"
-                            android:layout_marginTop="@dimen/margin_xs_s"
-                            android:layout_marginBottom="@dimen/margin_xs_s"
                             android:background="@android:color/transparent"
                             app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/text_quantity_detail"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_remove_quantity" />
@@ -225,32 +208,27 @@
                             android:id="@+id/text_quantity_detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_xxxs"
-                            android:layout_marginEnd="@dimen/margin_xxxs"
                             android:fontFamily="@font/roboto_medium"
                             android:text="0"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_general_plus"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/ic_add_quantity_detail"
+                            app:layout_constraintStart_toEndOf="@id/ic_remove_quantity_detail"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="0" />
+                            app:layout_constraintHorizontal_chainStyle="packed" />
 
                         <ImageButton
                             android:id="@+id/ic_add_quantity_detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_xxxs"
-                            android:layout_marginTop="@dimen/margin_xs_s"
-                            android:layout_marginEnd="@dimen/margin_xs_plus"
-                            android:layout_marginBottom="@dimen/margin_xs_s"
                             android:background="@android:color/transparent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/text_quantity_detail"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_add_quantity" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
