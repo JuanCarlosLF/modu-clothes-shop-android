@@ -1,5 +1,6 @@
 package com.example.modu.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.entity.detail.ProductVariant
@@ -221,7 +222,6 @@ class DetailViewModel @Inject constructor(
 
             } catch (error: Exception) {
                 _uiState.update { it.copy(errorMessage = error.message) }
-
                 _uiEvent.emit(
                     ProductDetailUiEvent(
                         message = _uiState.value.errorMessage.toString()

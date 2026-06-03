@@ -115,13 +115,30 @@ class CartRepositoryImpl @Inject constructor(
             val currentItems = cartWithItems?.items ?: emptyList()
             val shipping = cartWithItems?.cart?.shippingCost ?: BigDecimal.ZERO
 
+            val offlineNewItems = currentItems.filter { it.cartItem.id < 0 }
+            val existingItems = currentItems.filter { it.cartItem.id > 0 }
+
+            var finalResponse: CartDto? = null
+
             val request = UpdateCartRequestDto(
-                cartItems = currentItems.map { it.toDomain().toDto() },
+                cartItems = existingItems.map { it.toDomain().toDto() },
                 shippingCosts = shipping
             )
+            finalResponse = remoteDataSource.updateCart(request)
 
-            val response = remoteDataSource.updateCart(request)
-            saveRemoteCartToLocal(response)
+            for (newItem in offlineNewItems) {
+                val addReq = AddItemRequestDto(
+                    productVariantId = newItem.cartItem.productVariantId,
+                    quantity = newItem.cartItem.quantity
+                )
+                val addResp = remoteDataSource.addItem(addReq)
+                finalResponse = addResp.toCartDto()
+            }
+
+            finalResponse?.let {
+                saveRemoteCartToLocal(it)
+            }
+
         } catch (error: Exception) {
             val handledError = errorHandler.handle(error)
             if (handledError is AppError && handledError.type == ErrorType.NOT_FOUND) {
