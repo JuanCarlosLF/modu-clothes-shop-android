@@ -61,15 +61,17 @@
         android:id="@+id/button_save_filters"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_s"
+        android:layout_marginHorizontal="@dimen/margin_s"
+        android:layout_marginTop="@dimen/margin_l"
+        android:layout_marginBottom="@dimen/margin_xxxl"
         android:backgroundTint="@color/orange_primary"
         android:padding="@dimen/padding_s"
         android:text="@string/filter_button_save_text"
         android:textColor="@color/white"
         app:cornerRadius="@dimen/corner_radius_button"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view_filters"
@@ -77,7 +79,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         android:clipChildren="false"
-        android:clipToPadding="false"
+        android:layout_marginBottom="@dimen/margin_l"
         app:layout_constraintBottom_toTopOf="@id/button_save_filters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,6 +1,7 @@
 package com.example.modu.presentation
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -31,6 +32,15 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
             val navController = navHostFragment.navController
             binding.bottomNav.setupWithNavController(navController)
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                binding.bottomNav.visibility =
+                    when (destination.id) {
+                        R.id.fragment_product_detail,
+                        R.id.fragment_filter -> View.GONE
+
+                        else -> View.VISIBLE
+                    }
+            }
         }
     }
 

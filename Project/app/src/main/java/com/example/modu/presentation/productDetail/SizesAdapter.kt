@@ -3,49 +3,60 @@ package com.example.modu.presentation.detail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.modu.R
 import com.example.modu.databinding.ItemSizeBinding
+import com.example.modu.presentation.productDetail.model.SizeItemUi
+
+private const val HALF_OPACITY = 0.5F
+private const val FULL_OPACITY = 1F
 
 class SizesAdapter(
-    private var sizes: List<String>,
     private val onSelected: (String) -> Unit
-) : RecyclerView.Adapter<SizesAdapter.SizeViewHolder>() {
+) : ListAdapter<SizeItemUi, SizesAdapter.SizeViewHolder>(DiffCallback()) {
 
     private var selectedSize: String? = null
-    fun updateData(newSizes: List<String>, selected: String?) {
-        sizes = newSizes
-        selectedSize = selected
-        notifyDataSetChanged()
-    }
 
     inner class SizeViewHolder(
         private val binding: ItemSizeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        val context = binding.root.context
-        fun bind(size: String, isSelected: Boolean) {
-            with(binding) {
-                textItemSize.text = size
-                if (isSelected) {
-                    root.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-                    textItemSize.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.black_background
-                        )
-                    )
-                } else {
-                    root.setBackgroundResource(R.drawable.bg_item_recycle)
-                    textItemSize.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.white
-                        )
-                    )
-                }
-                root.setOnClickListener {
-                    onSelected(size)
-                }
+        fun bind(item: SizeItemUi) {
+            val context = binding.root.context
+
+            val isSelected = item.size == selectedSize
+
+            binding.textItemSize.text = item.size
+
+            if (!item.enabled) {
+                binding.root.setBackgroundResource(R.drawable.bg_item_size_disable)
+                binding.textItemSize.setTextColor(
+                    ContextCompat.getColor(context, R.color.white)
+                )
+                binding.textItemSize.alpha = HALF_OPACITY
+                binding.root.isEnabled = false
+                return
+            } else binding.textItemSize.alpha = FULL_OPACITY
+
+            binding.root.isEnabled = true
+
+            if (isSelected) {
+                binding.root.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.white)
+                )
+                binding.textItemSize.setTextColor(
+                    ContextCompat.getColor(context, R.color.black_background)
+                )
+            } else {
+                binding.root.setBackgroundResource(R.drawable.bg_item_recycle)
+                binding.textItemSize.setTextColor(
+                    ContextCompat.getColor(context, R.color.white)
+                )
+            }
+
+            binding.root.setOnClickListener {
+                onSelected(item.size)
             }
         }
     }
@@ -60,10 +71,28 @@ class SizesAdapter(
     }
 
     override fun onBindViewHolder(holder: SizeViewHolder, position: Int) {
-        val size = sizes[position]
-        val isSelected = size == selectedSize
-        holder.bind(size, isSelected)
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = sizes.size
+    fun updateSelectedSize(size: String) {
+        selectedSize = size
+        notifyDataSetChanged()
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<SizeItemUi>() {
+
+        override fun areItemsTheSame(
+            oldItem: SizeItemUi,
+            newItem: SizeItemUi
+        ): Boolean {
+            return oldItem.size == newItem.size
+        }
+
+        override fun areContentsTheSame(
+            oldItem: SizeItemUi,
+            newItem: SizeItemUi
+        ): Boolean {
+            return oldItem == newItem
+        }
+    }
 }

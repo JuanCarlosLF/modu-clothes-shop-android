@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.modu.R
 import com.example.modu.databinding.FragmentFilterBinding
+import com.example.modu.presentation.MainActivity
 import com.example.modu.presentation.utils.setupAccordion
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -32,8 +33,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MainActivity)?.setBottomNavVisible(false)
         binding = FragmentFilterBinding.bind(view)
-
         setupAdapter()
         setupListeners()
         setupObservers()

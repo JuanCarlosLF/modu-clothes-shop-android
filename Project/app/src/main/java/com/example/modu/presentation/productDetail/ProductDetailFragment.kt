@@ -1,8 +1,11 @@
 package com.example.modu.presentation.detail
 
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +21,7 @@ import com.example.modu.R
 import com.example.modu.databinding.FragmentProductDetailBinding
 import com.example.modu.presentation.MainActivity
 import com.example.modu.presentation.productDetail.ProductDetailUiState
+import com.example.modu.presentation.productDetail.model.SizeItemUi
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -34,16 +38,19 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
     private var carruselAdapter: CarruselAdapter? = null
     private lateinit var sizesAdapter: SizesAdapter
     private lateinit var colorsAdapter: ColorAdapter
+    private var isToastShowing = false
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as? MainActivity)?.setBottomNavVisible(false)
         binding = FragmentProductDetailBinding.bind(view)
-        (activity as? MainActivity)?.setBottomNavVisible(false)
+        observeUiState()
         setupAdapters()
         setupRecyclerViews()
         setupListeners()
-        observeUiState()
+        observeEvents()
         viewModel.loadDetail(args.productId)
     }
 
@@ -57,18 +64,67 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     binding?.apply {
-                        shimmerDetail.isVisible = state.isLoading
-                        contentDetail.isVisible = !state.isLoading
+                        when {
+                            state.isLoading -> {
+                                shimmerDetail.isVisible = true
+                                contentDetail.isVisible = false
+                                layoutError.isVisible = false
 
-                        if (state.isLoading) shimmerDetail.startShimmer()
-                        else shimmerDetail.stopShimmer()
+                                shimmerDetail.startShimmer()
+                            }
+
+                            state.detail != null -> {
+                                shimmerDetail.isVisible = false
+                                contentDetail.isVisible = true
+                                layoutError.isVisible = false
+
+                                shimmerDetail.stopShimmer()
+                            }
+
+                            else -> {
+                                shimmerDetail.isVisible = false
+                                contentDetail.isVisible = false
+                                layoutError.isVisible = true
+
+                                shimmerDetail.stopShimmer()
+                            }
+                        }
                     }
-
                     renderDetail(state)
-
                 }
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiEvent.collect { event ->
+                    showToast(getString(event.message))
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun showToast(message: String) {
+        if (isToastShowing) return
+        isToastShowing = true
+
+        val toast = Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        )
+
+        toast.addCallback(object : Toast.Callback() {
+            override fun onToastHidden() {
+                isToastShowing = false
+            }
+        })
+
+        toast.show()
     }
 
     private fun renderDetail(state: ProductDetailUiState) {
@@ -80,12 +136,12 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                 textPriceDetail.text = getString(R.string.text_price_format, detail.price)
                 imgBackground.load(detail.imageUrl)
 
-                renderSizes(state)
+                renderSizes(state.sizes, state.selectedSize)
                 renderColors(state)
             }
             textQuantityDetail.text = "${state.quantity}"
             icRemoveQuantityDetail.setBackgroundResource(
-                state.isButtonQuantityEnabled.toColorRes(
+                state.isAddButtonEnabled.toColorRes(
                     enabled = R.drawable.ic_remove_quantity_white,
                     disabled = R.drawable.ic_remove_quantity
                 )
@@ -112,7 +168,9 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
             btnAddCardItem.setTextColor(
                 ContextCompat.getColor(requireContext(), textColor)
             )
-            carruselAdapter?.submitList(state.suggestedProducts)
+            val similarProducts = state.similarProducts.filter { it.id != args.productId }
+            carruselAdapter?.submitList(similarProducts)
+            textSimilarDetail.isVisible = similarProducts.isNotEmpty()
         }
     }
 
@@ -122,7 +180,7 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
     ) = if (this) enabled else disabled
 
     private fun setupAdapters() {
-        sizesAdapter = SizesAdapter(emptyList()) { size ->
+        sizesAdapter = SizesAdapter { size ->
             viewModel.onSizeSelected(size)
         }
 
@@ -152,18 +210,22 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
     }
 
     private fun setupCarrusel() {
+
         carruselAdapter = CarruselAdapter { product ->
+
             val action =
                 ProductDetailFragmentDirections.actionFragmentProductDetailSelf(product.id)
 
             findNavController().navigate(action)
         }
+
         binding?.recyclerCarruselDetail?.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false
             )
+
             adapter = carruselAdapter
         }
     }
@@ -181,18 +243,18 @@ class ProductDetailFragment : Fragment(R.layout.fragment_product_detail) {
                 viewModel.decreaseQuantity()
             }
             btnAddCardItem.setOnClickListener {
+                viewModel.addItemToCart()
+            }
+            buttonRetry.setOnClickListener {
+                viewModel.loadDetail(args.productId)
             }
         }
     }
 
-    private fun renderSizes(state: ProductDetailUiState) {
-        binding?.apply {
-            state.detail?.let { detail ->
-                val sizes = detail.productVariantsList
-                    .map { it.size }
-                    .distinct()
-                sizesAdapter.updateData(sizes, state.selectedSize)
-            }
+    private fun renderSizes(sizes: List<SizeItemUi>?, selectedSize: String?) {
+        sizesAdapter.submitList(sizes)
+        selectedSize?.let {
+            sizesAdapter.updateSelectedSize(it)
         }
     }
 

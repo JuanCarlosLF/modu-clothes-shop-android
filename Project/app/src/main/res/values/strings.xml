@@ -24,6 +24,7 @@
     <string name="similar">Similares</string>
     <string name="continuar">Continuar</string>
     <string name="text_price_format">$ %1$.2f</string>
+    <string name="text_add_to_cart">Tu producto se ha añadido al carrito</string>
     <!-- Filter -->
     <string name="filter_title">Filters</string>
     <string name="filter_button_reset_text">RESET</string>
@@ -77,11 +78,13 @@
     <string name="error_sync_failed_title">Sincronización pendiente</string>
     <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>
     <string name="error_checkout_offline_msg">No tienes conexión a internet.\nEl carrito está guardado, pero no podemos procesar tu pedido en este momento.</string>
+    <string name="error_add_item_to_cart">Ha habido un error, no se ha podido añadir al carrito</string>
 
     <!-- Alerts -->
     <string name="alert_delete_all_items_dialog">¿Estás seguro de que quieres eliminar todos los productos del carrito?</string>
     <string name="alert_choice_delete">Vaciar</string>
     <string name="alert_choice_cancel">Cancelar</string>
     <string name="alert_unavailable">No disponible</string>
-    <string name="alert_out_of_stock">Sin stock</string>
+    <string name="alert_out_of_stock_cart">Sin stock</string>
+    <string name="alert_out_of_stock_detail">No hay más stock disponible</string>
 </resources>
