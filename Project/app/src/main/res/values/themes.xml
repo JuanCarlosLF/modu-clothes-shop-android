@@ -51,7 +51,7 @@
         <item name="android:textColorPrimary">@color/white</item>
 
         <item name="colorOnSurfaceVariant">@color/grey_light</item>
-        <item name="android:textColorSecondary">@color/grey_light</item>
+        <item name="android:textColorSecondary">@color/white</item>
 
         <item name="colorPrimary">@color/orange_primary</item>
     </style>

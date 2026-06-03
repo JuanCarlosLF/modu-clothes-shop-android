@@ -11,6 +11,5 @@ data class CartCheckoutOrderDto(
     val subtotalPrice: BigDecimal? = null,
     val shippingCosts: BigDecimal? = null,
     val totalPrice: BigDecimal? = null,
-    @SerializedName("order_items")
     val orderItems: List<CartCheckoutOrderItemDto>? = null
 )

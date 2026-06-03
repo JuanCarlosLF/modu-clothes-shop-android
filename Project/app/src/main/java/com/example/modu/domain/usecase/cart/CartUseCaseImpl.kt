@@ -51,7 +51,12 @@ class CartUseCaseImpl @Inject constructor(
         if (newQuantity < MINIMUM_QUANTITY) return
         if (newQuantity > item.currentStock) return
 
-        cartRepository.updateQuantityLocal(item,newQuantity)
+        val updatedItem = item.copy(
+            quantity = newQuantity,
+            totalPrice = item.unitPrice.multiply(newQuantity.toBigDecimal())
+        )
+
+        cartRepository.updateQuantityLocal(updatedItem)
     }
 
     override suspend fun deleteItem(id: Int) {

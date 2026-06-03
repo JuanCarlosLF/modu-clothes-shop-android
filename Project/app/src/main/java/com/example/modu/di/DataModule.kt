@@ -28,15 +28,15 @@ abstract class ErrorHandlerModule {
 
     @Binds
     @Singleton
-    abstract fun bindProductDataSource(dataSourceImpl: ProductRemoteDataSourceImpl) : ProductDataSource
+    abstract fun bindProductDataSource(dataSourceImpl: ProductRemoteDataSourceImpl): ProductDataSource
 
     @Binds
     @Singleton
-    abstract fun bindProductRepository(productRepositoryImpl: ProductRepositoryImpl) : ProductRepository
+    abstract fun bindProductRepository(productRepositoryImpl: ProductRepositoryImpl): ProductRepository
 
     @Binds
     @Singleton
-    abstract fun bindCartLocalDataSource(dataSourceImpl: CartLocalDataSourceImpl) : CartLocalDataSource
+    abstract fun bindCartLocalDataSource(dataSourceImpl: CartLocalDataSourceImpl): CartLocalDataSource
 
     @Binds
     @Singleton

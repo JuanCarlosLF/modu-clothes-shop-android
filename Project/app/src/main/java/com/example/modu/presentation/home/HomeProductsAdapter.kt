@@ -6,6 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.modu.R
 import com.example.modu.databinding.ItemGalleryBinding
 import com.example.modu.domain.entity.product.Product
 
@@ -17,13 +18,18 @@ class HomeProductsAdapter(
 
     inner class ProductsViewHolder(private val binding: ItemGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Product) {
             binding.itemImage.load(item.image) {
                 crossfade(true)
                 crossfade(FADE_DURATION_MS)
-                binding.root.setOnClickListener {
-                    onItemClick(item)
-                }
+
+                error(R.drawable.ic_placeholder)
+                fallback(R.drawable.ic_placeholder)
+            }
+
+            binding.root.setOnClickListener {
+                onItemClick(item)
             }
         }
     }

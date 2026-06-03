@@ -13,5 +13,4 @@ interface CartRepository {
     suspend fun clearCart()
     suspend fun checkout(isPaid: Boolean, specialInstructions: String): CheckoutResult
     suspend fun syncCart()
-    suspend fun updateQuantityLocal(item: CartItem, quantity: Int)
-}
+    suspend fun updateQuantityLocal(item: CartItem)}
