@@ -68,6 +68,7 @@
     <dimen name="corner_radius_filter_buttons">16dp</dimen>
     <dimen name="corner_radius_button">100dp</dimen>
     <dimen name="corner_radius_snackbar">8dp</dimen>
+    <dimen name="corner_radius_cart_item_image">8dp</dimen>
 
     <!-- Other -->
     <dimen name="corner_radius_search_text_input_layout">28dp</dimen>

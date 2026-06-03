@@ -35,8 +35,9 @@ class CartAdapter(
 
             val isUnavailable = item.isAvailableAlert == false
             val isOutOfStock = item.stockAlertAvailable != null
+            val hasAlert = isUnavailable || isOutOfStock
 
-            overlayUnavailable.isVisible = isUnavailable || isOutOfStock
+            overlayUnavailable.isVisible = hasAlert
 
             when {
                 isUnavailable -> textUnavailableBadge.text = root.context.getString(R.string.alert_unavailable)
@@ -52,7 +53,12 @@ class CartAdapter(
             }
 
             val isMaxStock = item.quantity >= item.currentStock
-            btnCartAddQuantity.alpha = if (isMaxStock) 0.5f else 1.0f
+
+            btnCartAddQuantity.isEnabled = !hasAlert
+            btnCartRemoveQuantity.isEnabled = !hasAlert
+
+            btnCartAddQuantity.alpha = if (hasAlert || isMaxStock) 0.5f else 1.0f
+            btnCartRemoveQuantity.alpha = if (hasAlert) 0.5f else 1.0f
 
             icDeleteItemCart.setOnClickListener {
                 onDeleteClick(item)

@@ -111,6 +111,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                         binding?.btnClearCart?.alpha = if (isNotEmpty) 1.0f else 0.5f
 
                         binding?.btnAddCardItem?.isEnabled = isNotEmpty
+                        binding?.btnAddCardItem?.alpha = if (isNotEmpty) 1.0f else 0.5f
                     }
                 }
 
