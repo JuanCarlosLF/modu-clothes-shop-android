@@ -3,6 +3,7 @@
 
     <!-- Detail Fragment -->
     <string name="mosaic">Mosaic</string>
+    <string name="alert_stock">No hay suficiente stock</string>
 
     <!-- Common -->
     <string name="common_search_hint">Buscador</string>
@@ -71,11 +72,11 @@
     <string name="error_internal_error_msg">We are currently experiencing technical difficulties. Please try again later.</string>
     <string name="general_error_title">Oops! Something went wrong</string>
     <string name="general_error_msg">Ha ocurrido un error inesperado. Por favor inténtalo de nuevo.</string>
-    <string name="error_generic_oops">Vaya! Algo ha salido mal.</string>
+    <string name="error_generic_oops">¡Vaya! Algo ha salido mal.</string>
     <string name="button_retry">Reintentar</string>
     <string name="error_sync_failed_title">Sincronización pendiente</string>
     <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>
-
+    <string name="error_checkout_offline_msg">No tienes conexión a internet.\nEl carrito está guardado, pero no podemos procesar tu pedido en este momento.</string>
 
     <!-- Alerts -->
     <string name="alert_delete_all_items_dialog">¿Estás seguro de que quieres eliminar todos los productos del carrito?</string>

@@ -57,8 +57,6 @@
     <dimen name="item_carrusel_detail_width">114dp</dimen>
     <dimen name="item_carrusel_detail_height">196dp</dimen>
     <dimen name="edit_text_cart_min_height">112dp</dimen>
-    <dimen name="height_divider">1dp</dimen>
-    <dimen name="height_bg_quantity">48dp</dimen>
 
     <!-- Corner Radius -->
     <dimen name="corner_radius_home_search_text_input_layout">28dp</dimen>
@@ -73,10 +71,12 @@
     <!-- Other -->
     <dimen name="corner_radius_search_text_input_layout">28dp</dimen>
     <dimen name="width_bg_quantity">107dp</dimen>
+    <dimen name="height_bg_quantity">48dp</dimen>
+    <dimen name="height_divider">1dp</dimen>
     <dimen name="width_ic_trash">22dp</dimen>
     <dimen name="height_ic_trash">34dp</dimen>
+    <dimen name="height_gb_quantity">48dp</dimen>
     <dimen name="elevation_snackbar">6dp</dimen>
-
 
     <!-- Line spacing -->
     <dimen name="line_spacing_filter_info_desc">4dp</dimen>

@@ -125,6 +125,14 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+
+                            is CartUiEvent.OfflineSyncFailed -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_sync_failed_msg),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }

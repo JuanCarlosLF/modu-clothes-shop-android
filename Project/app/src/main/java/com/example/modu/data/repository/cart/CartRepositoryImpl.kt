@@ -152,6 +152,7 @@ class CartRepositoryImpl @Inject constructor(
 
             return if (response.orderPlaced == true) {
                 localDataSource.clearCart()
+                appPreferences.setCartGenerated(false)
                 CheckoutResult.SUCCESS
             } else {
                 saveRemoteCartToLocal(requireNotNull(response.cartResponse))

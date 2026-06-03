@@ -39,7 +39,7 @@ internal fun CartWithItemsDbo.toDomain(): Cart {
 
 internal fun CartItemDto.toDomain(): CartItem {
     return CartItem(
-        id = this.id,
+        id = this.id ?: 0,
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
         currentStock = requireNotNull(this.currentStock),
@@ -55,7 +55,7 @@ internal fun CartItemDto.toDomain(): CartItem {
 
 internal fun CartItemDto.toDbo(): CartItemDbo {
     return CartItemDbo(
-        id = this.id,
+        id = this.id ?: 0, // <-- Añadido ?: 0
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
         currentStock = requireNotNull(this.currentStock),
@@ -70,7 +70,7 @@ internal fun CartItemDto.toDbo(): CartItemDbo {
 
 internal fun CartItem.toDto(): CartItemDto {
     return CartItemDto(
-        id = this.id,
+        id = if (this.id < 0) null else this.id, // <-- EL TRUCO ESTÁ AQUÍ
         productId = this.productId,
         productVariantId = this.productVariantId,
         currentStock = this.currentStock ?: 0,

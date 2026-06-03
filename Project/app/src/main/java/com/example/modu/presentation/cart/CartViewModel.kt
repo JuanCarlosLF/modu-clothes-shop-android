@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
+import com.example.modu.domain.exception.ErrorType // <-- IMPORTANTE PARA LOS IFs
 import com.example.modu.domain.usecase.cart.CartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -18,11 +19,7 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import javax.inject.Inject
 
-private const val JOB_DELAY_MS: Long = 5000
-
-sealed interface CartUiEvent {
-    object CheckoutSuccess : CartUiEvent
-}
+private const val JOB_DELAY_MS: Long = 5000L
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
@@ -39,8 +36,8 @@ class CartViewModel @Inject constructor(
     private var undoJob: Job? = null
 
     init {
-
         observeCart()
+        verifyPendingChanges()
     }
 
     private fun verifyPendingChanges() {
@@ -48,7 +45,9 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.verifyPendingChanges()
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                if (error.type != ErrorType.NO_INTERNET) {
+                    _uiState.update { it.copy(error = error) }
+                }
             }
         }
     }
@@ -101,7 +100,11 @@ class CartViewModel @Inject constructor(
                 try {
                     cartUseCase.deleteItem(previousItem.id)
                 } catch (error: AppError) {
-                    _uiState.update { it.copy(error = error) }
+                    if (error.type == ErrorType.NO_INTERNET) {
+                        _uiEvent.emit(CartUiEvent.OfflineSyncFailed)
+                    } else {
+                        _uiState.update { it.copy(error = error) }
+                    }
                 }
             }
         }
@@ -124,7 +127,11 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.deleteItem(item.id)
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                if (error.type == ErrorType.NO_INTERNET) {
+                    _uiEvent.emit(CartUiEvent.OfflineSyncFailed)
+                } else {
+                    _uiState.update { it.copy(error = error) }
+                }
             } finally {
                 _uiState.update { it.copy(itemToUndo = null) }
             }
@@ -152,12 +159,21 @@ class CartViewModel @Inject constructor(
     fun checkout(specialInstructions: String) {
         viewModelScope.launch {
             try {
+                undoJob?.cancel()
+                _uiState.value.itemToUndo?.let { item ->
+                    cartUseCase.deleteItem(item.id)
+                    _uiState.update { it.copy(itemToUndo = null) }
+                }
                 val result = cartUseCase.checkout(specialInstructions)
                 if (result == CheckoutResult.SUCCESS) {
                     _uiEvent.emit(CartUiEvent.CheckoutSuccess)
                 }
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                if (error.type == ErrorType.NO_INTERNET) {
+                    _uiEvent.emit(CartUiEvent.OfflineSyncFailed)
+                } else {
+                    _uiState.update { it.copy(error = error) }
+                }
             }
         }
     }
@@ -180,7 +196,11 @@ class CartViewModel @Inject constructor(
             try {
                 cartUseCase.clearCart()
             } catch (error: AppError) {
-                _uiState.update { it.copy(error = error) }
+                if (error.type == ErrorType.NO_INTERNET) {
+                    _uiEvent.emit(CartUiEvent.OfflineSyncFailed)
+                } else {
+                    _uiState.update { it.copy(error = error) }
+                }
             }
         }
     }
