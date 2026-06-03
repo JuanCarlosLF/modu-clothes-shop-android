@@ -12,6 +12,5 @@ data class CartUiState(
     val total: BigDecimal = BigDecimal.ZERO,
     val isCartEmpty: Boolean = false,
     val error: AppError? = null,
-    val showClearCartDialog: Boolean = false,
     val itemToUndo: CartItem? = null
 )

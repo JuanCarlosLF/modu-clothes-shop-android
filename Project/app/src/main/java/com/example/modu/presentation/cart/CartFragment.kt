@@ -111,10 +111,6 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                         binding?.btnClearCart?.alpha = if (isNotEmpty) 1.0f else 0.5f
 
                         binding?.btnAddCardItem?.isEnabled = isNotEmpty
-
-                        if (state.showClearCartDialog) {
-                            showClearCartDialog()
-                        }
                     }
                 }
 
@@ -136,6 +132,10 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                                     getString(R.string.error_sync_failed_msg),
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            }
+
+                            is CartUiEvent.ShowClearCartDialog -> {
+                                showClearCartDialog()
                             }
                         }
                     }
@@ -192,12 +192,7 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                 .setPositiveButton(R.string.alert_choice_delete) { _, _ ->
                     viewModel.onConfirmClearCart()
                 }
-                .setNegativeButton(R.string.alert_choice_cancel) { _, _ ->
-                    viewModel.onDismissClearCartDialog()
-                }
-                .setOnCancelListener {
-                    viewModel.onDismissClearCartDialog()
-                }
+                .setNegativeButton(R.string.alert_choice_cancel, null)
                 .show()
         }
     }

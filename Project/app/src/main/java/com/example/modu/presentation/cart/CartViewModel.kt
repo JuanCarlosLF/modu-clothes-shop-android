@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.modu.domain.entity.cart.CartItem
 import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
-import com.example.modu.domain.exception.ErrorType // <-- IMPORTANTE PARA LOS IFs
+import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.usecase.cart.CartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -183,15 +183,12 @@ class CartViewModel @Inject constructor(
     }
 
     fun onClearCartClicked() {
-        _uiState.update { it.copy(showClearCartDialog = true) }
-    }
-
-    fun onDismissClearCartDialog() {
-        _uiState.update { it.copy(showClearCartDialog = false) }
+        viewModelScope.launch {
+            _uiEvent.emit(CartUiEvent.ShowClearCartDialog)
+        }
     }
 
     fun onConfirmClearCart() {
-        _uiState.update { it.copy(showClearCartDialog = false) }
         viewModelScope.launch {
             try {
                 cartUseCase.clearCart()
