@@ -44,9 +44,5 @@ abstract class ErrorHandlerModule {
 
     @Binds
     @Singleton
-    abstract fun bindCartRemoteDataSource(dataSourceImpl: CartRemoteDataSourceImpl): CartRemoteDataSource
-
-    @Binds
-    @Singleton
     abstract fun bindCartRepository(cartRepositoryImpl: CartRepositoryImpl): CartRepository
 }
