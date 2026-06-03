@@ -14,15 +14,16 @@ import com.example.modu.data.dataSource.remote.cart.dto.CartSummaryDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartToOrderDto
 import com.example.modu.domain.entity.cart.Cart
 import com.example.modu.domain.entity.cart.CartItem
+import java.math.BigDecimal
 
 internal fun CartDto.toCartDbo(): CartDbo {
-    val summary = requireNotNull(this.cartSummary)
+    val summary = this.cartSummary
     return CartDbo(
-        subTotal = requireNotNull(summary.subTotalPrice),
-        shippingCost = requireNotNull(summary.shippingCosts),
-        total = requireNotNull(summary.totalPrice),
-        createdAt = requireNotNull(summary.createdAt),
-        updatedAt = requireNotNull(summary.updatedAt)
+        subTotal = summary?.subTotalPrice ?: BigDecimal.ZERO,
+        shippingCost = summary?.shippingCosts ?: BigDecimal.ZERO,
+        total = summary?.totalPrice ?: BigDecimal.ZERO,
+        createdAt = summary?.createdAt ?: "",
+        updatedAt = summary?.updatedAt ?: ""
     )
 }
 
@@ -42,10 +43,10 @@ internal fun CartItemDto.toDomain(): CartItem {
         id = this.id ?: 0,
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
-        currentStock = requireNotNull(this.currentStock),
-        quantity = requireNotNull(this.quantity),
-        unitPrice = requireNotNull(this.unitPrice),
-        totalPrice = requireNotNull(this.totalPrice),
+        currentStock = this.currentStock ?: 0,
+        quantity = this.quantity ?: 0,
+        unitPrice = this.unitPrice ?: BigDecimal.ZERO,
+        totalPrice = this.totalPrice ?: BigDecimal.ZERO,
         title = "",
         imageUrl = "",
         size = "",
@@ -58,10 +59,10 @@ internal fun CartItemDto.toDbo(): CartItemDbo {
         id = this.id ?: 0,
         productId = requireNotNull(this.productId),
         productVariantId = requireNotNull(this.productVariantId),
-        currentStock = requireNotNull(this.currentStock),
-        quantity = requireNotNull(this.quantity),
-        unitPrice = requireNotNull(this.unitPrice),
-        totalPrice = requireNotNull(this.totalPrice),
+        currentStock = this.currentStock ?: 0,
+        quantity = this.quantity ?: 0,
+        unitPrice = this.unitPrice ?: BigDecimal.ZERO,
+        totalPrice = this.totalPrice ?: BigDecimal.ZERO,
         oldPriceAlert = null,
         stockAlertAvailable = null,
         isAvailableAlert = null
