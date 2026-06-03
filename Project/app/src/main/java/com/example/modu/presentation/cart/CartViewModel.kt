@@ -7,6 +7,7 @@ import com.example.modu.domain.entity.cart.CheckoutResult
 import com.example.modu.domain.exception.AppError
 import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.usecase.cart.CartUseCase
+import com.example.modu.presentation.extension.calculateSubTotal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import javax.inject.Inject
 
 private const val JOB_DELAY_MS: Long = 5000L
@@ -65,8 +65,7 @@ class CartViewModel @Inject constructor(
                         cart.items
                     }
 
-                    val filteredSubTotal =
-                        filteredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
+                    val filteredSubTotal = filteredItems.calculateSubTotal()
                     val filteredTotal = filteredSubTotal + cart.shippingCost
 
                     state.copy(
@@ -111,7 +110,7 @@ class CartViewModel @Inject constructor(
 
         _uiState.update { state ->
             val filteredItems = state.items.filter { it.id != item.id }
-            val newSubTotal = filteredItems.fold(BigDecimal.ZERO) { acc, i -> acc + i.totalPrice }
+            val newSubTotal = filteredItems.calculateSubTotal()
 
             state.copy(
                 itemToUndo = item,
@@ -143,8 +142,7 @@ class CartViewModel @Inject constructor(
 
         _uiState.update { state ->
             val restoredItems = currentRoomCartItems
-            val restoredSubTotal =
-                restoredItems.fold(BigDecimal.ZERO) { acc, item -> acc + item.totalPrice }
+            val restoredSubTotal = restoredItems.calculateSubTotal()
 
             state.copy(
                 itemToUndo = null,
