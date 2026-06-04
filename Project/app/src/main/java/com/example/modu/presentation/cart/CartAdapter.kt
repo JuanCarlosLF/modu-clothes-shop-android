@@ -16,7 +16,8 @@ class CartAdapter(
     private val onDeleteClick: (CartItem) -> Unit,
     private val onAddQuantityClick: (CartItem) -> Unit,
     private val onRemoveQuantityClick: (CartItem) -> Unit,
-    private val onMaxStockReached: () -> Unit
+    private val onMaxStockReached: () -> Unit,
+    private val onImageClick: (CartItem) -> Unit
 ) : ListAdapter<CartItem, CartAdapter.CartViewHolder>(DiffCallback()) {
 
     inner class CartViewHolder(private val binding: ItemProductCartBinding) :
@@ -62,6 +63,10 @@ class CartAdapter(
 
             icDeleteItemCart.setOnClickListener {
                 onDeleteClick(item)
+            }
+
+            imgProduct.setOnClickListener {
+                onImageClick(item)
             }
 
             btnCartAddQuantity.setOnClickListener {
