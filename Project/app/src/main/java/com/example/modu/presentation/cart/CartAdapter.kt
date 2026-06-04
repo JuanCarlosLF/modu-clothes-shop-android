@@ -41,7 +41,7 @@ class CartAdapter(
 
             when {
                 isUnavailable -> textUnavailableBadge.text = root.context.getString(R.string.alert_unavailable)
-                isOutOfStock -> textUnavailableBadge.text = root.context.getString(R.string.alert_out_of_stock)
+                isOutOfStock -> textUnavailableBadge.text = root.context.getString(R.string.alert_out_of_stock_cart)
             }
 
             if (item.oldPriceAlert != null) {

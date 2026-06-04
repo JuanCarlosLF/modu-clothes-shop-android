@@ -29,6 +29,9 @@ import kotlinx.coroutines.launch
 private const val LAYOUT_COLUMNS_QUANTITY = 2
 private const val WAIT_BEFORE_SEARCH_TIME: Long = 400
 
+private const val NOT_FOUND_CODE = "400"
+private const val NOT_FOUND_MSG = "not found"
+
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -87,15 +90,26 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     adapter?.loadStateFlow?.collectLatest { loadState ->
                         binding?.progressHome?.isVisible =
                             loadState.source.refresh is LoadState.Loading
-                        binding?.recyclerHome?.isVisible =
-                            loadState.source.refresh is LoadState.NotLoading
-                        binding?.layoutError?.isVisible =
-                            loadState.source.refresh is LoadState.Error
+
+                        val isError = loadState.source.refresh is LoadState.Error
+                        binding?.layoutError?.isVisible = isError
+
+                        binding?.recyclerHome?.isVisible = !isError
 
                         val errorState = loadState.source.refresh as? LoadState.Error
                         errorState?.let {
-                            Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG)
-                                .show()
+                            val errorMessage = it.error.message ?: ""
+
+                            if (errorMessage.contains(NOT_FOUND_CODE, ignoreCase = true) ||
+                                errorMessage.contains(NOT_FOUND_MSG, ignoreCase = true)) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.home_error_not_found),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }
@@ -165,8 +179,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             searchJob?.cancel()
             searchJob = viewLifecycleOwner.lifecycleScope.launch {
                 delay(WAIT_BEFORE_SEARCH_TIME)
-                val query = editable?.toString()?.takeIf { it.isNotBlank() }
-                viewModel.updateSearchQuery(query)
+                val query = editable?.toString()?.trim()
+
+                if (query.isNullOrEmpty()) {
+                    viewModel.updateSearchQuery(null)
+                } else if (query.length >= 3) {
+                    viewModel.updateSearchQuery(query)
+                }
             }
         }
 

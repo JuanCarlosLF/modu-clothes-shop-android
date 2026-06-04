@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,14 +14,15 @@
         android:background="@color/black_background"
         android:fitsSystemWindows="true"
         app:elevation="0dp"
-        app:liftOnScroll="false">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/black_background"
-            app:elevation="0dp"
-            app:layout_collapseMode="pin">
+            app:elevation="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -55,12 +56,14 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:clipToPadding="false"
         android:fillViewport="true"
-        android:paddingBottom="@dimen/padding_button_cart"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -114,9 +117,9 @@
                 android:gravity="top|start"
                 android:hint="@string/cart_text_hint_instructions"
                 android:inputType="textMultiLine"
+                android:maxLines="3"
                 android:minHeight="@dimen/edit_text_cart_min_height"
                 android:padding="@dimen/padding_s"
-                android:maxLines="3"
                 android:textColor="@color/blue_dark_hint"
                 android:textSize="@dimen/text_size_general"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -215,31 +218,29 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_value_shipping"
                     tools:text="$ 159,96" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_add_card_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="@dimen/margin_s"
-                    android:layout_marginEnd="@dimen/margin_s"
-                    android:layout_marginTop="@dimen/margin_l"
-                    android:layout_marginBottom="@dimen/margin_s"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="@string/cart_text_button"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_general_plus"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_value_total"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:backgroundTint="@color/orange_primary"
-                    app:cornerRadius="@dimen/corner_radius_button" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_card_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_s"
+                android:layout_marginTop="@dimen/margin_xl"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:backgroundTint="@color/orange_primary"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/cart_text_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_general_plus"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/corner_radius_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_info_total" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
