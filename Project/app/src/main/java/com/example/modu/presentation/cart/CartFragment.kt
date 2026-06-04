@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.modu.R
 import com.example.modu.databinding.FragmentCartBinding
@@ -74,6 +75,11 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                     Toast.LENGTH_SHORT
                 )
                 maxStockToast?.show()
+            },
+            onImageClick = {
+                item ->
+                val action = CartFragmentDirections.actionCartToDetail(item.productId)
+                findNavController().navigate(action)
             }
         )
 

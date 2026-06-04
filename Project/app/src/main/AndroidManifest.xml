@@ -14,15 +14,16 @@
         android:roundIcon="@mipmap/ic_modu_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.MODU">
+
         <activity
             android:name=".presentation.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="true"
+            android:screenOrientation="portrait"> <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

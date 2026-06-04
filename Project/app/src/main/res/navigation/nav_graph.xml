@@ -30,8 +30,11 @@
 
     <fragment
         android:id="@+id/fragment_cart"
-        android:name="com.example.modu.presentation.cart.CartFragment" />
-
+        android:name="com.example.modu.presentation.cart.CartFragment">
+        <action
+            android:id="@+id/action_cart_to_detail"
+            app:destination="@id/fragment_product_detail" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_filter"
         android:name="com.example.modu.presentation.filter.FilterFragment">
