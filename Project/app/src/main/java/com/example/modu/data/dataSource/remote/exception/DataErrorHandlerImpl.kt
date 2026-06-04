@@ -58,7 +58,7 @@ class DataErrorHandlerImpl @Inject constructor(
 
             else -> AppError(
                 type = ErrorType.UNKNOWN,
-                title = context.getString(R.string.general_error_title),
+                title = context.getString(R.string.error_generic_oops),
                 message = context.getString(R.string.general_error_msg)
             )
         }
@@ -73,7 +73,7 @@ class DataErrorHandlerImpl @Inject constructor(
         } catch (_: Exception) {
             AppError(
                 type = ErrorType.UNKNOWN,
-                title = context.getString(R.string.general_error_title),
+                title = context.getString(R.string.error_generic_oops),
                 message = context.getString(R.string.general_error_msg)
             )
         }

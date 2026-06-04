@@ -73,9 +73,8 @@
     <string name="error_not_found_msg">No se ha podido encontrar el recurso solicitado.</string>
     <string name="error_internal_error_title">Error del Servidor</string>
     <string name="error_internal_error_msg">Actualmente estamos experimentando dificultades técnicas. Por favor, inténtalo de nuevo más tarde.</string>
-    <string name="general_error_title">¡Vaya! Algo ha salido mal</string>
+    <string name="error_generic_oops">¡Vaya! Algo ha salido mal</string>
     <string name="general_error_msg">Ha ocurrido un error inesperado. Por favor inténtalo de nuevo.</string>
-    <string name="error_generic_oops">¡Vaya! Algo ha salido mal.</string>
     <string name="button_retry">Reintentar</string>
     <string name="error_sync_failed_title">Sincronización pendiente</string>
     <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>
