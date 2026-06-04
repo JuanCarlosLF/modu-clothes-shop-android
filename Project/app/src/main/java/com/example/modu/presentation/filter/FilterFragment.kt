@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -85,6 +86,15 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     viewModel.updatePriceOrder(PRICE_SORT_DESC)
                 }
 
+                buttonReset.setOnClickListener {
+                    viewModel.resetFilters()
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.filter_reset_success,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
                 sliderPriceRange.setOnSeekBarChangeListener(object :
                     SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
@@ -102,10 +112,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 })
-
-                buttonReset.setOnClickListener {
-                    viewModel.resetFilters()
-                }
 
                 buttonSaveFilters.setOnClickListener {
                     val state = viewModel.uiState.value

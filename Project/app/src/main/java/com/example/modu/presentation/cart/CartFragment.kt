@@ -19,6 +19,9 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+internal const val COMPONENT_ENABLED_OPACITY = 1f
+internal const val COMPONENT_DISABLED_OPACITY = 0.5f
+
 @AndroidEntryPoint
 class CartFragment : Fragment(R.layout.fragment_cart) {
 
@@ -108,9 +111,10 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                         val isNotEmpty = !state.isCartEmpty
 
                         binding?.btnClearCart?.isEnabled = isNotEmpty
-                        binding?.btnClearCart?.alpha = if (isNotEmpty) 1.0f else 0.5f
+                        binding?.btnClearCart?.alpha = if (isNotEmpty) COMPONENT_ENABLED_OPACITY else COMPONENT_DISABLED_OPACITY
 
                         binding?.btnAddCardItem?.isEnabled = isNotEmpty
+                        binding?.btnAddCardItem?.alpha = if (isNotEmpty) COMPONENT_ENABLED_OPACITY else COMPONENT_DISABLED_OPACITY
                     }
                 }
 

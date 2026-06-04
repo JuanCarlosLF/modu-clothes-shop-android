@@ -17,7 +17,7 @@ private fun ErrorContentDto.toDomain(context: Context): AppError {
 
     return AppError(
         type = type,
-        title = this.title ?: context.getString(R.string.general_error_title),
+        title = this.title ?: context.getString(R.string.error_generic_oops),
         message = this.message ?: context.getString(R.string.general_error_msg),
         fields = this.fields?.map { field -> field.toDomain() }
     )

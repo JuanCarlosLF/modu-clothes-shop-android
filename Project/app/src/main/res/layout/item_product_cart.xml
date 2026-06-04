@@ -23,34 +23,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/img_product"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/roundedImage"
-                tools:src="@tools:sample/backgrounds/scenic" />
+                app:cardCornerRadius="@dimen/corner_radius_cart_item_image"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@android:color/transparent">
 
-            <FrameLayout
-                android:id="@+id/overlay_unavailable"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/padding_xxs"
-                android:background="@color/img_out_stock_item_caret"
-                android:visibility="gone"
-                tools:visibility="visible">
+                <ImageView
+                    android:id="@+id/img_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:src="@tools:sample/backgrounds/scenic" />
 
-                <TextView
-                    android:id="@+id/text_unavailable_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_size_small"
-                    android:textStyle="bold"
-                    tools:text="Sin stock" />
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/overlay_unavailable"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/img_out_stock_item_caret"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/text_unavailable_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_size_small"
+                        android:textStyle="bold"
+                        tools:text="Sin stock" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 
         <TextView
@@ -172,9 +179,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

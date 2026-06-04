@@ -14,8 +14,9 @@
     <string name="home_filter_prefix_order">Orden: </string>
     <string name="home_filter_prefix_max_price">Máx: </string>
     <string name="home_filter_suffix_currency">$</string>
-    <string name="home_filter_order_lowest">Lowest</string>
-    <string name="home_filter_order_highest">Highest</string>
+    <string name="home_filter_order_lowest">Más bajo</string>
+    <string name="home_filter_order_highest">Más alto</string>
+    <string name="home_error_not_found">Sin coincidencias</string>
 
     <!-- Detail -->
     <string name="size">Talla</string>
@@ -26,23 +27,24 @@
     <string name="text_price_format">$ %1$.2f</string>
     <string name="text_add_to_cart">Tu producto se ha añadido al carrito</string>
     <!-- Filter -->
-    <string name="filter_title">Filters</string>
-    <string name="filter_button_reset_text">RESET</string>
+    <string name="filter_title">Filtros</string>
+    <string name="filter_button_reset_text">REESTABLECER</string>
     <string name="filter_button_save_text">Guardar filtros</string>
-    <string name="filter_by_title_title">Filter by Title</string>
-    <string name="filter_by_price_title">Filter by Price</string>
-    <string name="filter_by_price_range_title">Filter by Price Range</string>
-    <string name="filter_by_category_title">Filter by Category</string>
-    <string name="filter_search_hint_text">Search products...</string>
-    <string name="filter_by_price_first_button_text">Lowest First</string>
-    <string name="filter_by_price_second_button_text">Higher First</string>
+    <string name="filter_by_title_title">Filtrar por título</string>
+    <string name="filter_by_price_title">Filtrar por precio</string>
+    <string name="filter_by_price_range_title">Filtrar por rango de precio</string>
+    <string name="filter_by_category_title">Filtrar por categoría</string>
+    <string name="filter_search_hint_text">Buscar productos...</string>
+    <string name="filter_by_price_first_button_text">Más barato</string>
+    <string name="filter_by_price_second_button_text">Más caro</string>
     <string name="filter_slider_min_value">$0</string>
     <string name="filter_slider_max_value">$1000+</string>
-    <string name="filter_slider_default_value">Up to $640</string>
-    <string name="filter_slider_current_value">Up to $%1$d</string>
-    <string name="filter_info_title">Combining Filters</string>
+    <string name="filter_slider_default_value">Hasta $640</string>
+    <string name="filter_slider_current_value">Hasta $%1$d</string>
+    <string name="filter_info_title">Combinando Filtros</string>
     <string name="filter_slider_max_valu">1000</string>
-    <string name="filter_info_desc">Selecting multiple filters will refine your search results to match all criteria simultaneously.</string>
+    <string name="filter_info_desc">Al seleccionar múltiples filtros, se refinarán los resultados de búsqueda para que coincidan con todos los criterios simultáneamente.</string>
+    <string name="filter_reset_success">Filtros restablecidos</string>
 
     <!-- Cart -->
     <string name="cart_tob_bar">Carrito</string>
@@ -63,17 +65,16 @@
     <string name="cart_max_stock_reached">Límite de stock alcanzado para este producto</string>
 
     <!-- Error -->
-    <string name="error_no_internet_title">No Internet Connection</string>
-    <string name="error_no_internet_msg">Please check your network settings and try again.</string>
-    <string name="error_unauthorized_title">Session Expired</string>
-    <string name="error_unauthorized_msg">Your session has expired. Please log in again to continue.</string>
-    <string name="error_not_found_title">Not Found</string>
-    <string name="error_not_found_msg">The requested resource could not be found.</string>
-    <string name="error_internal_error_title">Server Error</string>
-    <string name="error_internal_error_msg">We are currently experiencing technical difficulties. Please try again later.</string>
-    <string name="general_error_title">Oops! Something went wrong</string>
+    <string name="error_no_internet_title">Sin conexión a Internet</string>
+    <string name="error_no_internet_msg">Por favor, comprueba tu conexión a la red y vuelve a intentarlo.</string>
+    <string name="error_unauthorized_title">Sesión Caducada</string>
+    <string name="error_unauthorized_msg">Tu sesión ha caducado. Por favor, inicia sesión de nuevo para continuar.</string>
+    <string name="error_not_found_title">No Encontrado</string>
+    <string name="error_not_found_msg">No se ha podido encontrar el recurso solicitado.</string>
+    <string name="error_internal_error_title">Error del Servidor</string>
+    <string name="error_internal_error_msg">Actualmente estamos experimentando dificultades técnicas. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="error_generic_oops">¡Vaya! Algo ha salido mal</string>
     <string name="general_error_msg">Ha ocurrido un error inesperado. Por favor inténtalo de nuevo.</string>
-    <string name="error_generic_oops">¡Vaya! Algo ha salido mal.</string>
     <string name="button_retry">Reintentar</string>
     <string name="error_sync_failed_title">Sincronización pendiente</string>
     <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>

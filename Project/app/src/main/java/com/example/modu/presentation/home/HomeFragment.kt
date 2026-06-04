@@ -29,6 +29,9 @@ import kotlinx.coroutines.launch
 private const val LAYOUT_COLUMNS_QUANTITY = 2
 private const val WAIT_BEFORE_SEARCH_TIME: Long = 400
 
+private const val NOT_FOUND_CODE = "400"
+private const val NOT_FOUND_MSG = "not found"
+
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -85,17 +88,35 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 launch {
                     adapter?.loadStateFlow?.collectLatest { loadState ->
-                        binding?.progressHome?.isVisible =
-                            loadState.source.refresh is LoadState.Loading
-                        binding?.recyclerHome?.isVisible =
-                            loadState.source.refresh is LoadState.NotLoading
-                        binding?.layoutError?.isVisible =
-                            loadState.source.refresh is LoadState.Error
+                        val refreshState = loadState.source.refresh
+                        val isError = refreshState is LoadState.Error
+                        val isLoading = refreshState is LoadState.Loading
+                        val isListEmpty = refreshState is LoadState.NotLoading && adapter?.itemCount == 0
 
-                        val errorState = loadState.source.refresh as? LoadState.Error
-                        errorState?.let {
-                            Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG)
-                                .show()
+                        binding?.progressHome?.isVisible = isLoading
+
+                        binding?.layoutError?.isVisible = isError || isListEmpty
+
+                        binding?.recyclerHome?.isVisible = !isError && !isLoading && !isListEmpty
+
+                        if (isListEmpty) {
+                            binding?.textError?.text = getString(R.string.home_error_not_found)
+                            binding?.buttonRetry?.isVisible = false
+                        } else if (isError) {
+                            val errorState = refreshState as? LoadState.Error
+                            val errorMessage = errorState?.error?.message ?: ""
+
+                            val isNotFoundCode = errorMessage.contains(NOT_FOUND_CODE, ignoreCase = true) ||
+                                    errorMessage.contains(NOT_FOUND_MSG, ignoreCase = true)
+
+                            if (isNotFoundCode) {
+                                binding?.textError?.text = getString(R.string.home_error_not_found)
+                                binding?.buttonRetry?.isVisible = false
+                            } else {
+                                binding?.textError?.text = getString(R.string.error_generic_oops)
+                                binding?.buttonRetry?.isVisible = true
+                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }
@@ -165,8 +186,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             searchJob?.cancel()
             searchJob = viewLifecycleOwner.lifecycleScope.launch {
                 delay(WAIT_BEFORE_SEARCH_TIME)
-                val query = editable?.toString()?.takeIf { it.isNotBlank() }
-                viewModel.updateSearchQuery(query)
+                val query = editable?.toString()?.trim()
+
+                if (query.isNullOrEmpty()) {
+                    viewModel.updateSearchQuery(null)
+                } else if (query.length >= 3) {
+                    viewModel.updateSearchQuery(query)
+                }
             }
         }
 
