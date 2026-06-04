@@ -88,26 +88,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 launch {
                     adapter?.loadStateFlow?.collectLatest { loadState ->
-                        binding?.progressHome?.isVisible =
-                            loadState.source.refresh is LoadState.Loading
+                        val refreshState = loadState.source.refresh
+                        val isError = refreshState is LoadState.Error
+                        val isLoading = refreshState is LoadState.Loading
+                        val isListEmpty = refreshState is LoadState.NotLoading && adapter?.itemCount == 0
 
-                        val isError = loadState.source.refresh is LoadState.Error
-                        binding?.layoutError?.isVisible = isError
+                        binding?.progressHome?.isVisible = isLoading
 
-                        binding?.recyclerHome?.isVisible = !isError
+                        binding?.layoutError?.isVisible = isError || isListEmpty
 
-                        val errorState = loadState.source.refresh as? LoadState.Error
-                        errorState?.let {
-                            val errorMessage = it.error.message ?: ""
+                        binding?.recyclerHome?.isVisible = !isError && !isLoading && !isListEmpty
 
-                            if (errorMessage.contains(NOT_FOUND_CODE, ignoreCase = true) ||
-                                errorMessage.contains(NOT_FOUND_MSG, ignoreCase = true)) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.home_error_not_found),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                        if (isListEmpty) {
+                            binding?.textError?.text = getString(R.string.home_error_not_found)
+                            binding?.buttonRetry?.isVisible = false
+                        } else if (isError) {
+                            val errorState = refreshState as? LoadState.Error
+                            val errorMessage = errorState?.error?.message ?: ""
+
+                            val isNotFoundCode = errorMessage.contains(NOT_FOUND_CODE, ignoreCase = true) ||
+                                    errorMessage.contains(NOT_FOUND_MSG, ignoreCase = true)
+
+                            if (isNotFoundCode) {
+                                binding?.textError?.text = getString(R.string.home_error_not_found)
+                                binding?.buttonRetry?.isVisible = false
                             } else {
+                                binding?.textError?.text = getString(R.string.error_generic_oops)
+                                binding?.buttonRetry?.isVisible = true
                                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }
