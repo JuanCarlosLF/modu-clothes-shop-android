@@ -35,8 +35,8 @@
     <string name="filter_by_price_range_title">Filtrar por rango de precio</string>
     <string name="filter_by_category_title">Filtrar por categoría</string>
     <string name="filter_search_hint_text">Buscar productos...</string>
-    <string name="filter_by_price_first_button_text">Más barato primero</string>
-    <string name="filter_by_price_second_button_text">Más caro primero</string>
+    <string name="filter_by_price_first_button_text">Más barato</string>
+    <string name="filter_by_price_second_button_text">Más caro</string>
     <string name="filter_slider_min_value">$0</string>
     <string name="filter_slider_max_value">$1000+</string>
     <string name="filter_slider_default_value">Hasta $640</string>
