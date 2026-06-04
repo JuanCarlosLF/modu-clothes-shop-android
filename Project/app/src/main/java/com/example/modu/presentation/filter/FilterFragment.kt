@@ -113,10 +113,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
                 })
 
-                buttonReset.setOnClickListener {
-                    viewModel.resetFilters()
-                }
-
                 buttonSaveFilters.setOnClickListener {
                     val state = viewModel.uiState.value
 
