@@ -101,6 +101,9 @@ dependencies {
 
     // MockK
     testImplementation(libs.mockk)
+
+    // Coroutines
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 room {
