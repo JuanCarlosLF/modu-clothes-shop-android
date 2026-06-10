@@ -27,7 +27,7 @@ class CartUseCaseImpl @Inject constructor(
         size: String,
         color: String
     ) {
-        val validQuantity = quantity.coerceIn(MINIMUM_QUANTITY, currentStock + 1)
+        val validQuantity = quantity.coerceIn(MINIMUM_QUANTITY, currentStock)
 
         val newItem = CartItem(
             id = productId,
