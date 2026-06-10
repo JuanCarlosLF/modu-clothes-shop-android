@@ -132,7 +132,8 @@ class CartRepositoryImpl @Inject constructor(
                     quantity = newItem.cartItem.quantity
                 )
                 val addResp = remoteDataSource.addItem(addReq)
-                finalResponse = addResp.toCartDto()
+                val newCartDto = addResp.toCartDto()
+                val finalRepository = newCartDto.mergeWithPrevious(finalResponse)
             }
 
             finalResponse?.let {
@@ -334,4 +335,15 @@ class CartRepositoryImpl @Inject constructor(
             }.awaitAll()
         }
     }
+}
+
+private fun CartDto.mergeWithPrevious(previous: CartDto?): CartDto {
+    if (previous == null) return this
+
+    return this.copy(
+        cartSummary = this.cartSummary ?: previous.cartSummary,
+        priceChangedAlert = this.priceChangedAlert ?: previous.priceChangedAlert,
+        insufficientStockAlert = this.insufficientStockAlert ?: previous.insufficientStockAlert,
+        variantAvailabilityAlert = this.variantAvailabilityAlert ?: previous.variantAvailabilityAlert
+    )
 }
