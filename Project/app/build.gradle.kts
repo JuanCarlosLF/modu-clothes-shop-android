@@ -98,6 +98,12 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // MockK
+    testImplementation(libs.mockk)
+
+    // Coroutines
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 room {
