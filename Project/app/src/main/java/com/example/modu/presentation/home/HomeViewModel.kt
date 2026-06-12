@@ -34,13 +34,24 @@ class HomeViewModel @Inject constructor(
         )
     }.cachedIn(viewModelScope)
 
-    fun applyFiltersFromBundle(title: String?, order: String?, maxPrice: Int?, categories: List<String>?) {
+    fun applyFiltersFromBundle(
+        title: String?,
+        order: String?,
+        maxPrice: Int?,
+        categories: List<String>?
+    ) {
         _uiState.update {
-            it.copy(title = title, orderByPrice = order, maxPrice = maxPrice, categories = categories)
+            it.copy(
+                title = title,
+                orderByPrice = order,
+                maxPrice = maxPrice,
+                categories = categories
+            )
         }
     }
 
     fun updateSearchQuery(query: String?) {
+        if (query == null) return
         if (_uiState.value.title != query) {
             _uiState.update { it.copy(title = query) }
         }
