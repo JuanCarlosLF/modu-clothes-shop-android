@@ -1,6 +1,5 @@
 package com.example.modu.data.repository.cart
 
-import android.R
 import com.example.modu.data.dataSource.local.database.cart.CartLocalDataSource
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.database.cart.dbo.CartItemDetailDbo
@@ -26,7 +25,6 @@ import com.example.modu.domain.exception.ErrorType
 import com.example.modu.domain.repository.cart.CartRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
