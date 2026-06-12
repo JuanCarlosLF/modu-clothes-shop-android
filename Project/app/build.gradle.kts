@@ -22,7 +22,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"https://dragonfly-mutiny-unseen.ngrok-free.dev/\""
+            "\"https://panda-enquirer-persecute.ngrok-free.dev/\""   //"\"https://dragonfly-mutiny-unseen.ngrok-free.dev/\""
         )
     }
 

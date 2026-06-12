@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class ProductDto(
     @SerializedName("product_id")
     val id: Int? = null,
-    @SerializedName("url")
+    @SerializedName("image_url")
     val image: String? = null
 )
