@@ -338,6 +338,7 @@ class CartRepositoryImplTest {
 
             // THEN
             coVerify(exactly = 0) { remoteDataSource.deleteItemById(any()) }
+            coVerify(exactly = 1) { remoteDataSource.updateCart(any()) }
         }
     }
 
