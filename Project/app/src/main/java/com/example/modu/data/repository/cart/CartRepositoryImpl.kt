@@ -60,14 +60,12 @@ class CartRepositoryImpl @Inject constructor(
     override suspend fun addItem(item: CartItem) {
         try {
             cacheItemDetailsLocally(item)
+            addOrUpdateItemLocal(item)
 
             if (cartPreferences.hasPendingSync()) {
-                addOrUpdateItemLocal(item)
                 updateCart()
                 return
             }
-
-            addOrUpdateItemLocal(item)
             ensureCartExistsOnServer()
 
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
@@ -343,17 +341,21 @@ class CartRepositoryImpl @Inject constructor(
 internal fun CartDto.mergeWithPrevious(previous: CartDto?): CartDto {
     if (previous == null) return this
 
-    val mergedCartItems = (this.cartSummary?.cartItems.orEmpty() + previous.cartSummary?.cartItems.orEmpty())
-        .distinctBy { it.productVariantId }
+    val mergedCartItems =
+        (this.cartSummary?.cartItems.orEmpty() + previous.cartSummary?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
 
-    val mergedPriceAlerts = (this.priceChangedAlert?.cartItems.orEmpty() + previous.priceChangedAlert?.cartItems.orEmpty())
-        .distinctBy { it.productVariantId }
+    val mergedPriceAlerts =
+        (this.priceChangedAlert?.cartItems.orEmpty() + previous.priceChangedAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
 
-    val mergedStockAlerts = (this.insufficientStockAlert?.cartItems.orEmpty() + previous.insufficientStockAlert?.cartItems.orEmpty())
-        .distinctBy { it.productVariantId }
+    val mergedStockAlerts =
+        (this.insufficientStockAlert?.cartItems.orEmpty() + previous.insufficientStockAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
 
-    val mergedAvailabilityAlerts = (this.variantAvailabilityAlert?.cartItems.orEmpty() + previous.variantAvailabilityAlert?.cartItems.orEmpty())
-        .distinctBy { it.productVariantId }
+    val mergedAvailabilityAlerts =
+        (this.variantAvailabilityAlert?.cartItems.orEmpty() + previous.variantAvailabilityAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
 
     return this.copy(
         cartSummary = (this.cartSummary ?: previous.cartSummary)?.copy(cartItems = mergedCartItems),
