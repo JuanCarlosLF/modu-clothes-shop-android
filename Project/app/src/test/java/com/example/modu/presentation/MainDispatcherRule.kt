@@ -15,7 +15,7 @@ import org.junit.runners.model.Statement
 class MainDispatcherRule(val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()) :
     TestRule {
 
-    override fun apply(base: Statement, description: Description): Statement? {
+    override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
                 Dispatchers.setMain(testDispatcher)
