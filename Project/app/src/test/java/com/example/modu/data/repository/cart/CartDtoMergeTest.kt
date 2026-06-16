@@ -34,7 +34,12 @@ class CartDtoMergeTest {
     fun `mergeWithPrevious given only this has cartItems when called then keeps this items`() {
         // SETUP
         val thisDto = CartDto(
-            cartSummary = CartSummaryDto(cartItems = listOf(createCartItemDto(1), createCartItemDto(2)))
+            cartSummary = CartSummaryDto(
+                cartItems = listOf(
+                    createCartItemDto(1),
+                    createCartItemDto(2)
+                )
+            )
         )
         val previousDto = CartDto(cartSummary = null)
 
@@ -50,7 +55,12 @@ class CartDtoMergeTest {
         // SETUP
         val thisDto = CartDto(cartSummary = null)
         val previousDto = CartDto(
-            cartSummary = CartSummaryDto(cartItems = listOf(createCartItemDto(1), createCartItemDto(2)))
+            cartSummary = CartSummaryDto(
+                cartItems = listOf(
+                    createCartItemDto(1),
+                    createCartItemDto(2)
+                )
+            )
         )
 
         // WHEN
@@ -64,10 +74,20 @@ class CartDtoMergeTest {
     fun `mergeWithPrevious given both have distinct cartItems when called then concatenates all`() {
         // SETUP
         val thisDto = CartDto(
-            cartSummary = CartSummaryDto(cartItems = listOf(createCartItemDto(1), createCartItemDto(2)))
+            cartSummary = CartSummaryDto(
+                cartItems = listOf(
+                    createCartItemDto(1),
+                    createCartItemDto(2)
+                )
+            )
         )
         val previousDto = CartDto(
-            cartSummary = CartSummaryDto(cartItems = listOf(createCartItemDto(3), createCartItemDto(4)))
+            cartSummary = CartSummaryDto(
+                cartItems = listOf(
+                    createCartItemDto(3),
+                    createCartItemDto(4)
+                )
+            )
         )
 
         // WHEN
@@ -201,7 +221,8 @@ class CartDtoMergeTest {
     fun `mergeWithPrevious given availability alerts when called then merges correctly`() {
         // SETUP
         val thisAlert = VariantAvailabilityItemDto(productVariantId = 1, isVariantAvailable = true)
-        val previousAlert = VariantAvailabilityItemDto(productVariantId = 2, isVariantAvailable = false)
+        val previousAlert =
+            VariantAvailabilityItemDto(productVariantId = 2, isVariantAvailable = false)
 
         val thisDto = CartDto(
             variantAvailabilityAlert = VariantAvailabilityAlertDto(cartItems = listOf(thisAlert))
@@ -233,10 +254,9 @@ class CartDtoMergeTest {
     }
 
     @Test
-    fun `mergeWithPrevious given cartSummary this null when called then uses previous cartSummary`() {
+    fun `mergeWithPrevious given cartSummary this null when called then uses previous cartSummary subTotal`() {
         // SETUP
         val previousSummary = CartSummaryDto(
-            cartItems = listOf(createCartItemDto(1)),
             subTotalPrice = BigDecimal("50.00")
         )
 
@@ -248,6 +268,22 @@ class CartDtoMergeTest {
 
         // THEN
         assertEquals(BigDecimal("50.00"), result.cartSummary?.subTotalPrice)
+    }
+
+    @Test
+    fun `mergeWithPrevious given cartSummary this null called then uses previous cartSummary items`() {
+        // SETUP
+        val previousSummary = CartSummaryDto(
+            cartItems = listOf(createCartItemDto(productVariantId = 1))
+        )
+
+        val thisDto = CartDto(cartSummary = null)
+        val previousDto = CartDto(cartSummary = previousSummary)
+
+        // WHEN
+        val result = thisDto.mergeWithPrevious(previousDto)
+
+        // THEN
         assertEquals(1, result.cartSummary?.cartItems?.size)
     }
 
