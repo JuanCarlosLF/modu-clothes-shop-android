@@ -10,7 +10,10 @@ import com.example.modu.data.dataSource.remote.cart.CartRemoteDataSource
 import com.example.modu.data.dataSource.remote.cart.dto.AddItemRequestDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartDto
 import com.example.modu.data.dataSource.remote.cart.dto.CartItemDto
+import com.example.modu.data.dataSource.remote.cart.dto.InsufficientStockAlertDto
+import com.example.modu.data.dataSource.remote.cart.dto.PriceChangedAlertDto
 import com.example.modu.data.dataSource.remote.cart.dto.UpdateCartRequestDto
+import com.example.modu.data.dataSource.remote.cart.dto.VariantAvailabilityAlertDto
 import com.example.modu.data.dataSource.remote.exception.ErrorHandler
 import com.example.modu.data.dataSource.remote.product.ProductDataSource
 import com.example.modu.data.repository.product.toDomain
@@ -57,14 +60,12 @@ class CartRepositoryImpl @Inject constructor(
     override suspend fun addItem(item: CartItem) {
         try {
             cacheItemDetailsLocally(item)
+            addOrUpdateItemLocal(item)
 
             if (cartPreferences.hasPendingSync()) {
-                addOrUpdateItemLocal(item)
                 updateCart()
                 return
             }
-
-            addOrUpdateItemLocal(item)
             ensureCartExistsOnServer()
 
             val request = AddItemRequestDto(item.productVariantId, item.quantity)
@@ -132,7 +133,7 @@ class CartRepositoryImpl @Inject constructor(
                     quantity = newItem.cartItem.quantity
                 )
                 val addResp = remoteDataSource.addItem(addReq)
-                finalResponse = addResp.toCartDto()
+                finalResponse = addResp.toCartDto().mergeWithPrevious(finalResponse)
             }
 
             finalResponse?.let {
@@ -334,4 +335,32 @@ class CartRepositoryImpl @Inject constructor(
             }.awaitAll()
         }
     }
+}
+
+@androidx.annotation.VisibleForTesting
+internal fun CartDto.mergeWithPrevious(previous: CartDto?): CartDto {
+    if (previous == null) return this
+
+    val mergedCartItems =
+        (this.cartSummary?.cartItems.orEmpty() + previous.cartSummary?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
+
+    val mergedPriceAlerts =
+        (this.priceChangedAlert?.cartItems.orEmpty() + previous.priceChangedAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
+
+    val mergedStockAlerts =
+        (this.insufficientStockAlert?.cartItems.orEmpty() + previous.insufficientStockAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
+
+    val mergedAvailabilityAlerts =
+        (this.variantAvailabilityAlert?.cartItems.orEmpty() + previous.variantAvailabilityAlert?.cartItems.orEmpty())
+            .distinctBy { it.productVariantId }
+
+    return this.copy(
+        cartSummary = (this.cartSummary ?: previous.cartSummary)?.copy(cartItems = mergedCartItems),
+        priceChangedAlert = PriceChangedAlertDto(mergedPriceAlerts).takeIf { mergedPriceAlerts.isNotEmpty() },
+        insufficientStockAlert = InsufficientStockAlertDto(mergedStockAlerts).takeIf { mergedStockAlerts.isNotEmpty() },
+        variantAvailabilityAlert = VariantAvailabilityAlertDto(mergedAvailabilityAlerts).takeIf { mergedAvailabilityAlerts.isNotEmpty() }
+    )
 }
