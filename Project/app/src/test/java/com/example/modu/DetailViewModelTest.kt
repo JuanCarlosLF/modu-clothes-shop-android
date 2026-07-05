@@ -12,11 +12,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
-import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -46,48 +46,33 @@ class DetailViewModelTest {
 
     @Test
     fun `load detail should load product`() = runTest {
-        val detail = createDetail()
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
-        assertEquals(
-            detail,
-            viewModel.uiState.value.detail
-        )
+        // THEN
+        assertEquals(detail, viewModel.uiState.value.detail)
     }
 
     @Test
     fun `decrease quantity should no go below zero`() {
-
+        // WHEN
         viewModel.decreaseQuantity()
 
-        TestCase.assertEquals(
-            0,
-            viewModel.uiState.value.quantity
-        )
+        // THEN
+        assertEquals(0, viewModel.uiState.value.quantity)
     }
 
     @Test
     fun `increase should not exceed stock`() = runTest {
-        val detail = createDetail()
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // WHEN
         repeat(6) {
             viewModel.increaseQuantity()
         }
+
+        // THEN
         assertEquals(
             viewModel.uiState.value.detail?.productVariantsList?.first()?.stock,
             viewModel.uiState.value.quantity
@@ -96,31 +81,22 @@ class DetailViewModelTest {
 
     @Test
     fun `when increase quantity exceeds stock should emit out of stock event`() = runTest {
-        val detail = createDetail()
-
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
         var receivedEvent: ProductDetailUiEvent? = null
-
         val job = launch {
             receivedEvent = viewModel.uiEvent.first()
         }
-
         runCurrent()
 
+        // WHEN
         repeat(6) {
             viewModel.increaseQuantity()
         }
-
         advanceUntilIdle()
 
+        // THEN
         assertEquals(
             R.string.alert_out_of_stock_detail,
             receivedEvent?.message
@@ -131,81 +107,49 @@ class DetailViewModelTest {
 
     @Test
     fun `on size selected should reset quantity`() = runTest {
-        val detail = createDetail()
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // WHEN
         viewModel.increaseQuantity()
         viewModel.onSizeSelected("M")
-        assertEquals(
-            0,
-            viewModel.uiState.value.quantity
-        )
+
+        // THEN
+        assertEquals(0, viewModel.uiState.value.quantity)
     }
 
     @Test
     fun `on color selected should reset quantity`() = runTest {
-        val detail = createDetail()
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // WHEN
         viewModel.increaseQuantity()
         viewModel.onColorSelected("Red")
-        assertEquals(
-            0,
-            viewModel.uiState.value.quantity
-        )
+
+        // THEN
+        assertEquals(0, viewModel.uiState.value.quantity)
     }
 
 
     @Test
     fun `add item to cart should call cart useCase`() = runTest {
+        // SETUP
+        val detail = runGetDetailByIdSetup()
 
-        val detail = createDetail()
-
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
-
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-
+        // GIVEN
         coEvery {
             cartUseCase.addItem(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } just Runs
 
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // WHEN
         viewModel.increaseQuantity()
-
         viewModel.addItemToCart()
         advanceUntilIdle()
 
+        // THEN
         coVerify(exactly = 1) {
             cartUseCase.addItem(
                 productId = detail.id,
@@ -223,40 +167,28 @@ class DetailViewModelTest {
 
     @Test
     fun `when product add to cart should emit event add to cart event`() = runTest {
-        val detail = createDetail()
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
+        // SETUP
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-
+        // GIVEN
         coEvery {
             cartUseCase.addItem(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } just Runs
-
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
-        viewModel.increaseQuantity()
 
         var receiveEvent: ProductDetailUiEvent? = null
         val job = launch {
             receiveEvent = viewModel.uiEvent.first()
         }
         runCurrent()
+
+        // WHEN
+        viewModel.increaseQuantity()
         viewModel.addItemToCart()
         advanceUntilIdle()
+
+        // THEN
         coVerify(exactly = 1) {
             cartUseCase.addItem(
                 productId = detail.id,
@@ -270,86 +202,64 @@ class DetailViewModelTest {
                 color = "Red"
             )
         }
-        assertEquals(
-            R.string.text_add_to_cart,
-            receiveEvent?.message
-        )
+        assertEquals(R.string.text_add_to_cart, receiveEvent?.message)
+
         job.cancel()
     }
 
     @Test
     fun `load detail should load related products`() = runTest {
-        val detail = createDetail()
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
+        // GIVEN
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
+        // THEN
         coVerify(exactly = 1) {
-            productUseCase.getRelatedProducts(
-                listOf("Shirt")
-            )
+            productUseCase.getRelatedProducts(listOf("Shirt"))
         }
     }
 
     @Test
     fun `when use case throws exception, error state is emitted`() = runTest {
+        // GIVEN
         coEvery { productUseCase.getDetailById(1) } throws RuntimeException("Internal Error")
+
+        // WHEN
         viewModel.loadDetail(1)
         advanceUntilIdle()
+
+        // THEN
         assertEquals("Internal Error", viewModel.uiState.value.errorMessage)
     }
 
     @Test
     fun `when add item to cart fails should emit error event and update error state`() = runTest {
-        val detail = createDetail()
+        // SETUP
+        val detail = runGetDetailByIdSetup()
 
-        coEvery {
-            productUseCase.getDetailById(1)
-        } returns detail
-
-        coEvery {
-            productUseCase.getRelatedProducts(any())
-        } returns emptyList()
-
+        // GIVEN
         coEvery {
             cartUseCase.addItem(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } throws RuntimeException("Ha habido un error, no se ha podido añadir al carrito")
-
-        viewModel.loadDetail(1)
-        advanceUntilIdle()
-        viewModel.increaseQuantity()
 
         var receiveEvent: ProductDetailUiEvent? = null
         val job = launch {
             receiveEvent = viewModel.uiEvent.first()
         }
         runCurrent()
+
+        // WHEN
+        viewModel.increaseQuantity()
         viewModel.addItemToCart()
         advanceUntilIdle()
 
+        // THEN
         assertEquals(
             "Ha habido un error, no se ha podido añadir al carrito",
             viewModel.uiState.value.errorMessage
         )
-        assertEquals(
-            R.string.error_add_item_to_cart,
-            receiveEvent?.message
-        )
+        assertEquals(R.string.error_add_item_to_cart, receiveEvent?.message)
 
         job.cancel()
     }
@@ -375,4 +285,19 @@ class DetailViewModelTest {
             )
         )
     )
+
+    private fun TestScope.runGetDetailByIdSetup(): Detail {
+        // SETUP
+        val detail = createDetail()
+
+        // GIVEN
+        coEvery { productUseCase.getDetailById(1) } returns detail
+        coEvery { productUseCase.getRelatedProducts(any()) } returns emptyList()
+
+        // WHEN
+        viewModel.loadDetail(1)
+        advanceUntilIdle()
+
+        return detail
+    }
 }
