@@ -1,46 +1,37 @@
-# Modu - Clothing Store
+# MODU — Clothing Store App
 
-**Modu** is a native Android application designed to offer a seamless, modern, and efficient clothing shopping experience. The project serves as a solid foundation for an e-commerce platform, implementing a dynamic catalog with advanced filters and a shopping cart management system.
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin)](https://kotlinlang.org/)
+[![Android](https://img.shields.io/badge/Min%20SDK-28-green)](https://developer.android.com/about/versions/pie)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Core Features
+![MODU Screenshot](Project/screenshots/home-default.png)
 
-* **Product Catalog:** Display of garments with high-resolution images and technical details.
-* **Filter System:** Dynamic filtering by categories, sizes, colors, and price ranges.
-* **Shopping Cart:** Local cart management (add, remove, and update quantities) with data persistence.
-* **Intuitive Navigation:** Optimized flow from product discovery to cart checkout.
+**MODU** is a native Android clothing store app with offline-first cart sync, built with Clean Architecture and modern Kotlin practices. It is a practice project — there is no real company or commercial product behind it. The app was built from scratch as a learning exercise to explore architecture decisions, reactive state management, and real-world constraints like backend instability and offline persistence.
 
-## Architecture and Tech Stack
+## Quick Links
 
-The project follows **Clean Architecture** principles and the **MVVM** (Model-View-ViewModel) design pattern, ensuring scalable, testable, and maintainable code.
+- [Technical Documentation](Project/README.md) — Architecture, tech stack, decisions, and roadmap
+- [License](LICENSE) — MIT
 
-* **Language:** [Kotlin](https://kotlinlang.org/)
-* **Dependency Injection:** [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for clean and decoupled dependency management.
-* **Networking:** [Retrofit 2](https://square.github.io/retrofit/) for consuming the products API.
-* **Local Database:** [Room](https://developer.android.com/training/data-storage/room) for cart persistence and product caching (Offline-first approach).
-* **Navigation:** [Navigation Component](https://developer.android.com/guide/navigation) with safe argument passing (Safe Args).
-* **Asynchrony:** Coroutines and Flows for reactive data stream management.
-* **UI:** View Binding for safe interaction with XML views.
+## Prerequisites
 
-## Prerequisites and Environment
+- **Android Studio:** Panda 4 | 2025.3.4 Canary 4 (or higher)
+- **JDK:** 21
+- **Gradle:** 9.1.0
 
-To compile the project without errors, make sure you meet these version requirements:
+## Setup
 
-* **Android Studio:** Panda 4 | 2025.3.4 Canary 4 (or higher).
-* **Java Development Kit (JDK):** Version 21.
-* **Gradle:** Version 9.1.0.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/juan-carlos-lopez-dev/MODU.git
+   ```
+2. **Open in Android Studio:** Select the root folder and wait for Gradle sync to finish.
+3. **Configure local SDK:** Ensure `local.properties` points to your SDK:
+   ```properties
+   sdk.dir=C\:\\Users\\<your-user>\\AppData\\Local\\Android\\Sdk
+   ```
+4. **Run:** Press `Shift + F10` or the **Run** icon in Android Studio.
 
-## Initial Setup
+## License
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <your-bitbucket-repository-url>
-    ```
-2.  **Open in Android Studio:** Select the root folder of the project and wait for the Gradle synchronization to finish.
-3.  **Configure Local SDK:**
-    Ensure your `local.properties` file points correctly to your SDK. Example:
-    ```properties
-    sdk.dir=C\:\\Users\\jlopezf\\AppData\\Local\\Android\\Sdk
-    ```
-4.  **Run:** Press `Shift + F10` or the **Run** icon in Android Studio.
-
----
+MIT — see [LICENSE](LICENSE) for details.
