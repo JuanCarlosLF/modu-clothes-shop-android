@@ -18,15 +18,15 @@
 
 <table>
   <tr>
-    <td><img src="screenshots/home-default.png" width="250" alt="Home"/></td>
-    <td><img src="screenshots/home-with-filters-applied.png" width="250" alt="Home with filters"/></td>
+    <td><img src="../screenshots/home-default.png" width="250" alt="Home"/></td>
+    <td><img src="../screenshots/home-with-filters-applied.png" width="250" alt="Home with filters"/></td>
   </tr>
   <tr>
-    <td><img src="screenshots/product-detail-1.png" width="250" alt="Product detail"/></td>
-    <td><img src="screenshots/product-detail-2.png" width="250" alt="Product detail 2"/></td>
+    <td><img src="../screenshots/product-detail-1.png" width="250" alt="Product detail"/></td>
+    <td><img src="../screenshots/product-detail-2.png" width="250" alt="Product detail 2"/></td>
   </tr>
   <tr>
-    <td><img src="screenshots/cart-default.png" width="250" alt="Cart"/></td>
+    <td><img src="../screenshots/cart-default.png" width="250" alt="Cart"/></td>
     <td></td>
   </tr>
 </table>
