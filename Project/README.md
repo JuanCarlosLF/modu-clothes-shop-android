@@ -3,7 +3,6 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Min%20SDK-28-green)](https://developer.android.com/about/versions/pie)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Table of Contents
 
@@ -14,7 +13,6 @@
 - [Testing](#testing)
 - [Roadmap](#roadmap)
 - [Setup & Build](#setup--build)
-- [License](#license)
 
 ## Screenshots
 
@@ -148,8 +146,4 @@ The test suite focuses on logic correctness rather than UI rendering. Instrument
    ```
 6. **Run:** Press `Shift + F10` or the **Run** icon in Android Studio.
 
----
 
-## License
-
-MIT — see [LICENSE](LICENSE) for details.
