@@ -40,7 +40,7 @@ MODU implements a clothing store experience on Android. The core flows are:
 - **Shopping cart with offline-first persistence** — cart items are stored locally using Room. When the network is available, pending changes sync to the server. When it is not, the user can still browse, add items, and modify quantities. The app handles price and stock alerts returned by the backend during checkout, distinguishing between a completed order and a warning that requires user attention.
 - **Multi-device cart synchronization** — the local-first approach keeps the cart consistent across sessions, with sync logic that merges remote and local state when connectivity resumes.
 
-The offline-first design was driven by backend instability during development. Rather than blocking the cart flow on unreliable network responses, the app stores changes locally and retries synchronization — a pragmatic choice that turned out to be a valuable architecture exercise.
+The offline-first design was built with multi-device usage in mind — when user auth arrives, the cart will work seamlessly across sessions and devices. The app stores changes locally and retries synchronization, a forward-looking architecture choice that also made day-to-day development smoother during a period of constant API contract churn.
 
 ---
 
@@ -95,11 +95,11 @@ MODU follows Clean Architecture with four layers:
 |---|---|---|
 | **StateFlow over LiveData** | Belongs to Kotlin coroutines ecosystem, not tied to Android Lifecycle. Easier to test (no LiveData test observers). | No built-in lifecycle awareness — UI must handle subscription timing manually. |
 | **Paging 3 over manual pagination** | `PagingSource` abstraction keeps page/key logic in the data layer. Cleaner, more maintainable code. | Domain layer depends on `PagingData` from AndroidX — acceptable coupling for the benefit. |
-| **Offline-first cart sync** | Backend was unstable during development. Local-first approach keeps the cart functional regardless of network state. | Sync logic is complex (merging remote/local, handling stale data, processing alerts). Future: WorkManager for background retries. |
+| **Offline-first cart sync** | Forward-looking design — when multi-device auth arrives, the cart works seamlessly across sessions. Local persistence keeps the cart functional even without connectivity. | Sync logic is complex (merging remote/local, handling stale data, processing alerts). Future: WorkManager for background retries. |
 | **ErrorHandler as injectable interface** | Centralizes error mapping (IO/HTTP → domain `AppError`). Follows team convention, easy to mock in tests. | Adds an abstraction layer, but consistent error handling across the app justifies it. |
-| **Planned: Compose migration** | Compose is the current Android UI standard. Better maintainability, simpler reusable components, state-driven composition. | Migration requires rewriting UI code and learning the Compose mental model. |
+| **Planned: Compose migration** | Compose is the current Android UI standard. Better maintainability, simpler reusable components, state-driven composition. Clean Architecture separation means ViewModels don't need changes — StateFlow already powers reactive state and Compose reads it natively. Migration affects only the presentation layer. The plan is to build Compose in parallel with XML, then remove XML entirely once Compose is feature-complete. | Two parallel UI systems during transition. All screens must be rewritten before the clean cut. |
 
-> For detailed decision records, see the ADR directory.
+> For detailed decision records, see [ADRs.md](docs/adr/ADRs.md).
 
 ---
 
@@ -121,11 +121,12 @@ The test suite focuses on logic correctness rather than UI rendering. Instrument
 
 ## Roadmap
 
-- [ ] **Migrate UI to Jetpack Compose** — Modernize from XML/ViewBinding for better maintainability and state-driven UI
+- [ ] **Migrate UI to Jetpack Compose** — Build Compose layer in parallel with existing XML, then remove XML entirely once Compose is feature-complete
 - [ ] **Modularize with Gradle modules** — Evolve from package-based separation to proper Gradle modules for build performance and dependency boundaries
 - [ ] **Replace DeviceId auth with token-based authentication** — Move from anonymous device identity to a proper user auth system
 - [ ] **Unify ViewModel state exposure** — Consolidate separate state flows into a single cohesive `UiState` per screen
 - [ ] **Add instrumented/UI tests** — Expand test coverage beyond unit tests to validate end-to-end user flows
+- [ ] **Extend local caching beyond the cart** — Apply the same offline-first caching strategy to the product catalog and detail screens, so the entire app works offline when multi-device auth arrives.
 
 ---
 
@@ -143,5 +144,3 @@ The test suite focuses on logic correctness rather than UI rendering. Instrument
    sdk.dir=C\:\\Users\\<your-user>\\AppData\\Local\\Android\\Sdk
    ```
 6. **Run:** Press `Shift + F10` or the **Run** icon in Android Studio.
-
-
