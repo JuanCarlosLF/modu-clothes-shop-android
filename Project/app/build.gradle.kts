@@ -11,6 +11,13 @@ android {
     namespace = "com.example.modu"
     compileSdk = 36
 
+    flavorDimensions += "mode"
+
+    productFlavors {
+        create("demo") {dimension = "mode"}
+        create("remote") {dimension = "mode"}
+    }
+
     defaultConfig {
         applicationId = "com.example.modu"
         minSdk = 28
