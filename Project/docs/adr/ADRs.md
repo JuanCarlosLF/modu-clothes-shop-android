@@ -66,3 +66,15 @@ The project started with XML and ViewBinding. Jetpack Compose is Google's recomm
 - **Decision:** Exclude Compose migration from MODU. Keep XML/ViewBinding for the final release.
 - **Risk:** Keeping the supported Views toolkit means MODU does not demonstrate Compose, which some reviewers may expect from a modern Android project.
 - **Mitigation:** The Presentation, Domain, and Data separation limits how much UI migration would affect business and data logic. ViewModels already expose StateFlow, but any future migration would still require validating UI state and event contracts rather than assuming no ViewModel changes.
+
+## 6. Autonomous demo through flavor-specific dependency injection
+
+- **Status:** Accepted
+- **Date:** 2026-07-12
+- **Scope:** Public demo distribution and preservation of the historical REST client
+
+The original backend is unavailable. The public release must run autonomously while preserving the historical REST client as evidence, without a broad refactor of the original application.
+
+- **Decision:** Keep remote code and dependencies in `src/main`. Use `demo` and `remote` flavors to select local or historical Hilt bindings; keep network provisioning and `android.permission.INTERNET` exclusive to `remote`. Publish only `demoRelease`.
+- **Alternatives:** Moving all remote code to `src/remote`, rebuilding the backend, and simulating a local HTTP API were rejected as higher-cost changes outside the closure scope.
+- **Trade-off:** `demoRelease` may include unused Retrofit, OkHttp and DTO code. This is accepted because it has no network permission, Hilt does not bind remote implementations, and preserving the original structure avoids a low-value refactor. The demo provides runtime autonomy, not binary isolation.
