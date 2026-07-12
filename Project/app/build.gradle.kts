@@ -14,8 +14,15 @@ android {
     flavorDimensions += "mode"
 
     productFlavors {
-        create("demo") {dimension = "mode"}
-        create("remote") {dimension = "mode"}
+        create("demo") { dimension = "mode" }
+        create("remote") {
+            dimension = "mode"
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://scouts-embattled-naturist.ngrok-free.dev/\""
+            )
+        }
     }
 
     defaultConfig {
@@ -25,15 +32,9 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // URLs: https://prune-delta-buckskin.ngrok-free.dev/ https://dragonfly-mutiny-unseen.ngrok-free.dev
-        buildConfigField(
-            "String",
-            "BASE_URL",
-            "\"https://scouts-embattled-naturist.ngrok-free.dev/\""
-        )
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
         buildConfig = true
     }
