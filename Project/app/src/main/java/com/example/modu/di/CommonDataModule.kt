@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ErrorHandlerModule {
+abstract class CommonDataModule {
 
     @Binds
     @Singleton
@@ -28,21 +28,5 @@ abstract class ErrorHandlerModule {
 
     @Binds
     @Singleton
-    abstract fun bindProductDataSource(dataSourceImpl: ProductRemoteDataSourceImpl): ProductDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindProductRepository(productRepositoryImpl: ProductRepositoryImpl): ProductRepository
-
-    @Binds
-    @Singleton
     abstract fun bindCartLocalDataSource(dataSourceImpl: CartLocalDataSourceImpl): CartLocalDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindCartRemoteDataSource(dataSourceImpl: CartRemoteDataSourceImpl): CartRemoteDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindCartRepository(cartRepositoryImpl: CartRepositoryImpl): CartRepository
 }
