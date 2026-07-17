@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.navigation.safe.args)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -101,7 +102,6 @@ dependencies {
     // Shimmer
     implementation(libs.shimmer)
 
-
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -112,6 +112,14 @@ dependencies {
 
     // Coroutines
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Serialization
+    add("demoImplementation", libs.kotlinx.serialization.json)
+
+    // Demo catalog
+    add("demoImplementation", libs.androidx.room.paging)
+    add("testDemoImplementation", libs.androidx.paging.testing)
+    add("androidTestDemoImplementation", libs.androidx.test.core)
 }
 
 room {
