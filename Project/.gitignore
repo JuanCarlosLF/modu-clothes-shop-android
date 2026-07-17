@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/scripts/catalog/.tmp/
+/scripts/catalog/reports/
