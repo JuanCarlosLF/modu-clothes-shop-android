@@ -1,4 +1,4 @@
-package com.example.modu.data.dataSource.local.database.product.dbo
+package com.example.modu.data.dataSource.local.demo.database.product.dbo
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
