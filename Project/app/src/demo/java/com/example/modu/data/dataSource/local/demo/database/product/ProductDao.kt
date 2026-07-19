@@ -45,7 +45,7 @@ interface ProductDao {
         ORDER BY
             CASE WHEN :orderByPrice = 'asc' THEN p.priceInCents END ASC,
             CASE WHEN :orderByPrice = 'desc' THEN p.priceInCents END DESC,
-            p.id ASC
+            p.id DESC
         """
     )
     fun getProductsBy(
