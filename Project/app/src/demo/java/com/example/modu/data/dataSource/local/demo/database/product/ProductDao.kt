@@ -26,6 +26,29 @@ interface ProductDao {
         LEFT JOIN categories AS c ON pc.categoryId = c.id
         WHERE p.active = 1
           AND (
+              :categoryCount = 0
+              OR c.name COLLATE NOCASE IN (:categoryNames)
+          )
+        GROUP BY p.id
+        HAVING :categoryCount = 0
+            OR COUNT(DISTINCT c.id) = :categoryCount
+        ORDER BY p.id DESC
+        LIMIT 20
+        """
+    )
+    suspend fun getRelatedProducts(
+        categoryNames: List<String>,
+        categoryCount: Int
+    ): List<ProductDbo>
+
+    @Query(
+        """
+        SELECT p.*
+        FROM products AS p
+        LEFT JOIN product_categories AS pc ON p.id = pc.productId
+        LEFT JOIN categories AS c ON pc.categoryId = c.id
+        WHERE p.active = 1
+          AND (
               :title IS NULL
               OR INSTR(LOWER(p.name), LOWER(:title)) > 0
           )
