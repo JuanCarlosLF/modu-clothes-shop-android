@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDbo
+import com.example.modu.data.dataSource.local.demo.database.product.CatalogSeedDao
 import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.CategoryDbo
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductCategoryCrossRefDbo
@@ -23,5 +24,7 @@ import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductV
     exportSchema = true
 )
 abstract class ModuDemoDatabase : RoomDatabase() {
+    abstract fun catalogSeedDao(): CatalogSeedDao
+
     abstract fun productDao(): ProductDao
 }

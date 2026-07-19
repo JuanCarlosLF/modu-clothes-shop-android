@@ -22,6 +22,7 @@ class ProductDaoTest {
 
     private lateinit var database: ModuDemoDatabase
     private lateinit var productDao: ProductDao
+    private lateinit var catalogSeedDao: CatalogSeedDao
 
     @Before
     fun setUp() {
@@ -32,6 +33,7 @@ class ProductDaoTest {
         ).build()
 
         productDao = database.productDao()
+        catalogSeedDao = database.catalogSeedDao()
     }
 
     @After
@@ -42,7 +44,7 @@ class ProductDaoTest {
         // GIVEN
         val activeProduct = getProduct(id = 1, name = "active", active = true)
         val inactiveProduct = getProduct(id = 2, name = "inactive", active = false)
-        productDao.insertProducts(listOf(activeProduct, inactiveProduct))
+        catalogSeedDao.insertProducts(listOf(activeProduct, inactiveProduct))
 
         // WHEN
         val products = loadProducts(title = null)
@@ -60,7 +62,7 @@ class ProductDaoTest {
             // GIVEN
             val matchingProduct = getProduct(id = 1, name = "Blue Cotton Shirt")
             val nonMatchingProduct = getProduct(id = 2, name = "Red Running Shoes")
-            productDao.insertProducts(listOf(matchingProduct, nonMatchingProduct))
+            catalogSeedDao.insertProducts(listOf(matchingProduct, nonMatchingProduct))
 
             // WHEN
             val products = loadProducts(title = "cotton")
@@ -78,7 +80,7 @@ class ProductDaoTest {
             // GIVEN
             val matchingProduct = getProduct(id = 1, name = "Save 50% Today")
             val unrelatedProduct = getProduct(id = 2, name = "Full Price Product")
-            productDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
+            catalogSeedDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
 
             // WHEN
             val products = loadProducts(title = "%")
@@ -93,7 +95,7 @@ class ProductDaoTest {
             // GIVEN
             val matchingProduct = getProduct(id = 1, name = "Cotton_Shirt")
             val unrelatedProduct = getProduct(id = 2, name = "Cotton Shirt")
-            productDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
+            catalogSeedDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
 
             // WHEN
             val products = loadProducts(title = "_")
@@ -108,7 +110,7 @@ class ProductDaoTest {
             // GIVEN
             val matchingProduct = getProduct(id = 1, name = "Cotton\\Shirt")
             val unrelatedProduct = getProduct(id = 2, name = "Cotton Shirt")
-            productDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
+            catalogSeedDao.insertProducts(listOf(matchingProduct, unrelatedProduct))
 
             // WHEN
             val products = loadProducts(title = "\\")
@@ -124,7 +126,7 @@ class ProductDaoTest {
             val cheapProduct = getProduct(id = 1, priceInCents = 1_000L)
             val boundaryProduct = getProduct(id = 2, priceInCents = 2_000L)
             val expensiveProduct = getProduct(id = 3, priceInCents = 2_001L)
-            productDao.insertProducts(
+            catalogSeedDao.insertProducts(
                 listOf(cheapProduct, boundaryProduct, expensiveProduct)
             )
 
@@ -145,7 +147,7 @@ class ProductDaoTest {
             val lowestIdProduct = getProduct(id = 1)
             val middleIdProduct = getProduct(id = 2)
             val highestIdProduct = getProduct(id = 3)
-            productDao.insertProducts(
+            catalogSeedDao.insertProducts(
                 listOf(lowestIdProduct, middleIdProduct, highestIdProduct)
             )
 
@@ -166,7 +168,7 @@ class ProductDaoTest {
             val expensiveProduct = getProduct(id = 1, priceInCents = 3_000L)
             val cheapProduct = getProduct(id = 2, priceInCents = 1_000L)
             val mediumProduct = getProduct(id = 3, priceInCents = 2_000L)
-            productDao.insertProducts(
+            catalogSeedDao.insertProducts(
                 listOf(expensiveProduct, cheapProduct, mediumProduct)
             )
 
@@ -186,7 +188,7 @@ class ProductDaoTest {
             // GIVEN
             val lowestIdProduct = getProduct(id = 1, priceInCents = 1_000L)
             val highestIdProduct = getProduct(id = 2, priceInCents = 1_000L)
-            productDao.insertProducts(listOf(lowestIdProduct, highestIdProduct))
+            catalogSeedDao.insertProducts(listOf(lowestIdProduct, highestIdProduct))
 
             // WHEN
             val products = loadProducts(orderByPrice = "asc")
@@ -202,7 +204,7 @@ class ProductDaoTest {
             val expensiveProduct = getProduct(id = 1, priceInCents = 3_000L)
             val cheapProduct = getProduct(id = 2, priceInCents = 1_000L)
             val mediumProduct = getProduct(id = 3, priceInCents = 2_000L)
-            productDao.insertProducts(
+            catalogSeedDao.insertProducts(
                 listOf(expensiveProduct, cheapProduct, mediumProduct)
             )
 
@@ -222,7 +224,7 @@ class ProductDaoTest {
             // GIVEN
             val lowestIdProduct = getProduct(id = 1, priceInCents = 1_000L)
             val highestIdProduct = getProduct(id = 2, priceInCents = 1_000L)
-            productDao.insertProducts(listOf(lowestIdProduct, highestIdProduct))
+            catalogSeedDao.insertProducts(listOf(lowestIdProduct, highestIdProduct))
 
             // WHEN
             val products = loadProducts(orderByPrice = "desc")
@@ -238,7 +240,7 @@ class ProductDaoTest {
             val products = (1..25).map { id ->
                 getProduct(id = id, priceInCents = 1_000L)
             }
-            productDao.insertProducts(products)
+            catalogSeedDao.insertProducts(products)
             val pagingSource = productDao.getProductsBy(
                 title = null,
                 maxPriceInCents = null,
@@ -279,17 +281,17 @@ class ProductDaoTest {
             val matchingProduct = getProduct(id = 1, name = "Linen Shirt")
             val shirtOnlyProduct = getProduct(id = 2, name = "Cotton Shirt")
             val summerOnlyProduct = getProduct(id = 3, name = "Summer Shorts")
-            productDao.insertProducts(
+            catalogSeedDao.insertProducts(
                 listOf(matchingProduct, shirtOnlyProduct, summerOnlyProduct)
             )
-            productDao.insertCategories(
+            catalogSeedDao.insertCategories(
                 listOf(
                     CategoryDbo(id = 1, name = "Shirt"),
                     CategoryDbo(id = 2, name = "Summer"),
                     CategoryDbo(id = 3, name = "Casual")
                 )
             )
-            productDao.insertProductCategories(
+            catalogSeedDao.insertProductCategories(
                 listOf(
                     ProductCategoryCrossRefDbo(productId = matchingProduct.id, categoryId = 1),
                     ProductCategoryCrossRefDbo(productId = matchingProduct.id, categoryId = 2),
@@ -312,9 +314,9 @@ class ProductDaoTest {
             // GIVEN
             val productWithoutCategories = getProduct(id = 1, name = "Uncategorized")
             val categorizedProduct = getProduct(id = 2, name = "Categorized")
-            productDao.insertProducts(listOf(productWithoutCategories, categorizedProduct))
-            productDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
-            productDao.insertProductCategories(
+            catalogSeedDao.insertProducts(listOf(productWithoutCategories, categorizedProduct))
+            catalogSeedDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
+            catalogSeedDao.insertProductCategories(
                 listOf(ProductCategoryCrossRefDbo(productId = categorizedProduct.id, categoryId = 1))
             )
 
@@ -329,9 +331,9 @@ class ProductDaoTest {
     fun getProductsBy_givenUnknownCategory_whenCalled_thenReturnsEmptyResult() = runBlocking {
         // GIVEN
         val categorizedProduct = getProduct(id = 1)
-        productDao.insertProducts(listOf(categorizedProduct))
-        productDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
-        productDao.insertProductCategories(
+        catalogSeedDao.insertProducts(listOf(categorizedProduct))
+        catalogSeedDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
+        catalogSeedDao.insertProductCategories(
             listOf(ProductCategoryCrossRefDbo(productId = categorizedProduct.id, categoryId = 1))
         )
 
