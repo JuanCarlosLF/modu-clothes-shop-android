@@ -40,6 +40,27 @@ class ProductDaoTest {
     fun tearDown() = database.close()
 
     @Test
+    fun getCategories_givenMixedCaseCategories_whenCalled_thenReturnsCategoriesOrderedCaseInsensitivelyByName() =
+        runBlocking {
+            // GIVEN
+            val zebraCategory = CategoryDbo(id = 1, name = "zebra")
+            val appleCategory = CategoryDbo(id = 2, name = "apple")
+            val bananaCategory = CategoryDbo(id = 3, name = "Banana")
+            catalogSeedDao.insertCategories(
+                listOf(zebraCategory, appleCategory, bananaCategory)
+            )
+
+            // WHEN
+            val categories = productDao.getCategories()
+
+            // THEN
+            assertEquals(
+                listOf(appleCategory, bananaCategory, zebraCategory),
+                categories
+            )
+        }
+
+    @Test
     fun getProductsBy_givenActiveAndInactiveProducts_whenCalled_thenReturnsOnlyActiveProducts() = runBlocking {
         // GIVEN
         val activeProduct = getProduct(id = 1, name = "active", active = true)

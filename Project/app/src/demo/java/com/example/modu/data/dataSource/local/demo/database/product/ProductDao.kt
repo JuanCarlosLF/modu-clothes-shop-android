@@ -3,10 +3,14 @@ package com.example.modu.data.dataSource.local.demo.database.product
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
+import com.example.modu.data.dataSource.local.demo.database.product.dbo.CategoryDbo
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductDbo
 
 @Dao
 interface ProductDao {
+
+    @Query("SELECT * FROM categories ORDER BY name COLLATE NOCASE ASC")
+    suspend fun getCategories(): List<CategoryDbo>
 
     @Query(
         """
