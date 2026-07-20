@@ -2,23 +2,15 @@ package com.example.modu.data.dataSource.local.demo.database.product
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.CategoryDbo
-import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductCategoryCrossRefDbo
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductDbo
 
 @Dao
 interface ProductDao {
 
-    @Insert
-    suspend fun insertProducts(products: List<ProductDbo>)
-
-    @Insert
-    suspend fun insertCategories(categories: List<CategoryDbo>)
-
-    @Insert
-    suspend fun insertProductCategories(productCategories: List<ProductCategoryCrossRefDbo>)
+    @Query("SELECT * FROM categories ORDER BY name COLLATE NOCASE ASC")
+    suspend fun getCategories(): List<CategoryDbo>
 
     @Query(
         """
