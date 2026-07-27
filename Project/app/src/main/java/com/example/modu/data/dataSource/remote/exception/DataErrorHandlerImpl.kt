@@ -18,7 +18,7 @@ private const val HTTP_UNAUTHORIZED_ERROR_CODE = 401
 private const val HTTP_NOT_FOUND_ERROR_CODE = 404
 
 class DataErrorHandlerImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ErrorHandler {
 
     override fun handle(error: Exception): Exception {
