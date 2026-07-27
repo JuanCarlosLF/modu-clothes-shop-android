@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import io
 import json
+import math
 import os
 import re
+import sys
 import tempfile
 import unicodedata
 from decimal import Decimal, InvalidOperation
@@ -13,19 +16,23 @@ from typing import Any
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 JsonObject = dict[str, Any]
 
 ASSET_PREFIX = "catalog/images"
 DOWNLOAD_REPORT = "download-report.json"
+CONTACT_SHEET = "contact-sheet.png"
+FAILURE_REPORT = "preparation-error.json"
 HTTP_TIMEOUT_SECONDS = 30
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 DOWNLOAD_CHUNK_BYTES = 64 * 1024
 MAX_IMAGE_WIDTH = 4096
 MAX_IMAGE_HEIGHT = 4096
 MAX_IMAGE_PIXELS = 16_000_000
+MAX_CONTACT_SHEET_PRODUCTS = 200
+MAX_CONTACT_SHEET_PIXELS = 12_000_000
 MAX_SLUG_BYTES = 80
 KOTLIN_INT_MAX = 2_147_483_647
 KOTLIN_LONG_MAX = 9_223_372_036_854_775_807
@@ -211,6 +218,52 @@ def validate_catalog(catalog: dict, expected_counts: dict | None = None) -> None
             raise ValueError(
                 f"active product {product['id']} has no active variant with positive stock"
             )
+
+
+def build_seed(catalog: dict, downloaded_assets: dict[str, str]) -> dict:
+    products: list[JsonObject] = []
+    for product in sorted(catalog["products"], key=lambda row: row["id"]):
+        image_url = _effective_image_url(product)
+        image_asset_path = downloaded_assets.get(image_url)
+        if image_asset_path is None:
+            raise ValueError(f"image for {image_url} was not downloaded")
+        price = _decimal_price(product)
+        products.append(
+            {
+                "id": product["id"],
+                "name": product["name"],
+                "description": product["description"],
+                "imageAssetPath": image_asset_path,
+                "priceInCents": int(price * Decimal(100)),
+                "active": product["active"],
+            }
+        )
+    return {
+        "formatVersion": 1,
+        "products": products,
+        "categories": [
+            {"id": row["id"], "name": row["name"]}
+            for row in sorted(catalog["categories"], key=lambda row: row["id"])
+        ],
+        "productCategories": [
+            {"productId": row["productId"], "categoryId": row["categoryId"]}
+            for row in sorted(
+                catalog["productCategories"], key=lambda row: (row["productId"], row["categoryId"])
+            )
+        ],
+        "productVariants": [
+            {
+                "id": row["id"],
+                "productId": row["productId"],
+                "variantCode": row["variantCode"],
+                "size": row["size"],
+                "color": row["color"],
+                "stock": row["stock"],
+                "active": row["active"],
+            }
+            for row in sorted(catalog["productVariants"], key=lambda row: row["id"])
+        ],
+    }
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -407,3 +460,116 @@ def remove_stale_images(output_dir: Path, downloaded_assets: dict[str, str]) -> 
             and (path.is_file() or path.is_symlink())
         ):
             path.unlink()
+
+
+def generate_contact_sheet(
+    catalog: dict, downloaded_assets: dict[str, str], output: Path
+) -> None:
+    products = sorted(catalog["products"], key=lambda row: row["id"])
+    if not products:
+        raise ValueError("cannot generate a contact sheet for an empty catalog")
+    if len(products) > MAX_CONTACT_SHEET_PRODUCTS:
+        raise ValueError(
+            f"contact sheet product count {len(products)} exceeds maximum "
+            f"{MAX_CONTACT_SHEET_PRODUCTS}"
+        )
+    columns = min(4, len(products))
+    rows = math.ceil(len(products) / columns)
+    tile_width = 240
+    tile_height = 220
+    sheet_width = columns * tile_width
+    sheet_height = rows * tile_height
+    sheet_pixels = sheet_width * sheet_height
+    if sheet_pixels > MAX_CONTACT_SHEET_PIXELS:
+        raise ValueError(
+            f"contact sheet pixels {sheet_pixels} exceed maximum {MAX_CONTACT_SHEET_PIXELS}"
+        )
+    sheet = Image.new("RGB", (sheet_width, sheet_height), "white")
+    draw = ImageDraw.Draw(sheet)
+    for index, product in enumerate(products):
+        url = _effective_image_url(product)
+        asset = downloaded_assets.get(url)
+        if asset is None:
+            raise ValueError(f"image for {url} is unavailable for contact sheet")
+        image_path = Path(asset)
+        if not image_path.is_file():
+            raise ValueError(f"contact sheet image does not exist: {image_path}")
+        with Image.open(image_path) as source:
+            _validate_image_dimensions(source, str(image_path))
+            preview = source.convert("RGB")
+            preview.thumbnail((tile_width, tile_height - 30))
+        x = (index % columns) * tile_width
+        y = (index // columns) * tile_height
+        sheet.paste(preview, (x, y))
+        draw.text((x + 4, y + tile_height - 24), f"{product['id']}: {product['name']}", fill="black")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    buffer = io.BytesIO()
+    sheet.save(buffer, format="PNG")
+    _atomic_write_bytes(output, buffer.getvalue())
+
+
+def _argument_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Prepare deterministic catalog generator inputs")
+    commands = parser.add_subparsers(dest="command", required=True)
+
+    prepare_parser = commands.add_parser("prepare")
+    prepare_parser.add_argument("--source", "--catalog", dest="source", type=Path, required=True)
+    prepare_parser.add_argument("--assets", "--assets-dir", dest="assets", type=Path, required=True)
+    prepare_parser.add_argument("--seed", "--output", dest="seed", type=Path, required=True)
+    prepare_parser.add_argument("--reports", "--report-dir", dest="reports", type=Path, required=True)
+    prepare_parser.add_argument("--force", action="store_true")
+    return parser
+
+
+def _validate_output_paths(assets: Path, seed: Path, reports: Path) -> None:
+    resolved_assets = assets.resolve()
+    resolved_seed = seed.resolve()
+    resolved_reports = reports.resolve()
+
+    def overlaps(first: Path, second: Path) -> bool:
+        return first == second or first in second.parents or second in first.parents
+
+    if overlaps(resolved_assets, resolved_seed):
+        raise ValueError("assets directory must not contain or overlap the seed output")
+    if overlaps(resolved_assets, resolved_reports):
+        raise ValueError("assets directory must not contain or overlap the reports output")
+    if overlaps(resolved_seed, resolved_reports):
+        raise ValueError("seed output must not contain or overlap the reports directory")
+
+
+def main(arguments: list[str] | None = None) -> int:
+    options = _argument_parser().parse_args(arguments)
+    try:
+        _validate_output_paths(options.assets, options.seed, options.reports)
+    except Exception as error:
+        print(f"catalog preparation failed: {error}", file=sys.stderr)
+        return 1
+
+    try:
+        catalog = json.loads(options.source.read_text(encoding="utf-8"))
+        validate_catalog(catalog)
+        downloaded_assets = download_images(catalog, options.assets, options.reports, options.force)
+        seed = build_seed(catalog, downloaded_assets)
+        physical_assets = {
+            url: str(options.assets / Path(asset_path).name)
+            for url, asset_path in downloaded_assets.items()
+        }
+        generate_contact_sheet(catalog, physical_assets, options.reports / CONTACT_SHEET)
+        _write_json_atomic(options.seed, seed)
+        remove_stale_images(options.assets, downloaded_assets)
+        (options.reports / FAILURE_REPORT).unlink(missing_ok=True)
+        return 0
+    except Exception as error:
+        try:
+            _write_json_atomic(
+                options.reports / FAILURE_REPORT,
+                {"error": str(error), "status": "failed"},
+            )
+        except OSError:
+            pass
+        print(f"catalog preparation failed: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
