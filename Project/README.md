@@ -81,6 +81,26 @@ The project has 56 JVM unit tests across repository, use-case, and ViewModel lay
 
 The backend URL is currently defined in `app/build.gradle.kts` and points to an ephemeral FastAPI mock endpoint. A stable deployed backend and configuration-based URL management are planned before release.
 
+## Demo Catalog Assets
+
+The `demo` flavor opens the versioned prepackaged database at `app/src/demo/assets/database/modu_demo_database.db`. Regenerate catalog inputs from `Project/` when the source catalog changes:
+
+```powershell
+python scripts/catalog/prepare_catalog.py prepare `
+  --source scripts/catalog/catalog-source.json `
+  --assets app/src/demo/assets/catalog/images `
+  --seed catalog-db-generator/src/main/resources/catalog/catalog-seed.json `
+  --reports scripts/catalog/reports
+```
+
+Review the generated seed, images, and reports, then regenerate the database without path arguments:
+
+```powershell
+.\gradlew.bat :catalog-db-generator:generateDemoCatalogDatabase
+```
+
+The database, seed, and app images are versioned artifacts. `scripts/catalog/reports/` and `catalog-db-generator/build/` are local generated outputs.
+
 ## Links
 
 - Android repository: https://github.com/JuanCarlosLF/modu-clothes-shop-android
