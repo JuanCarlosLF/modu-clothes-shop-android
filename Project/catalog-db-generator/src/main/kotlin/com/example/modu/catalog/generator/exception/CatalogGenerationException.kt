@@ -24,6 +24,14 @@ internal class CatalogSeedParseException(
     cause = cause
 )
 
+internal class CatalogSchemaParseException(
+    val schemaPath: Path,
+    cause: Throwable
+) : CatalogGenerationException(
+    message = "Unable to parse Room schema: $schemaPath",
+    cause = cause
+)
+
 internal class CatalogSeedValidationException(
     val report: CatalogSeedValidationReport
 ) : CatalogGenerationException(message = report.format())
