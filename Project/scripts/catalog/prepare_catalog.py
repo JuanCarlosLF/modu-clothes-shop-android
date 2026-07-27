@@ -1,14 +1,42 @@
 from __future__ import annotations
 
+import hashlib
+import io
+import json
+import os
+import re
+import tempfile
+import unicodedata
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+from PIL import Image
 
 
 JsonObject = dict[str, Any]
 
+ASSET_PREFIX = "catalog/images"
+DOWNLOAD_REPORT = "download-report.json"
+HTTP_TIMEOUT_SECONDS = 30
+MAX_IMAGE_BYTES = 10 * 1024 * 1024
+DOWNLOAD_CHUNK_BYTES = 64 * 1024
+MAX_IMAGE_WIDTH = 4096
+MAX_IMAGE_HEIGHT = 4096
+MAX_IMAGE_PIXELS = 16_000_000
+MAX_SLUG_BYTES = 80
 KOTLIN_INT_MAX = 2_147_483_647
 KOTLIN_LONG_MAX = 9_223_372_036_854_775_807
+IMAGE_EXTENSIONS_PATTERN = r"(?:jpg|png|webp|gif)"
+DESCRIPTIVE_IMAGE_PATTERN = re.compile(
+    rf"^[0-9]{{3,10}}-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{{12}}\.{IMAGE_EXTENSIONS_PATTERN}$"
+)
+
+
+class ImageLimitError(ValueError):
+    pass
 
 
 def _required_string(value: Any, path: str) -> str:
@@ -31,6 +59,21 @@ def _validate_image_url(value: str, path: str) -> str:
     if has_credentials:
         raise ValueError(f"{path} must not contain credentials")
     return value
+
+
+class ValidatingRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(self, request, file_pointer, code, message, headers, new_url):
+        _validate_image_url(new_url, "image redirect URL")
+        return super().redirect_request(
+            request, file_pointer, code, message, headers, new_url
+        )
+
+
+_IMAGE_OPENER = build_opener(ValidatingRedirectHandler())
+
+
+def urlopen(request: Request, timeout: int):
+    return _IMAGE_OPENER.open(request, timeout=timeout)
 
 
 def _effective_image_url(product: JsonObject) -> str:
@@ -168,3 +211,199 @@ def validate_catalog(catalog: dict, expected_counts: dict | None = None) -> None
             raise ValueError(
                 f"active product {product['id']} has no active variant with positive stock"
             )
+
+
+def _json_bytes(value: Any) -> bytes:
+    return (json.dumps(value, ensure_ascii=True, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _atomic_write_bytes(path: Path, content: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_name: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb", dir=path.parent, prefix=f".{path.name}.", suffix=".part", delete=False
+        ) as temporary:
+            temporary.write(content)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            temporary_name = temporary.name
+        os.replace(temporary_name, path)
+    finally:
+        if temporary_name is not None:
+            Path(temporary_name).unlink(missing_ok=True)
+
+
+def _write_json_atomic(path: Path, value: Any) -> None:
+    _atomic_write_bytes(path, _json_bytes(value))
+
+
+def _validate_image_dimensions(image: Image.Image, source: str) -> None:
+    width, height = image.size
+    if width <= 0 or width > MAX_IMAGE_WIDTH:
+        raise ImageLimitError(
+            f"image width {width} from {source} exceeds valid maximum {MAX_IMAGE_WIDTH}"
+        )
+    if height <= 0 or height > MAX_IMAGE_HEIGHT:
+        raise ImageLimitError(
+            f"image height {height} from {source} exceeds valid maximum {MAX_IMAGE_HEIGHT}"
+        )
+    pixels = width * height
+    if pixels > MAX_IMAGE_PIXELS:
+        raise ImageLimitError(
+            f"image pixels {pixels} from {source} exceed maximum {MAX_IMAGE_PIXELS}"
+        )
+
+
+def _verify_image_bytes(content: bytes, url: str) -> str:
+    try:
+        with Image.open(io.BytesIO(content)) as image:
+            image_format = image.format
+            _validate_image_dimensions(image, url)
+            image.verify()
+    except ImageLimitError:
+        raise
+    except Exception as error:
+        raise ValueError(f"invalid image bytes from {url}: decode failed") from error
+    extensions = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp", "GIF": ".gif"}
+    if image_format not in extensions:
+        raise ValueError(f"unsupported decoded image format {image_format!r} from {url}")
+    return extensions[image_format]
+
+
+def product_slug(name: str) -> str:
+    normalized = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    normalized = re.sub(r"['\u2018\u2019]", "", normalized.lower())
+    slug = re.sub(r"[^a-z0-9]+", "-", normalized).strip("-")
+    if not slug:
+        raise ValueError(f"product name {name!r} does not contain ASCII letters or digits")
+    return slug[:MAX_SLUG_BYTES].rstrip("-")
+
+
+def image_filename(product: JsonObject, content: bytes, extension: str) -> str:
+    content_sha = hashlib.sha256(content).hexdigest()
+    return f"{product['id']:03d}-{product_slug(product['name'])}-{content_sha[:12]}{extension}"
+
+
+def _read_bounded_file(path: Path, maximum_bytes: int) -> bytes:
+    if path.stat().st_size > maximum_bytes:
+        raise ValueError(f"file {path} exceeds maximum {maximum_bytes} bytes")
+    chunks: list[bytes] = []
+    total_bytes = 0
+    with path.open("rb") as source:
+        while chunk := source.read(DOWNLOAD_CHUNK_BYTES):
+            total_bytes += len(chunk)
+            if total_bytes > maximum_bytes:
+                raise ValueError(f"file {path} exceeds maximum {maximum_bytes} bytes")
+            chunks.append(chunk)
+    return b"".join(chunks)
+
+
+def _load_reusable_downloads(report_path: Path, output_dir: Path) -> dict[str, JsonObject]:
+    if not report_path.is_file():
+        return {}
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        downloads = report["downloads"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return {}
+    reusable: dict[str, JsonObject] = {}
+    for entry in downloads:
+        try:
+            url = entry["url"]
+            asset_path = entry["imageAssetPath"]
+            expected_sha = entry["sha256"]
+            image_path = output_dir / Path(asset_path).name
+            content = _read_bounded_file(image_path, MAX_IMAGE_BYTES)
+            if hashlib.sha256(content).hexdigest() != expected_sha:
+                continue
+            extension = _verify_image_bytes(content, url)
+            reusable[url] = {**entry, "content": content, "extension": extension}
+        except (OSError, KeyError, TypeError, ValueError):
+            continue
+    return reusable
+
+
+def download_images(
+    catalog: dict, output_dir: Path, report_dir: Path, force: bool
+) -> dict[str, str]:
+    urls = sorted({_effective_image_url(product) for product in catalog["products"]})
+    canonical_products: dict[str, JsonObject] = {}
+    for product in sorted(catalog["products"], key=lambda row: (row["id"], row["name"])):
+        canonical_products.setdefault(_effective_image_url(product), product)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / DOWNLOAD_REPORT
+    reusable = {} if force else _load_reusable_downloads(report_path, output_dir)
+    downloads: list[JsonObject] = []
+    failures: list[JsonObject] = []
+    assets: dict[str, str] = {}
+    for url in urls:
+        existing = reusable.get(url)
+        if existing is not None:
+            content = existing["content"]
+            filename = image_filename(canonical_products[url], content, existing["extension"])
+            image_asset_path = f"{ASSET_PREFIX}/{filename}"
+            _atomic_write_bytes(output_dir / filename, content)
+            entry = {
+                "url": url,
+                "imageAssetPath": image_asset_path,
+                "sha256": existing["sha256"],
+            }
+            downloads.append(entry)
+            assets[url] = image_asset_path
+            continue
+
+        try:
+            request = Request(url, headers={"Accept": "image/*"})
+            with urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
+                get_final_url = getattr(response, "geturl", None)
+                final_url = get_final_url() if callable(get_final_url) else request.full_url
+                _validate_image_url(final_url, f"final image URL for {url}")
+                status = getattr(response, "status", None)
+                if status != 200:
+                    raise ValueError(f"image download for {url} returned HTTP status {status}")
+                content_type = response.headers.get("Content-Type", "")
+                if not content_type.lower().split(";", 1)[0].strip().startswith("image/"):
+                    raise ValueError(
+                        f"image download for {url} has invalid content type {content_type!r}"
+                    )
+                chunks: list[bytes] = []
+                total_bytes = 0
+                while chunk := response.read(DOWNLOAD_CHUNK_BYTES):
+                    total_bytes += len(chunk)
+                    if total_bytes > MAX_IMAGE_BYTES:
+                        raise ValueError(
+                            f"image download for {url} exceeds maximum {MAX_IMAGE_BYTES} bytes"
+                        )
+                    chunks.append(chunk)
+                content = b"".join(chunks)
+            extension = _verify_image_bytes(content, url)
+            sha256 = hashlib.sha256(content).hexdigest()
+            filename = image_filename(canonical_products[url], content, extension)
+            image_asset_path = f"{ASSET_PREFIX}/{filename}"
+            _atomic_write_bytes(output_dir / filename, content)
+            entry = {"url": url, "imageAssetPath": image_asset_path, "sha256": sha256}
+            downloads.append(entry)
+            assets[url] = image_asset_path
+        except (OSError, ValueError) as error:
+            failures.append({"url": url, "error": str(error)})
+
+    if failures:
+        details = "; ".join(f"{failure['url']}: {failure['error']}" for failure in failures)
+        raise ValueError(f"{len(failures)} image download(s) failed: {details}")
+    _write_json_atomic(report_path, {"downloads": downloads, "failures": []})
+    return assets
+
+
+def remove_stale_images(output_dir: Path, downloaded_assets: dict[str, str]) -> None:
+    if not output_dir.exists():
+        return
+    desired_filenames = {Path(asset_path).name for asset_path in downloaded_assets.values()}
+    for path in output_dir.iterdir():
+        if (
+            path.name not in desired_filenames
+            and DESCRIPTIVE_IMAGE_PATTERN.fullmatch(path.name)
+            and (path.is_file() or path.is_symlink())
+        ):
+            path.unlink()
