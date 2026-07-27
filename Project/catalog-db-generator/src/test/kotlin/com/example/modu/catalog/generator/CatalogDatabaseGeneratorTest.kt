@@ -3,6 +3,7 @@ package com.example.modu.catalog.generator
 import com.example.modu.catalog.generator.exception.CatalogSeedValidationException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.security.MessageDigest
 import java.sql.DriverManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -90,6 +91,7 @@ internal class CatalogDatabaseGeneratorTest {
                 }
             }
         }
+        assertArrayEquals(sha256(production.output), sha256(generated))
     }
 
     private fun fixture(name: String, createImage: Boolean = true): CatalogGenerationPaths {
@@ -119,6 +121,9 @@ internal class CatalogDatabaseGeneratorTest {
           "productVariants": [{"id": 1, "productId": 1, "variantCode": "jacket-s", "size": "S", "color": "BLACK", "stock": 3, "active": true}]
         }
     """.trimIndent()
+
+    private fun sha256(path: Path): ByteArray = MessageDigest.getInstance("SHA-256")
+        .digest(Files.readAllBytes(path))
 
     private fun projectRoot(): Path = roomSchemaPath().parent.parent.parent.parent
 
