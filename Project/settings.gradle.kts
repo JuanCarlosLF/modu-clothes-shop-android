@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MODU"
 include(":app")
- 
+include(":catalog-db-generator")
