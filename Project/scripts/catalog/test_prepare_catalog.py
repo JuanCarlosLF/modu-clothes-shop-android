@@ -93,6 +93,15 @@ class FakeResponse:
         return False
 
 
+class RedirectResponse(FakeResponse):
+    def __init__(self, body, final_url):
+        super().__init__(body)
+        self.final_url = final_url
+
+    def geturl(self):
+        return self.final_url
+
+
 class ValidatingRedirectHandlerTest(unittest.TestCase):
     def test_rejects_https_to_http_before_parent_can_follow(self):
         handler = prepare_catalog.ValidatingRedirectHandler()
@@ -315,6 +324,131 @@ class ImageNamingTest(unittest.TestCase):
 
 
 class DownloadImagesTest(unittest.TestCase):
+    def test_shared_url_uses_lowest_product_as_canonical_filename(self):
+        body = png_bytes()
+        catalog = coherent_catalog()
+        catalog["products"] = list(reversed(catalog["products"]))
+        expected_name = f"001-basic-tee-{hashlib.sha256(body).hexdigest()[:12]}.png"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with mock.patch.object(
+                prepare_catalog, "urlopen", return_value=FakeResponse(body)
+            ):
+                assets = prepare_catalog.download_images(
+                    catalog, root / "images", root / "reports", False
+                )
+
+        self.assertEqual(
+            {"https://img.test/shared.png": f"catalog/images/{expected_name}"},
+            assets,
+        )
+
+    def test_republishes_valid_cached_image_without_network(self):
+        body = png_bytes()
+        sha256 = hashlib.sha256(body).hexdigest()
+        old_name = "001-basic-tee-aaaaaaaaaaaa.png"
+        expected_name = f"001-basic-tee-{sha256[:12]}.png"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output_dir = root / "images"
+            report_dir = root / "reports"
+            output_dir.mkdir()
+            report_dir.mkdir()
+            (output_dir / old_name).write_bytes(body)
+            (report_dir / "download-report.json").write_text(
+                json.dumps(
+                    {
+                        "downloads": [
+                            {
+                                "url": "https://img.test/shared.png",
+                                "imageAssetPath": f"catalog/images/{old_name}",
+                                "sha256": sha256,
+                            }
+                        ],
+                        "failures": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(prepare_catalog, "urlopen") as opener:
+                assets = prepare_catalog.download_images(
+                    coherent_catalog(), output_dir, report_dir, False
+                )
+
+            opener.assert_not_called()
+            self.assertEqual(
+                f"catalog/images/{expected_name}",
+                assets["https://img.test/shared.png"],
+            )
+            self.assertEqual(body, (output_dir / expected_name).read_bytes())
+            self.assertTrue((output_dir / old_name).exists())
+
+    def test_skips_oversized_cached_image_without_unbounded_read(self):
+        body = png_bytes()
+        sha256 = hashlib.sha256(body).hexdigest()
+        old_name = "001-basic-tee-aaaaaaaaaaaa.png"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output_dir = root / "images"
+            report_dir = root / "reports"
+            output_dir.mkdir()
+            report_dir.mkdir()
+            (output_dir / old_name).write_bytes(body)
+            (report_dir / "download-report.json").write_text(
+                json.dumps(
+                    {
+                        "downloads": [
+                            {
+                                "url": "https://img.test/shared.png",
+                                "imageAssetPath": f"catalog/images/{old_name}",
+                                "sha256": sha256,
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(prepare_catalog, "MAX_IMAGE_BYTES", len(body) - 1):
+                with mock.patch.object(
+                    Path, "read_bytes", side_effect=AssertionError("unbounded cache read")
+                ):
+                    reusable = prepare_catalog._load_reusable_downloads(
+                        report_dir / "download-report.json", output_dir
+                    )
+
+            self.assertEqual({}, reusable)
+
+    def test_keeps_stale_files_when_any_image_fails(self):
+        first_url = "https://img.test/first.png"
+        second_url = "https://img.test/second.png"
+        catalog = coherent_catalog()
+        catalog["products"][0]["imageUrl"] = first_url
+        catalog["products"][1]["imageUrl"] = second_url
+        first_body = png_bytes((255, 0, 0))
+        second_body = png_bytes((0, 255, 0))
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output_dir = root / "images"
+            report_dir = root / "reports"
+            output_dir.mkdir()
+            stale = output_dir / "stale-owned-image.jpg"
+            stale.write_bytes(b"stale")
+
+            responses = {
+                first_url: FakeResponse(first_body),
+                second_url: FakeResponse(second_body, status=503),
+            }
+            with mock.patch.object(
+                prepare_catalog,
+                "urlopen",
+                side_effect=lambda request, timeout: responses[request.full_url],
+            ):
+                with self.assertRaisesRegex(ValueError, r"1 image download"):
+                    prepare_catalog.download_images(catalog, output_dir, report_dir, False)
+            self.assertTrue(stale.exists())
+
     def test_fetches_unique_url_once_and_writes_valid_image_stable_report_in_chunks(self):
         body = png_bytes()
         response = FakeResponse(body)
@@ -350,6 +484,85 @@ class DownloadImagesTest(unittest.TestCase):
         self.assertTrue(
             all(0 < size <= prepare_catalog.DOWNLOAD_CHUNK_BYTES for size in response.read_sizes)
         )
+
+    def test_rejects_insecure_final_redirect_url_before_reading_bytes(self):
+        response = RedirectResponse(png_bytes(), "http://cdn.test/shared.png")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with mock.patch.object(prepare_catalog, "urlopen", return_value=response):
+                with self.assertRaisesRegex(ValueError, r"HTTPS"):
+                    prepare_catalog.download_images(
+                        coherent_catalog(), root / "images", root / "reports", False
+                    )
+
+        self.assertEqual([], response.read_sizes)
+
+    def test_rejects_decoded_dimensions_and_total_pixels_over_limits(self):
+        body = png_bytes(size=(3, 2))
+        cases = [
+            ("width", "MAX_IMAGE_WIDTH", 2, r"width|dimensions"),
+            ("height", "MAX_IMAGE_HEIGHT", 1, r"height|dimensions"),
+            ("pixels", "MAX_IMAGE_PIXELS", 5, r"pixels"),
+        ]
+        for name, constant, limit, message_pattern in cases:
+            with self.subTest(name=name):
+                with mock.patch.object(prepare_catalog, constant, limit):
+                    with self.assertRaisesRegex(ValueError, message_pattern):
+                        prepare_catalog._verify_image_bytes(
+                            body, "https://img.test/large.png"
+                        )
+
+    def test_attempts_all_unique_urls_and_preserves_last_successful_report_on_failure(self):
+        urls = [
+            "https://img.test/01-success.png",
+            "https://img.test/02-status-failure.png",
+            "https://img.test/03-success.png",
+            "https://img.test/04-content-failure.png",
+        ]
+        catalog = coherent_catalog()
+        catalog["products"] = [
+            {
+                **copy.deepcopy(catalog["products"][0]),
+                "id": index,
+                "imageUrl": url,
+            }
+            for index, url in enumerate(reversed(urls), start=1)
+        ]
+        responses = {
+            urls[0]: FakeResponse(png_bytes((255, 0, 0))),
+            urls[1]: FakeResponse(png_bytes(), status=503),
+            urls[2]: FakeResponse(png_bytes((0, 255, 0))),
+            urls[3]: FakeResponse(png_bytes(), content_type="text/html"),
+        }
+        attempted = []
+
+        def open_by_url(request, timeout):
+            del timeout
+            attempted.append(request.full_url)
+            return responses[request.full_url]
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output_dir = root / "images"
+            report_dir = root / "reports"
+            report_dir.mkdir()
+            successful_report = b'{"lastSuccessful": true}\n'
+            (report_dir / "download-report.json").write_bytes(successful_report)
+            with mock.patch.object(prepare_catalog, "urlopen", side_effect=open_by_url):
+                with self.assertRaisesRegex(ValueError, r"2.*fail"):
+                    prepare_catalog.download_images(catalog, output_dir, report_dir, False)
+
+            self.assertEqual(urls, attempted)
+            self.assertEqual(
+                successful_report,
+                (report_dir / "download-report.json").read_bytes(),
+            )
+            published = sorted(output_dir.glob("*.png"))
+            self.assertEqual(2, len(published))
+            for image_path in published:
+                with Image.open(image_path) as decoded:
+                    decoded.verify()
+            self.assertFalse(list(output_dir.glob("*.part")))
 
     def test_oversized_or_bad_response_leaves_no_published_or_partial_image(self):
         cases = [
