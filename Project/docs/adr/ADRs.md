@@ -78,3 +78,16 @@ The original backend is unavailable. The public release must run autonomously wh
 - **Decision:** Keep remote code and dependencies in `src/main`. Use `demo` and `remote` flavors to select local or historical Hilt bindings; keep network provisioning and `android.permission.INTERNET` exclusive to `remote`. Publish only `demoRelease`.
 - **Alternatives:** Moving all remote code to `src/remote`, rebuilding the backend, and simulating a local HTTP API were rejected as higher-cost changes outside the closure scope.
 - **Trade-off:** `demoRelease` may include unused Retrofit, OkHttp and DTO code. This is accepted because it has no network permission, Hilt does not bind remote implementations, and preserving the original structure avoids a low-value refactor. The demo provides runtime autonomy, not binary isolation.
+
+## 7. Versioned prepackaged Room catalog database
+
+- **Status:** Accepted
+- **Date:** 2026-07-27
+- **Scope:** Demo catalog preparation, persistence and distribution
+
+The public demo must expose a complete catalog immediately without network access or runtime seed machinery. The catalog is therefore distributed as a versioned SQLite database under the demo assets and opened by Room with `createFromAsset`.
+
+- **Decision:** Prepare a normalized catalog seed and local image assets with Python, then use a dedicated JVM/SQLite generator to create the database explicitly. The generator reads Room's exported schema as the authoritative DDL source, validates the seed and assets, inserts rows transactionally, verifies Room metadata and SQLite integrity, and publishes the database atomically. The generated seed, images and database are committed; reports and build outputs are not.
+- **Alternatives rejected:** Runtime JSON seeding would ship parser, validation and insertion code in the app and add first-launch state management. Generating through Android instrumentation would require an emulator or device and extracting private app data. Maintaining handwritten `CREATE TABLE` SQL would duplicate the Room schema and allow drift.
+- **Risk:** The committed database can become stale relative to the seed, images or Room schema.
+- **Mitigation:** A fixed no-argument Gradle task declares those inputs and the database output. JVM integration tests regenerate a temporary database from production inputs and compare its schema, metadata and rows with the committed artifact. Android instrumentation verifies that Room can open the packaged database.
