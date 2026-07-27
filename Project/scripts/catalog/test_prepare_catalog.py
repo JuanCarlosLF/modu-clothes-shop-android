@@ -308,11 +308,53 @@ class ValidateCatalogTest(unittest.TestCase):
         prepare_catalog.validate_catalog(catalog)
 
 
+class BuildSeedTest(unittest.TestCase):
+    def test_builds_exact_generator_shape_in_stable_order_and_reuses_asset_path(self):
+        catalog = coherent_catalog()
+        catalog["products"][0]["price"] = "90071992547409.91"
+        catalog["products"].reverse()
+        catalog["categories"].reverse()
+        catalog["productCategories"].reverse()
+        catalog["productVariants"].reverse()
+        assets = {"https://img.test/shared.png": "catalog/images/shared.png"}
+
+        seed = prepare_catalog.build_seed(catalog, assets)
+
+        self.assertEqual(
+            {"formatVersion", "products", "categories", "productCategories", "productVariants"},
+            set(seed),
+        )
+        self.assertEqual(1, seed["formatVersion"])
+        self.assertEqual([1, 2], [row["id"] for row in seed["products"]])
+        self.assertEqual(9007199254740991, seed["products"][0]["priceInCents"])
+        self.assertNotIn("price", seed["products"][0])
+        self.assertNotIn("imageUrl", seed["products"][0])
+        self.assertEqual(
+            ["catalog/images/shared.png", "catalog/images/shared.png"],
+            [row["imageAssetPath"] for row in seed["products"]],
+        )
+        self.assertEqual([1, 2], [row["id"] for row in seed["categories"]])
+        self.assertEqual([(1, 1), (2, 2)], [(r["productId"], r["categoryId"]) for r in seed["productCategories"]])
+        self.assertEqual([1, 2], [row["id"] for row in seed["productVariants"]])
+        self.assertEqual(
+            {"id", "name", "description", "imageAssetPath", "priceInCents", "active"},
+            set(seed["products"][0]),
+        )
+
+    def test_fails_when_a_product_image_has_not_been_downloaded(self):
+        with self.assertRaisesRegex(ValueError, r"image.*https://img\.test/shared\.png"):
+            prepare_catalog.build_seed(coherent_catalog(), {})
+
+
 class ImageNamingTest(unittest.TestCase):
     def test_slug_hash_filename_and_slug_byte_limit_are_deterministic(self):
         body = b"decoded image bytes"
         slug = prepare_catalog.product_slug("Extremely long Crème d'été O’Brien " * 20)
 
+        self.assertEqual(
+            "creme-dete-obriens-jacket",
+            prepare_catalog.product_slug("  Crème d'été: O’Brien's Jacket!  "),
+        )
         self.assertLessEqual(len(slug.encode("ascii")), prepare_catalog.MAX_SLUG_BYTES)
         self.assertFalse(slug.endswith("-"))
         self.assertEqual(
@@ -480,6 +522,8 @@ class DownloadImagesTest(unittest.TestCase):
             )
             self.assertEqual([], report["failures"])
             self.assertFalse(list(output_dir.glob("*.part")))
+        request = opener.call_args.args[0]
+        self.assertEqual("image/*", request.get_header("Accept"))
         self.assertTrue(response.read_sizes)
         self.assertTrue(
             all(0 < size <= prepare_catalog.DOWNLOAD_CHUNK_BYTES for size in response.read_sizes)
@@ -567,6 +611,7 @@ class DownloadImagesTest(unittest.TestCase):
     def test_oversized_or_bad_response_leaves_no_published_or_partial_image(self):
         cases = [
             ("oversized", FakeResponse(b"x" * 11), 10, r"maximum.*10|10.*bytes"),
+            ("status", FakeResponse(png_bytes(), status=503), None, r"503"),
             ("content type", FakeResponse(png_bytes(), content_type="text/html"), None, r"content.?type"),
             ("invalid bytes", FakeResponse(b"not an image"), None, r"image|decode|invalid"),
         ]
@@ -620,6 +665,228 @@ class DownloadImagesTest(unittest.TestCase):
             ) as forced_opener:
                 prepare_catalog.download_images(coherent_catalog(), output_dir, report_dir, True)
             forced_opener.assert_called_once()
+
+
+class ContactSheetTest(unittest.TestCase):
+    def test_creates_a_decodable_sheet_containing_every_product_tile(self):
+        catalog = coherent_catalog()
+        catalog["products"][1]["imageUrl"] = "https://img.test/second.png"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            first = root / "first.png"
+            second = root / "second.png"
+            first.write_bytes(png_bytes((255, 0, 0)))
+            second.write_bytes(png_bytes((0, 255, 0)))
+            output = root / "contact-sheet.png"
+
+            prepare_catalog.generate_contact_sheet(
+                catalog,
+                {
+                    "https://img.test/shared.png": str(first),
+                    "https://img.test/second.png": str(second),
+                },
+                output,
+            )
+
+            with Image.open(output) as sheet:
+                sheet.load()
+                colors = {
+                    pixel[:3] if isinstance(pixel, tuple) else pixel
+                    for pixel in sheet.convert("RGB").get_flattened_data()
+                }
+            self.assertIn((255, 0, 0), colors)
+            self.assertIn((0, 255, 0), colors)
+
+    def test_rejects_oversized_source_before_contact_sheet_decode(self):
+        catalog = coherent_catalog()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "large.png"
+            source.write_bytes(png_bytes(size=(3, 2)))
+            with mock.patch.object(prepare_catalog, "MAX_IMAGE_WIDTH", 2):
+                with self.assertRaisesRegex(ValueError, r"width|dimensions"):
+                    prepare_catalog.generate_contact_sheet(
+                        catalog,
+                        {"https://img.test/shared.png": str(source)},
+                        root / "contact-sheet.png",
+                    )
+
+    def test_rejects_excessive_product_count_and_output_pixels_before_allocation(self):
+        catalog = coherent_catalog()
+        cases = [
+            ("products", "MAX_CONTACT_SHEET_PRODUCTS", 1, r"product count"),
+            ("pixels", "MAX_CONTACT_SHEET_PIXELS", 1, r"pixels"),
+        ]
+        for name, constant, limit, message_pattern in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                with mock.patch.object(prepare_catalog, constant, limit):
+                    with self.assertRaisesRegex(ValueError, message_pattern):
+                        prepare_catalog.generate_contact_sheet(
+                            catalog,
+                            {"https://img.test/shared.png": str(Path(temporary) / "unused.png")},
+                            Path(temporary) / "contact-sheet.png",
+                        )
+
+
+class RequirementsTest(unittest.TestCase):
+    def test_documents_minimum_supported_python_version(self):
+        requirements = (SCRIPT_DIR / "requirements.txt").read_text(encoding="utf-8")
+
+        self.assertRegex(requirements, r"(?im)^#.*Python 3\.10\+")
+
+
+class CliTest(unittest.TestCase):
+    def test_prepare_seed_is_byte_stable_and_preserved_when_downloads_fail(self):
+        catalog = coherent_catalog()
+        assets = {"https://img.test/shared.png": "catalog/images/shared.png"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "catalog-source.json"
+            source.write_text(json.dumps(catalog), encoding="utf-8")
+            seed = root / "generator" / "catalog-seed.json"
+            arguments = [
+                "prepare",
+                "--catalog", str(source),
+                "--assets-dir", str(root / "assets" / "catalog" / "images"),
+                "--report-dir", str(root / "reports"),
+                "--output", str(seed),
+            ]
+            with mock.patch.object(prepare_catalog, "download_images", return_value=assets):
+                with mock.patch.object(prepare_catalog, "generate_contact_sheet"):
+                    self.assertEqual(0, prepare_catalog.main(arguments))
+                    first = seed.read_bytes()
+                    self.assertEqual(0, prepare_catalog.main(arguments))
+                    second = seed.read_bytes()
+
+            self.assertEqual(first, second)
+            self.assertEqual(prepare_catalog.build_seed(catalog, assets), json.loads(first))
+            self.assertTrue(first.endswith(b"\n"))
+
+            seed.write_bytes(b"existing seed\n")
+            with mock.patch.object(prepare_catalog, "download_images", side_effect=ValueError("bad image")):
+                self.assertNotEqual(0, prepare_catalog.main(arguments))
+            self.assertEqual(b"existing seed\n", seed.read_bytes())
+
+    def test_prepare_removes_stale_images_only_after_the_full_pipeline_succeeds(self):
+        catalog = coherent_catalog()
+        assets = {"https://img.test/shared.png": "catalog/images/desired.png"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "catalog-source.json"
+            source.write_text(json.dumps(catalog), encoding="utf-8")
+            output_dir = root / "assets" / "catalog" / "images"
+            output_dir.mkdir(parents=True)
+            descriptive_stale = output_dir / "999-old-product-bbbbbbbbbbbb.png"
+            unrelated = output_dir / "keep-me.txt"
+            for path in (descriptive_stale, unrelated):
+                path.write_bytes(b"stale")
+            arguments = [
+                "prepare",
+                "--source", str(source),
+                "--assets", str(output_dir),
+                "--seed", str(root / "catalog-seed.json"),
+                "--reports", str(root / "reports"),
+            ]
+
+            with mock.patch.object(prepare_catalog, "download_images", return_value=assets):
+                with mock.patch.object(
+                    prepare_catalog, "generate_contact_sheet", side_effect=ValueError("sheet failed")
+                ):
+                    self.assertNotEqual(0, prepare_catalog.main(arguments))
+            self.assertTrue(descriptive_stale.exists())
+            self.assertTrue(unrelated.exists())
+
+            with mock.patch.object(prepare_catalog, "download_images", return_value=assets):
+                with mock.patch.object(prepare_catalog, "generate_contact_sheet"):
+                    self.assertEqual(0, prepare_catalog.main(arguments))
+            self.assertFalse(descriptive_stale.exists())
+            self.assertTrue(unrelated.exists())
+
+    def test_prepare_rejects_destructive_output_path_relationships_before_download(self):
+        catalog = coherent_catalog()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "catalog-source.json"
+            source.write_text(json.dumps(catalog), encoding="utf-8")
+            cases = [
+                (root / "same", root / "seed.json", root / "same"),
+                (root / "assets", root / "seed.json", root / "assets" / "reports"),
+                (root / "reports" / "images", root / "seed.json", root / "reports"),
+                (root / "assets-with-seed", root / "assets-with-seed" / "seed.json", root / "reports-2"),
+            ]
+            for index, (assets, seed, reports) in enumerate(cases):
+                with self.subTest(index=index):
+                    arguments = [
+                        "prepare",
+                        "--source", str(source),
+                        "--assets", str(assets),
+                        "--seed", str(seed),
+                        "--reports", str(reports),
+                    ]
+                    with mock.patch.object(prepare_catalog, "download_images") as downloader:
+                        self.assertNotEqual(0, prepare_catalog.main(arguments))
+                    downloader.assert_not_called()
+
+    def test_output_paths_reject_seed_inside_reports_and_reserved_report_outputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            assets = root / "assets"
+            reports = root / "reports"
+            seed_paths = [
+                reports,
+                reports / "catalog-seed.json",
+                reports / prepare_catalog.DOWNLOAD_REPORT,
+                reports / prepare_catalog.CONTACT_SHEET,
+                reports / prepare_catalog.FAILURE_REPORT,
+                reports / "nested" / ".." / prepare_catalog.DOWNLOAD_REPORT,
+            ]
+            for seed in seed_paths:
+                with self.subTest(seed=seed):
+                    with self.assertRaisesRegex(ValueError, r"seed.*reports|reports.*seed"):
+                        prepare_catalog._validate_output_paths(assets, seed, reports)
+
+    def test_prepare_does_not_overwrite_seed_colliding_with_failure_report(self):
+        catalog = coherent_catalog()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            reports = root / "reports"
+            reports.mkdir()
+            seed = reports / prepare_catalog.FAILURE_REPORT
+            seed.write_bytes(b"existing seed\n")
+            source = root / "catalog-source.json"
+            source.write_text(json.dumps(catalog), encoding="utf-8")
+            arguments = [
+                "prepare",
+                "--source", str(source),
+                "--assets", str(root / "assets"),
+                "--seed", str(seed),
+                "--reports", str(reports),
+            ]
+
+            with mock.patch.object(prepare_catalog, "download_images") as downloader:
+                self.assertNotEqual(0, prepare_catalog.main(arguments))
+
+            downloader.assert_not_called()
+            self.assertEqual(b"existing seed\n", seed.read_bytes())
+
+    def test_prepare_rejects_generator_numeric_overflow_before_download(self):
+        catalog = coherent_catalog()
+        catalog["products"][0]["price"] = "92233720368547758.08"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "catalog-source.json"
+            source.write_text(json.dumps(catalog), encoding="utf-8")
+            arguments = [
+                "prepare",
+                "--source", str(source),
+                "--assets", str(root / "assets"),
+                "--seed", str(root / "seed.json"),
+                "--reports", str(root / "reports"),
+            ]
+
+            with mock.patch.object(prepare_catalog, "download_images") as downloader:
+                self.assertNotEqual(0, prepare_catalog.main(arguments))
+            downloader.assert_not_called()
 
 
 if __name__ == "__main__":
