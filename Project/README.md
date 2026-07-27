@@ -70,7 +70,7 @@ The catalog uses Paging 3. `ProductPagingSource` owns page-key mechanics in the 
 
 ## Testing
 
-The project has 56 JVM unit tests across repository, use-case, and ViewModel layers. They were last run successfully locally on 2026-07-11. Instrumented UI tests and clean-clone CI verification are not part of the current evidence.
+JVM unit tests cover repository, use-case, ViewModel, catalog parsing, validation, schema handling, and deterministic database generation. The catalog preparation tooling has 32 Python regression tests, while the demo database and DAOs are covered by 26 instrumented tests. The current local verification evidence includes both app flavors, debug and release builds, and an API 36 emulator; clean-clone CI remains pending.
 
 ## Run Locally
 
