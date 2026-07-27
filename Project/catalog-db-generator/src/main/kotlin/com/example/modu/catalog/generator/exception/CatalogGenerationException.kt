@@ -1,5 +1,6 @@
 package com.example.modu.catalog.generator.exception
 
+import com.example.modu.catalog.generator.validation.CatalogSeedValidationReport
 import java.nio.file.Path
 
 internal sealed class CatalogGenerationException(
@@ -22,3 +23,7 @@ internal class CatalogSeedParseException(
     message = "Unable to parse catalog seed: $sourcePath",
     cause = cause
 )
+
+internal class CatalogSeedValidationException(
+    val report: CatalogSeedValidationReport
+) : CatalogGenerationException(message = report.format())
