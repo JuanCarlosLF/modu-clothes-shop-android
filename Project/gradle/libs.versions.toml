@@ -14,6 +14,7 @@ kotlin = "2.2.20"
 navigation = "2.8.0"
 navigationFragment = "2.9.8"
 serialization = "1.9.0"
+sqliteJdbc = "3.50.3.0"
 testCore = "1.7.0"
 
 # Retrofit
@@ -68,6 +69,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqliteJdbc" }
 
 # Fragment navigation
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }

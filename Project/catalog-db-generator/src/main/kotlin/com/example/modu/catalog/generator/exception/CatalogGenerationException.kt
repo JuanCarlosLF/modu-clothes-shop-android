@@ -32,6 +32,14 @@ internal class CatalogSchemaParseException(
     cause = cause
 )
 
+internal class CatalogDatabaseWriteException(
+    val outputPath: Path,
+    cause: Throwable
+) : CatalogGenerationException(
+    message = "Unable to write catalog database: $outputPath",
+    cause = cause
+)
+
 internal class CatalogSeedValidationException(
     val report: CatalogSeedValidationReport
 ) : CatalogGenerationException(message = report.format())
