@@ -20,7 +20,7 @@ class ProductDaoRelatedTest {
 
     private lateinit var database: ModuDemoDatabase
     private lateinit var productDao: ProductDao
-    private lateinit var catalogSeedDao: CatalogSeedDao
+    private lateinit var catalogFixture: CatalogFixture
 
     @Before
     fun setUp() {
@@ -30,7 +30,7 @@ class ProductDaoRelatedTest {
             ModuDemoDatabase::class.java
         ).build()
         productDao = database.productDao()
-        catalogSeedDao = database.catalogSeedDao()
+        catalogFixture = CatalogFixture(database)
     }
 
     @After
@@ -43,17 +43,17 @@ class ProductDaoRelatedTest {
             val matchingProduct = product(id = 3)
             val shirtOnlyProduct = product(id = 2)
             val summerOnlyProduct = product(id = 1)
-            catalogSeedDao.insertProducts(
+            catalogFixture.insertProducts(
                 listOf(matchingProduct, shirtOnlyProduct, summerOnlyProduct)
             )
-            catalogSeedDao.insertCategories(
+            catalogFixture.insertCategories(
                 listOf(
                     CategoryDbo(id = 1, name = "Shirt"),
                     CategoryDbo(id = 2, name = "Summer"),
                     CategoryDbo(id = 3, name = "Casual")
                 )
             )
-            catalogSeedDao.insertProductCategories(
+            catalogFixture.insertProductCategories(
                 listOf(
                     ProductCategoryCrossRefDbo(matchingProduct.id, 1),
                     ProductCategoryCrossRefDbo(matchingProduct.id, 2),
@@ -79,9 +79,9 @@ class ProductDaoRelatedTest {
             // GIVEN
             val uncategorizedProduct = product(id = 1)
             val categorizedProduct = product(id = 2)
-            catalogSeedDao.insertProducts(listOf(uncategorizedProduct, categorizedProduct))
-            catalogSeedDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
-            catalogSeedDao.insertProductCategories(
+            catalogFixture.insertProducts(listOf(uncategorizedProduct, categorizedProduct))
+            catalogFixture.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
+            catalogFixture.insertProductCategories(
                 listOf(ProductCategoryCrossRefDbo(categorizedProduct.id, 1))
             )
 
@@ -99,9 +99,9 @@ class ProductDaoRelatedTest {
     fun getRelatedProducts_givenUnknownCategory_whenCalled_thenReturnsEmptyResult() = runBlocking {
         // GIVEN
         val categorizedProduct = product(id = 1)
-        catalogSeedDao.insertProducts(listOf(categorizedProduct))
-        catalogSeedDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
-        catalogSeedDao.insertProductCategories(
+        catalogFixture.insertProducts(listOf(categorizedProduct))
+        catalogFixture.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
+        catalogFixture.insertProductCategories(
             listOf(ProductCategoryCrossRefDbo(categorizedProduct.id, 1))
         )
 
@@ -121,9 +121,9 @@ class ProductDaoRelatedTest {
             // GIVEN
             val activeProducts = (1..25).map(::product)
             val inactiveProduct = product(id = 26, active = false)
-            catalogSeedDao.insertProducts(activeProducts + inactiveProduct)
-            catalogSeedDao.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
-            catalogSeedDao.insertProductCategories(
+            catalogFixture.insertProducts(activeProducts + inactiveProduct)
+            catalogFixture.insertCategories(listOf(CategoryDbo(id = 1, name = "Shirt")))
+            catalogFixture.insertProductCategories(
                 (activeProducts + inactiveProduct).map { product ->
                     ProductCategoryCrossRefDbo(product.id, categoryId = 1)
                 }

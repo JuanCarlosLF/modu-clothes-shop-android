@@ -22,7 +22,7 @@ class ProductDaoDetailTest {
 
     private lateinit var database: ModuDemoDatabase
     private lateinit var productDao: ProductDao
-    private lateinit var catalogSeedDao: CatalogSeedDao
+    private lateinit var catalogFixture: CatalogFixture
 
     @Before
     fun setUp() {
@@ -32,7 +32,7 @@ class ProductDaoDetailTest {
             ModuDemoDatabase::class.java
         ).build()
         productDao = database.productDao()
-        catalogSeedDao = database.catalogSeedDao()
+        catalogFixture = CatalogFixture(database)
     }
 
     @After
@@ -48,7 +48,7 @@ class ProductDaoDetailTest {
         runBlocking {
             // GIVEN
             val product = product(id = 1)
-            catalogSeedDao.insertProducts(listOf(product))
+            catalogFixture.insertProducts(listOf(product))
 
             // WHEN
             val detail = requireNotNull(productDao.getDetailById(productId = product.id))
@@ -74,7 +74,7 @@ class ProductDaoDetailTest {
             variant(id = 21, productId = requestedProduct.id)
         )
         val otherVariant = variant(id = 22, productId = otherProduct.id)
-        catalogSeedDao.insertCatalog(
+        catalogFixture.insertCatalog(
             categories = requestedCategories + otherCategory,
             products = listOf(requestedProduct, otherProduct),
             productCategories = listOf(
