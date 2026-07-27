@@ -23,6 +23,8 @@ object DemoDatabaseModule {
             context = context,
             klass = ModuDemoDatabase::class.java,
             name = DEMO_DATABASE_NAME
-        ).build()
+        )
+            .createFromAsset("database/modu_demo_database.db")
+            .build()
     }
 }
