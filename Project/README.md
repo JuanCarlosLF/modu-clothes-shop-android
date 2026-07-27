@@ -81,6 +81,10 @@ The project has 56 JVM unit tests across repository, use-case, and ViewModel lay
 
 The backend URL is currently defined in `app/build.gradle.kts` and points to an ephemeral FastAPI mock endpoint. A stable deployed backend and configuration-based URL management are planned before release.
 
+## Demo Catalog Assets
+
+The `demo` flavor is self-contained: Room opens a versioned prepackaged catalog database, so the app does not need a backend or runtime seed importer. The database is generated from the committed Room schema, normalized JSON seed, and local images. See [Demo catalog generation](docs/catalog-generation.md) for the regeneration and source-update workflows.
+
 ## Links
 
 - Android repository: https://github.com/JuanCarlosLF/modu-clothes-shop-android
