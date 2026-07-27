@@ -6,17 +6,29 @@ import com.example.modu.catalog.generator.model.ParsedCatalog
 import com.example.modu.catalog.generator.model.ProductCategoryRow
 import com.example.modu.catalog.generator.model.ProductRow
 import com.example.modu.catalog.generator.model.ProductVariantRow
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import org.junit.Assume.assumeNoException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
 internal class CatalogSeedValidatorTest {
+
+    @get:Rule
+    val temporaryFolder = TemporaryFolder()
+
+    private val assetRoot: Path
+        get() = temporaryFolder.root.toPath()
 
     private val validator = CatalogSeedValidator()
 
     @Test
     fun validate_givenValidCatalog_whenCalled_thenDoesNotThrow() {
-        validator.validate(catalog())
+        validator.validate(catalog(), assetRoot)
     }
 
     @Test
@@ -29,14 +41,18 @@ internal class CatalogSeedValidatorTest {
                 productVariants = valid.productVariants.map {
                     it.copy(variantCode = " code ", size = " One size ", color = " Burnt orange ")
                 }
-            )
+            ),
+            assetRoot
         )
     }
 
     @Test
     fun validate_givenInactiveProductWithoutVariants_whenCalled_thenDoesNotThrow() {
         val valid = catalog()
-        validator.validate(valid.copy(products = valid.products.map { it.copy(active = false) }, productVariants = emptyList()))
+        validator.validate(
+            valid.copy(products = valid.products.map { it.copy(active = false) }, productVariants = emptyList()),
+            assetRoot
+        )
     }
 
     @Test
@@ -51,7 +67,8 @@ internal class CatalogSeedValidatorTest {
                     valid.productVariants.first(),
                     valid.productVariants.first().copy(id = 1, productId = 999, size = "M")
                 )
-            )
+            ),
+            assetRoot
         )
     }
 
@@ -123,10 +140,58 @@ internal class CatalogSeedValidatorTest {
     }
 
     @Test
+    fun validate_givenInvalidImagePaths_whenCalled_thenReportsEachPath() {
+        listOf(
+            "",
+            "images/jacket.jpg",
+            "catalog/images/",
+            "catalog/images\\jacket.jpg",
+            "catalog/images//jacket.jpg",
+            "catalog/images/./jacket.jpg",
+            "catalog/images/../jacket.jpg",
+            "catalog/images/invalid\u0000.jpg"
+        ).forEach { invalidPath ->
+            assertEquals(
+                listOf(CatalogSeedViolationCode.INVALID_IMAGE_PATH to "products[0].imageAssetPath"),
+                violations(catalog().withProduct { it.copy(imageAssetPath = invalidPath) })
+            )
+        }
+    }
+
+    @Test
+    fun validate_givenMissingImageAsset_whenCalled_thenReportsViolation() {
+        assertEquals(
+            listOf(CatalogSeedViolationCode.MISSING_IMAGE_ASSET to "products[0].imageAssetPath"),
+            violations(catalog().withProduct { it.copy(imageAssetPath = "catalog/images/missing.jpg") })
+        )
+    }
+
+    @Test
+    fun validate_givenImageSymlink_whenCalled_thenReportsMissingAsset() {
+        val outsideFile = temporaryFolder.newFile("outside.jpg").toPath()
+        val link = assetRoot.resolve("catalog/images/link.jpg")
+        Files.createDirectories(link.parent)
+        try {
+            Files.createSymbolicLink(link, outsideFile)
+        } catch (error: UnsupportedOperationException) {
+            assumeNoException("Symbolic links are unsupported", error)
+        } catch (error: IOException) {
+            assumeNoException("Symbolic links are unavailable", error)
+        } catch (error: SecurityException) {
+            assumeNoException("Symbolic links are denied", error)
+        }
+
+        assertEquals(
+            listOf(CatalogSeedViolationCode.MISSING_IMAGE_ASSET to "products[0].imageAssetPath"),
+            violations(catalog().withProduct { it.copy(imageAssetPath = "catalog/images/link.jpg") })
+        )
+    }
+
+    @Test
     fun validate_givenFailuresAcrossSections_whenCalled_thenAggregatesInDeterministicOrder() {
         val invalid = catalog().copy(
             formatVersion = 2,
-            products = listOf(ProductRow(2, " ", " ", "ignored", 0, true)),
+            products = listOf(ProductRow(2, " ", " ", "catalog/images/jacket.jpg", 0, true)),
             categories = listOf(CategoryRow(2, " ")),
             productCategories = emptyList(),
             productVariants = listOf(ProductVariantRow(1, 2, " ", " ", " ", -1, false))
@@ -151,13 +216,16 @@ internal class CatalogSeedValidatorTest {
         )
     }
 
-    private fun catalog() = ParsedCatalog(
+    private fun catalog(): ParsedCatalog {
+        createAsset("catalog/images/jacket.jpg")
+        return ParsedCatalog(
         formatVersion = 1,
-        products = listOf(ProductRow(1, "Jacket", "Description", "ignored", 7_999, true)),
+        products = listOf(ProductRow(1, "Jacket", "Description", "catalog/images/jacket.jpg", 7_999, true)),
         categories = listOf(CategoryRow(1, "Streetwear")),
         productCategories = listOf(ProductCategoryRow(1, 1)),
         productVariants = listOf(ProductVariantRow(1, 1, "code", "S", "BLACK", 1, true))
-    )
+        )
+    }
 
     private fun ParsedCatalog.withProduct(transform: (ProductRow) -> ProductRow) = copy(products = products.map(transform))
 
@@ -165,7 +233,15 @@ internal class CatalogSeedValidatorTest {
         copy(productVariants = productVariants.map(transform))
 
     private fun violations(catalog: ParsedCatalog): List<Pair<CatalogSeedViolationCode, String>> {
-        val exception = assertThrows(CatalogSeedValidationException::class.java) { validator.validate(catalog) }
+        val exception = assertThrows(CatalogSeedValidationException::class.java) {
+            validator.validate(catalog, assetRoot)
+        }
         return exception.report.violations.map { it.code to it.path }
+    }
+
+    private fun createAsset(relativePath: String) {
+        val path = assetRoot.resolve(relativePath)
+        Files.createDirectories(path.parent)
+        if (Files.notExists(path)) Files.createFile(path)
     }
 }

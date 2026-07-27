@@ -3,12 +3,17 @@ package com.example.modu.catalog.generator.validation
 import com.example.modu.catalog.generator.exception.CatalogSeedValidationException
 import com.example.modu.catalog.generator.model.ParsedCatalog
 import com.example.modu.catalog.generator.model.ProductVariantRow
+import java.nio.file.Files
+import java.nio.file.InvalidPathException
+import java.nio.file.LinkOption.NOFOLLOW_LINKS
+import java.nio.file.Path
 
 private const val SUPPORTED_FORMAT_VERSION = 1
+private const val CATALOG_IMAGES_PREFIX = "catalog/images/"
 
 internal class CatalogSeedValidator {
 
-    fun validate(catalog: ParsedCatalog) {
+    fun validate(catalog: ParsedCatalog, assetRoot: Path) {
         val violations = mutableListOf<CatalogSeedViolation>()
 
         if (catalog.formatVersion != SUPPORTED_FORMAT_VERSION) {
@@ -23,6 +28,7 @@ internal class CatalogSeedValidator {
         validateRelations(catalog, violations)
         val variantsByProductId = validateVariants(catalog, violations)
         validateAvailability(catalog, variantsByProductId, violations)
+        validateImageAssets(catalog, assetRoot, violations)
 
         if (violations.isNotEmpty()) {
             throw CatalogSeedValidationException(CatalogSeedValidationReport(violations))
@@ -51,6 +57,13 @@ internal class CatalogSeedValidator {
                     CatalogSeedViolationCode.INVALID_PRODUCT_PRICE,
                     "$path.priceInCents",
                     "Expected product price in cents greater than 0, but found ${product.priceInCents}"
+                )
+            }
+            if (!isValidImagePath(product.imageAssetPath)) {
+                violations += violation(
+                    CatalogSeedViolationCode.INVALID_IMAGE_PATH,
+                    "$path.imageAssetPath",
+                    "Expected an image path under $CATALOG_IMAGES_PREFIX with valid segments and a filename"
                 )
             }
         }
@@ -158,6 +171,47 @@ internal class CatalogSeedValidator {
                 )
             }
         }
+    }
+
+    private fun validateImageAssets(
+        catalog: ParsedCatalog,
+        assetRoot: Path,
+        violations: MutableList<CatalogSeedViolation>
+    ) {
+        val normalizedRoot = assetRoot.toAbsolutePath().normalize()
+        val checkedPaths = mutableSetOf<String>()
+
+        catalog.products.forEachIndexed { index, product ->
+            val imagePath = product.imageAssetPath
+            if (!isValidImagePath(imagePath) || !checkedPaths.add(imagePath)) return@forEachIndexed
+
+            val resolvedPath = try {
+                normalizedRoot.resolve(imagePath).normalize()
+            } catch (_: InvalidPathException) {
+                violations += violation(
+                    CatalogSeedViolationCode.INVALID_IMAGE_PATH,
+                    "products[$index].imageAssetPath",
+                    "Expected an image path valid for the local filesystem"
+                )
+                return@forEachIndexed
+            }
+            if (!resolvedPath.startsWith(normalizedRoot) || !Files.isRegularFile(resolvedPath, NOFOLLOW_LINKS)) {
+                violations += violation(
+                    CatalogSeedViolationCode.MISSING_IMAGE_ASSET,
+                    "products[$index].imageAssetPath",
+                    "Expected the image asset to resolve to a regular file under the asset root"
+                )
+            }
+        }
+    }
+
+    private fun isValidImagePath(path: String): Boolean {
+        val segments = path.split('/')
+        return path.startsWith(CATALOG_IMAGES_PREFIX) &&
+            '\\' !in path &&
+            path.none(Char::isISOControl) &&
+            segments.none { it.isEmpty() || it == "." || it == ".." } &&
+            path.removePrefix(CATALOG_IMAGES_PREFIX).substringAfterLast('/').isNotBlank()
     }
 
     private fun violation(code: CatalogSeedViolationCode, path: String, message: String) =
