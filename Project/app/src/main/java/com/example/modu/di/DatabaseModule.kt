@@ -25,7 +25,7 @@ object DatabaseModule {
             CartDatabase::class.java,
             "modu_database"
         )
-            .fallbackToDestructiveMigration(dropAllTables = true)
+            .fallbackToDestructiveMigration(dropAllTables = false)
             .build()
     }
 
