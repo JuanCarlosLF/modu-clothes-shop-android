@@ -3,6 +3,7 @@ package com.example.modu.di
 import android.content.Context
 import androidx.room.Room
 import com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase
+import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +28,8 @@ object DemoDatabaseModule {
             .createFromAsset("database/modu_demo_database.db")
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideDemoProductDao(database: ModuDemoDatabase): ProductDao = database.productDao()
 }
