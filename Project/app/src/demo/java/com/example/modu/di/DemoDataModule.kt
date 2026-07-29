@@ -1,5 +1,7 @@
 package com.example.modu.di
 
+import com.example.modu.data.dataSource.local.demo.database.product.DemoProductDataSource
+import com.example.modu.data.dataSource.local.demo.database.product.DemoProductDataSourceImpl
 import com.example.modu.data.repository.cart.DemoCartRepositoryImpl
 import com.example.modu.data.repository.product.DemoProductRepositoryImpl
 import com.example.modu.domain.repository.cart.CartRepository
@@ -17,6 +19,10 @@ abstract class DemoDataModule {
     @Binds
     @Singleton
     abstract fun provideDemoCartRepository(demoCartRepository: DemoCartRepositoryImpl): CartRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideDemoProductDataSource(demoProductDataSource: DemoProductDataSourceImpl): DemoProductDataSource
 
     @Binds
     @Singleton
