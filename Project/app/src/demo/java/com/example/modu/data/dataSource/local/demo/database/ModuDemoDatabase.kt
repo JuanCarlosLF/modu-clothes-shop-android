@@ -2,6 +2,7 @@ package com.example.modu.data.dataSource.local.demo.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.modu.data.dataSource.local.demo.database.cart.CartDao
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDbo
 import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
@@ -24,4 +25,5 @@ import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductV
 )
 abstract class ModuDemoDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
+    abstract fun cartDao(): CartDao
 }
