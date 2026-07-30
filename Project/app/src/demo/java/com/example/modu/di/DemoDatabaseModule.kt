@@ -3,6 +3,7 @@ package com.example.modu.di
 import android.content.Context
 import androidx.room.Room
 import com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase
+import com.example.modu.data.dataSource.local.demo.database.cart.CartDao
 import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
 import dagger.Module
 import dagger.Provides
@@ -32,4 +33,8 @@ object DemoDatabaseModule {
     @Provides
     @Singleton
     fun provideDemoProductDao(database: ModuDemoDatabase): ProductDao = database.productDao()
+
+    @Provides
+    @Singleton
+    fun provideDemoCartDao(database: ModuDemoDatabase): CartDao = database.cartDao()
 }
