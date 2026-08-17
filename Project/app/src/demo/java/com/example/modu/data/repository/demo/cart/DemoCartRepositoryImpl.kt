@@ -51,7 +51,10 @@ class DemoCartRepositoryImpl @Inject constructor(
     override suspend fun checkout(
         isPaid: Boolean,
         specialInstructions: String
-    ): CheckoutResult = CheckoutResult.SUCCESS
+    ): CheckoutResult {
+        clearCart()
+        return CheckoutResult.SUCCESS
+    }
 
     override suspend fun clearCart() =
         dataSource.clearCart(CART_ID)
