@@ -69,9 +69,7 @@ class DemoCartRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateCart() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateCart() = Unit
 
     override suspend fun updateQuantityLocal(item: CartItem) =
         dataSource.updateItemQuantity(item.id, item.quantity)
