@@ -1,4 +1,4 @@
-package com.example.modu.data.repository.product
+package com.example.modu.data.repository.demo.product
 
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.CategoryDbo
 import com.example.modu.data.dataSource.local.demo.database.product.dbo.ProductDbo
