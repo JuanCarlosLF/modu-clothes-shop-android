@@ -51,4 +51,3 @@ internal fun CartItem.toDbo(cartId: Int, quantity: Int): CartItemDbo =
     )
 
 private fun String.toAssetUri(): String = ANDROID_ASSET_URI_PREFIX + trimStart('/')
-

@@ -18,13 +18,13 @@ interface CartDao {
         SELECT
          ci.id AS id,
          p.id AS productId,
-         pv.id AS productVariantId, 
+         pv.id AS productVariantId,
          pv.stock AS currentStock,
          ci.quantity AS quantity,
-         p.priceInCents AS unitPrice, 
-         p.name AS title, 
-         p.imageAssetPath AS imageUrl, 
-         pv.size AS size, 
+         p.priceInCents AS unitPrice,
+         p.name AS title,
+         p.imageAssetPath AS imageUrl,
+         pv.size AS size,
          pv.color AS color
         FROM cart_items AS ci
         INNER JOIN product_variants as pv ON ci.productVariantId = pv.id
