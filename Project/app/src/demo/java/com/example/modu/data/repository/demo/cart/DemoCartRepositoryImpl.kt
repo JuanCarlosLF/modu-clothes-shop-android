@@ -51,9 +51,7 @@ class DemoCartRepositoryImpl @Inject constructor(
     override suspend fun checkout(
         isPaid: Boolean,
         specialInstructions: String
-    ): CheckoutResult {
-        TODO("Not yet implemented")
-    }
+    ): CheckoutResult = CheckoutResult.SUCCESS
 
     override suspend fun clearCart() {
         TODO("Not yet implemented")
