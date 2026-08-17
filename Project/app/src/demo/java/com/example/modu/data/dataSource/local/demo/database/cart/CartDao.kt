@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartDbo
+import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDbo
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDetailDbo
 import kotlinx.coroutines.flow.Flow
 
@@ -32,6 +34,18 @@ interface CartDao {
     )
     fun observeCartItems(cartId: Int): Flow<List<CartItemDetailDbo>>
 
+    @Query("SELECT * FROM cart WHERE id = :cartId LIMIT 1")
+    suspend fun getCart(cartId: Int): CartDbo?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun createCart(cart: CartDbo)
+
+    @Insert
+    suspend fun addItem(cartItem: CartItemDbo)
+
+    @Query("SELECT * FROM cart_items WHERE cartId = :cartId AND productVariantId = :variantId")
+    suspend fun getCartItem(variantId: Int, cartId: Int): CartItemDbo?
+
+    @Query("""UPDATE cart_items SET quantity = :quantity WHERE id = :itemId""")
+    suspend fun updateQuantity(itemId: Int, quantity: Int)
 }
