@@ -53,13 +53,11 @@ class DemoCartRepositoryImpl @Inject constructor(
         specialInstructions: String
     ): CheckoutResult = CheckoutResult.SUCCESS
 
-    override suspend fun clearCart() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun clearCart() =
+        dataSource.clearCart(CART_ID)
 
-    override suspend fun deleteItem(id: Int) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteItem(id: Int) =
+        dataSource.deleteItemById(id)
 
     override suspend fun syncCart() {
         dataSource.createCart(

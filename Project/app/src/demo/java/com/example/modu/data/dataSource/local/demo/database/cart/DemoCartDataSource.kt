@@ -12,4 +12,6 @@ interface DemoCartDataSource {
     suspend fun addItem(cartItem: CartItemDbo)
     suspend fun getCartItem(variantId: Int, cartId: Int): CartItemDbo?
     suspend fun updateItemQuantity(itemId: Int, quantity: Int)
+    suspend fun deleteItemById(itemId: Int)
+    suspend fun clearCart(cartId: Int)
 }
