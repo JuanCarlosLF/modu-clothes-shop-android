@@ -1,4 +1,4 @@
-package com.example.modu.data.repository.cart
+package com.example.modu.data.repository.demo.cart
 
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartDbo
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDbo
