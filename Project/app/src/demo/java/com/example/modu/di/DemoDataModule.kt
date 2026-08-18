@@ -5,7 +5,7 @@ import com.example.modu.data.dataSource.local.demo.database.cart.DemoCartDataSou
 import com.example.modu.data.dataSource.local.demo.database.product.DemoProductDataSource
 import com.example.modu.data.dataSource.local.demo.database.product.DemoProductDataSourceImpl
 import com.example.modu.data.repository.demo.cart.DemoCartRepositoryImpl
-import com.example.modu.data.repository.product.DemoProductRepositoryImpl
+import com.example.modu.data.repository.demo.product.DemoProductRepositoryImpl
 import com.example.modu.domain.repository.cart.CartRepository
 import com.example.modu.domain.repository.product.ProductRepository
 import dagger.Binds

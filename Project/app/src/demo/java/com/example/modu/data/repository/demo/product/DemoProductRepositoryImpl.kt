@@ -1,4 +1,4 @@
-package com.example.modu.data.repository.product
+package com.example.modu.data.repository.demo.product
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
