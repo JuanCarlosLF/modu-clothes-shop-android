@@ -1,15 +1,11 @@
 package com.example.modu.catalog.generator
 
-import com.example.modu.catalog.generator.exception.CatalogSeedParseException
 import com.example.modu.catalog.generator.exception.CatalogInputReadException
+import com.example.modu.catalog.generator.exception.CatalogSeedParseException
 import com.example.modu.catalog.generator.model.CategoryRow
 import com.example.modu.catalog.generator.model.ProductCategoryRow
 import com.example.modu.catalog.generator.model.ProductRow
 import com.example.modu.catalog.generator.model.ProductVariantRow
-import java.nio.charset.StandardCharsets.UTF_8
-import java.nio.file.Files
-import java.nio.file.NoSuchFileException
-import java.nio.file.Path
 import kotlinx.serialization.SerializationException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -17,6 +13,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.nio.charset.StandardCharsets.UTF_8
+import java.nio.file.Files
+import java.nio.file.NoSuchFileException
+import java.nio.file.Path
 
 internal class CatalogSeedParserTest {
 

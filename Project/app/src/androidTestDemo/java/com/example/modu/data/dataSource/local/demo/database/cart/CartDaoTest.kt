@@ -8,10 +8,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDetailDbo
-import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before

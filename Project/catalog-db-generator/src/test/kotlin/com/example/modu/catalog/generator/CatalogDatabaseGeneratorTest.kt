@@ -1,16 +1,16 @@
 package com.example.modu.catalog.generator
 
 import com.example.modu.catalog.generator.exception.CatalogSeedValidationException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.security.MessageDigest
-import java.sql.DriverManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.nio.file.Files
+import java.nio.file.Path
+import java.security.MessageDigest
+import java.sql.DriverManager
 
 internal class CatalogDatabaseGeneratorTest {
 
