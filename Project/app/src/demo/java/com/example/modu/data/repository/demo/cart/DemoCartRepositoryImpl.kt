@@ -45,7 +45,6 @@ class DemoCartRepositoryImpl @Inject constructor(
         } else {
             dataSource.addItem(item.toDbo(CART_ID, item.quantity))
         }
-
     }
 
     override suspend fun checkout(
