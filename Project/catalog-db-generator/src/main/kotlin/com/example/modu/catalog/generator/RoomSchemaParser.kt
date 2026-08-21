@@ -3,11 +3,10 @@ package com.example.modu.catalog.generator
 import com.example.modu.catalog.generator.exception.CatalogSchemaParseException
 import com.example.modu.catalog.generator.model.RoomSchema
 import com.example.modu.catalog.generator.model.RoomSchemaExport
+import kotlinx.serialization.json.Json
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 internal class RoomSchemaParser {
 

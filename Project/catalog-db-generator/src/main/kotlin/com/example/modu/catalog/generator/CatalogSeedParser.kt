@@ -3,13 +3,12 @@ package com.example.modu.catalog.generator
 import com.example.modu.catalog.generator.exception.CatalogInputReadException
 import com.example.modu.catalog.generator.exception.CatalogSeedParseException
 import com.example.modu.catalog.generator.model.ParsedCatalog
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 internal class CatalogSeedParser {
 

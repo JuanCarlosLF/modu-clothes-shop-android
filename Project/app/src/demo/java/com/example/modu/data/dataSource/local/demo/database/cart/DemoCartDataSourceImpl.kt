@@ -26,4 +26,10 @@ class DemoCartDataSourceImpl @Inject constructor(private val dao: CartDao) :
 
     override suspend fun updateItemQuantity(itemId: Int, quantity: Int) =
         dao.updateQuantity(itemId, quantity)
+
+    override suspend fun deleteItemById(itemId: Int) =
+        dao.deleteItemById(itemId)
+
+    override suspend fun clearCart(cartId: Int) =
+        dao.clearCart(cartId)
 }

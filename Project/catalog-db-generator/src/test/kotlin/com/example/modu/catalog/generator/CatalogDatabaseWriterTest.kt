@@ -6,11 +6,6 @@ import com.example.modu.catalog.generator.model.ParsedCatalog
 import com.example.modu.catalog.generator.model.ProductCategoryRow
 import com.example.modu.catalog.generator.model.ProductRow
 import com.example.modu.catalog.generator.model.ProductVariantRow
-import java.nio.file.Files
-import java.nio.file.Path
-import java.security.MessageDigest
-import java.sql.Connection
-import java.sql.DriverManager
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -18,6 +13,11 @@ import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.nio.file.Files
+import java.nio.file.Path
+import java.security.MessageDigest
+import java.sql.Connection
+import java.sql.DriverManager
 
 internal class CatalogDatabaseWriterTest {
 

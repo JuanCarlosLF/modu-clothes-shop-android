@@ -45,23 +45,21 @@ class DemoCartRepositoryImpl @Inject constructor(
         } else {
             dataSource.addItem(item.toDbo(CART_ID, item.quantity))
         }
-
     }
 
     override suspend fun checkout(
         isPaid: Boolean,
         specialInstructions: String
     ): CheckoutResult {
-        TODO("Not yet implemented")
+        clearCart()
+        return CheckoutResult.SUCCESS
     }
 
-    override suspend fun clearCart() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun clearCart() =
+        dataSource.clearCart(CART_ID)
 
-    override suspend fun deleteItem(id: Int) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteItem(id: Int) =
+        dataSource.deleteItemById(id)
 
     override suspend fun syncCart() {
         dataSource.createCart(
@@ -73,9 +71,7 @@ class DemoCartRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateCart() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateCart() = Unit
 
     override suspend fun updateQuantityLocal(item: CartItem) =
         dataSource.updateItemQuantity(item.id, item.quantity)

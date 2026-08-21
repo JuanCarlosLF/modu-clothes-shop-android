@@ -1,14 +1,14 @@
 package com.example.modu.catalog.generator
 
 import com.example.modu.catalog.generator.exception.CatalogSchemaParseException
-import java.nio.file.Files
-import java.nio.file.Path
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.nio.file.Files
+import java.nio.file.Path
 
 internal class RoomSchemaParserTest {
 

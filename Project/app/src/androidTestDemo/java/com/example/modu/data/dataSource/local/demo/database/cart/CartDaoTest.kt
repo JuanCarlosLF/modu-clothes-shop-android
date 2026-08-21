@@ -1,6 +1,7 @@
 package com.example.modu.data.dataSource.local.demo.database.cart
 
 import android.content.Context
+import androidx.room.CoroutinesRoom
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -8,10 +9,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase
 import com.example.modu.data.dataSource.local.demo.database.cart.dbo.CartItemDetailDbo
-import com.example.modu.data.dataSource.local.demo.database.product.ProductDao
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -56,6 +58,29 @@ class CartDaoTest {
             color = "BLACK"
         )
         assertEquals(expectedCartItem, cartItem)
+    }
+
+    @Test
+    fun observeCartItems_GivenCartItemChange_WhenCalled_ThenEmitsNewValue() = runBlocking {
+        // GIVEN
+        val channel = Channel<CartItemDetailDbo>()
+        val updatedQuantity = 134
+
+        // WHEN
+        launch {
+            cartDao.observeCartItems(1).take(2).collect {
+                channel.send(it.single())
+
+            }
+        }
+
+        val expectedItem = channel.receive().copy(quantity = updatedQuantity)
+        cartDao.updateQuantity(1, updatedQuantity)
+        val updatedItem = channel.receive()
+
+
+        // THEN
+        assertEquals(expectedItem, updatedItem)
     }
 
     @After

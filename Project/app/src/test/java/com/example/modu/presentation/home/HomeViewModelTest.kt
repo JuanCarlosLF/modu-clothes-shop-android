@@ -1,7 +1,7 @@
 package com.example.modu.presentation.home
 
-import com.example.modu.domain.usecase.product.ProductUseCase
 import com.example.modu.MainDispatcherRule
+import com.example.modu.domain.usecase.product.ProductUseCase
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import org.junit.Before

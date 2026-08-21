@@ -6,15 +6,15 @@ import com.example.modu.catalog.generator.model.ParsedCatalog
 import com.example.modu.catalog.generator.model.ProductCategoryRow
 import com.example.modu.catalog.generator.model.ProductRow
 import com.example.modu.catalog.generator.model.ProductVariantRow
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import org.junit.Assume.assumeNoException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assume.assumeNoException
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
 
 internal class CatalogSeedValidatorTest {
 
