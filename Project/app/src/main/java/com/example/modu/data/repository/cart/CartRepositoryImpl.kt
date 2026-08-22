@@ -251,7 +251,6 @@ class CartRepositoryImpl @Inject constructor(
                 isAvailableAlert = availAlerts?.get(variantId)?.isVariantAvailable
             )
         }
-
         localDataSource.insertCartItems(mergedDbos)
         cartPreferences.setPendingSync(false)
     }
@@ -329,7 +328,7 @@ class CartRepositoryImpl @Inject constructor(
                         localDataSource.insertProductDetails(listOf(detailDbo))
                         localDataSource.insertProductVariants(variantDbos)
                     } catch (e: Exception) {
-                        errorHandler.handle(e)
+                        throw errorHandler.handle(e)
                     }
                 }
             }.awaitAll()
