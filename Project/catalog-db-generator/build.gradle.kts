@@ -21,11 +21,11 @@ tasks.test {
 tasks.register<JavaExec>("generateDemoCatalogDatabase") {
     group = "catalog"
     description = "Generates the demo catalog database from the schema, seed, and catalog images."
-    mainClass.set("com.example.modu.catalog.generator.CatalogDatabaseGeneratorKt")
+    mainClass.set("com.juancarloslf.modu.catalog.generator.CatalogDatabaseGeneratorKt")
     classpath = sourceSets["main"].runtimeClasspath
     workingDir(rootProject.projectDir)
 
-    inputs.file(rootProject.file("app/schemas/com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase/1.json"))
+    inputs.file(rootProject.file("app/schemas/com.juancarloslf.modu.data.dataSource.local.demo.database.ModuDemoDatabase/1.json"))
         .withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.file(rootProject.file("catalog-db-generator/src/main/resources/catalog/catalog-seed.json"))
         .withPathSensitivity(PathSensitivity.RELATIVE)

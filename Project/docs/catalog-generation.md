@@ -21,7 +21,7 @@ Run the fixed task from `Project/`:
 
 The task takes no path arguments. It reads:
 
-- `app/schemas/com.example.modu.data.dataSource.local.demo.database.ModuDemoDatabase/1.json` as the authoritative Room DDL.
+- `app/schemas/com.juancarloslf.modu.data.dataSource.local.demo.database.ModuDemoDatabase/1.json` as the authoritative Room DDL.
 - `catalog-db-generator/src/main/resources/catalog/catalog-seed.json` as the normalized catalog rows.
 - `app/src/demo/assets/catalog/images/` as the image asset tree validated by the seed.
 

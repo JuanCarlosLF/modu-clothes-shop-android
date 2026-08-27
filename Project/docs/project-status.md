@@ -23,7 +23,7 @@ This document separates verified behavior in the current Android repository from
 - Error mapping is not yet applied consistently. `CartRepositoryImpl.fetchAndCacheMissingProducts()` discards mapped errors, `ProductRepositoryImpl.getRelatedProducts()` bypasses the handler, and `DetailViewModel.loadRelatedProducts()` exposes a raw exception message.
 - Image fallback behavior is inconsistent outside the home catalog.
 - There is no CI workflow, release signing configuration, APK, version tag, or GitHub Release.
-- `com.example.modu` remains a placeholder namespace.
+- `com.juancarloslf.modu` remains a placeholder namespace.
 
 ## Release Scope
 

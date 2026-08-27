@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.modu"
+    namespace = "com.juancarloslf.modu"
     compileSdk = 36
 
     flavorDimensions += "mode"
@@ -28,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.modu"
+        applicationId = "com.juancarloslf.modu"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
