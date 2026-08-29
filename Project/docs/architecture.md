@@ -14,7 +14,6 @@ flowchart LR
     RC -->|remote flavor| RR[Remote repositories]
     DR --> DB[Demo Room database]
     DR --> DM[Demo mapper exposes asset URIs]
-    DM --> UI
     UI --> CO[Coil image loading]
     CO --> IA[Packaged image assets]
     RR --> LC[Room cart cache]
