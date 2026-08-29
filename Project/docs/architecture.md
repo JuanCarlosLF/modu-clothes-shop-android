@@ -13,7 +13,10 @@ flowchart LR
     RC -->|demo flavor| DR[Demo repositories]
     RC -->|remote flavor| RR[Remote repositories]
     DR --> DB[Demo Room database]
-    DR --> IA[Packaged image assets]
+    DR --> DM[Demo mapper exposes asset URIs]
+    DM --> UI
+    UI --> CO[Coil image loading]
+    CO --> IA[Packaged image assets]
     RR --> LC[Room cart cache]
     RR --> RT[Retrofit and HTTP]
     GT[Catalog preparation and JVM generator] --> PD[Packaged demo database]
@@ -33,7 +36,7 @@ The application test source sets are `test`, `testDemo`, `androidTest`, and `and
 
 ### Presentation
 
-`MainActivity` hosts Navigation fragments. Fragments render XML layouts through ViewBinding, delegate user actions to Hilt ViewModels, and adapt domain models for RecyclerView and Paging adapters. ViewModels own screen state, launch coroutine work, and call domain use cases.
+`MainActivity` hosts a `NavHostFragment`, which hosts the destination fragments. Fragments render XML layouts through ViewBinding, delegate user actions to Hilt ViewModels, and adapt domain models for RecyclerView and Paging adapters. ViewModels own screen state, launch coroutine work, and call domain use cases.
 
 ### Domain
 
@@ -70,7 +73,7 @@ In `remote`, `CartRepositoryImpl` exposes the separate `CartDatabase` as the obs
 
 ## State And Events
 
-ViewModels expose durable screen state through read-only `StateFlow`. Catalog filters drive a new Paging stream with `flatMapLatest`, and cart state is derived from the repository's Room-backed flow. Cart and product-detail ViewModels use `SharedFlow` for one-off UI events such as dialogs, toasts, and checkout feedback.
+ViewModels expose observable screen state through read-only `StateFlow`. ViewModels retain that state across ordinary configuration changes, but it does not survive process death unless separately persisted. Catalog filters drive a new Paging stream with `flatMapLatest`, and cart state is derived from the repository's Room-backed flow. Cart and product-detail ViewModels use `SharedFlow` for one-off UI events such as dialogs, toasts, and checkout feedback.
 
 Fragments collect state, events, Paging data, and load state from `viewLifecycleOwner.lifecycleScope` inside `repeatOnLifecycle(Lifecycle.State.STARTED)`, tying collection to the Fragment view lifecycle.
 
