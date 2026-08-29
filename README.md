@@ -1,30 +1,89 @@
-# MODU — Clothing Store App
+# MODU — Android Clothing Store
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Min%20SDK-28-green)](https://developer.android.com/about/versions/pie)
-![MODU](screenshots/home-default.png)
 
-**MODU** is a native Android clothing store app with offline-first cart sync, built with Clean Architecture and modern Kotlin practices. It is a practice project — there is no real company or commercial product behind it. The app was built from scratch as a learning exercise to explore architecture decisions, reactive state management, and forward-looking constraints like multi-device persistence and offline-first design.
+MODU is a native Android clothing-store experience for discovering products, choosing the right variants, and managing a shopping cart through checkout. Its catalog-focused interface brings browsing, refinement, product details, and cart management together in a cohesive mobile flow.
 
-## Quick Links
+## Screenshots
 
-- [Technical Documentation](Project/README.md) — Architecture, tech stack, decisions, and roadmap
+<table>
+  <tr>
+    <td><img src="screenshots/home-default.png" width="200" alt="Product catalog"/></td>
+    <td><img src="screenshots/product-detail-1.png" width="200" alt="Product detail"/></td>
+    <td><img src="screenshots/filter-default.png" width="200" alt="Catalog filters"/></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/home-with-filters-applied.png" width="200" alt="Filtered catalog"/></td>
+    <td><img src="screenshots/product-detail-2.png" width="200" alt="Product variant selection"/></td>
+    <td><img src="screenshots/cart-default.png" width="200" alt="Shopping cart"/></td>
+  </tr>
+</table>
 
-## Prerequisites
+## Explore MODU
 
-- **Android Studio:** Panda 4 | 2025.3.4 Canary 4 (or higher)
-- **JDK:** 21
-- **Gradle:** 9.1.0
+- Browse a paginated clothing catalog.
+- Search products, apply filters, and change their ordering.
+- Open detailed product pages and discover related products.
+- Select product variants and quantities with stock validation.
+- Add products to a persistent cart, update quantities, remove or restore items, and clear the cart.
+- Continue through checkout with stock and price feedback.
 
-## Setup
+## Engineering Highlights
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/juan-carlos-lopez-dev/MODU.git
-   ```
-2. **Open in Android Studio:** Select the root folder and wait for Gradle sync to finish.
-3. **Configure local SDK:** Ensure `local.properties` points to your SDK:
-   ```properties
-   sdk.dir=C\:\\Users\\<your-user>\\AppData\\Local\\Android\\Sdk
-   ```
-4. **Run:** Press `Shift + F10` or the **Run** icon in Android Studio.
+- Kotlin, coroutines, and Flow drive asynchronous work and reactive screen state.
+- A layered architecture separates XML/ViewBinding presentation, domain use cases and contracts, and data implementations.
+- Hilt composes the dependency graph and selects data implementations by product flavor.
+- Room provides local persistence, including the bundled catalog and cart data used by the `demo` flavor.
+- Paging 3 loads the catalog incrementally through repository and UI layers.
+- JVM, instrumented, and catalog generator tests cover application behavior and deterministic catalog generation.
+
+## Run Locally
+
+### Prerequisites
+
+- Android Studio with an Android SDK
+- JDK 21 (Android Studio's bundled JBR is suitable)
+
+Clone the repository:
+
+```bash
+git clone https://github.com/JuanCarlosLF/modu-clothes-shop-android.git
+cd modu-clothes-shop-android
+```
+
+Open the `Project` directory in Android Studio. If needed, let Android Studio create `Project/local.properties` with the local Android SDK path. Select the `demoDebug` build variant, then run the `app` configuration on an emulator or Android device.
+
+The `demo` flavor includes a versioned Room catalog and local image assets, providing a reproducible ready-to-run experience without additional services, credentials, API keys, downloads, or runtime imports.
+
+## Verification
+
+Run these commands from `Project`.
+
+**Windows**
+
+```powershell
+.\gradlew.bat test
+.\gradlew.bat assembleDemoDebug assembleDemoRelease assembleRemoteDebug assembleRemoteRelease
+.\gradlew.bat connectedDemoDebugAndroidTest
+```
+
+**Unix**
+
+```bash
+./gradlew test
+./gradlew assembleDemoDebug assembleDemoRelease assembleRemoteDebug assembleRemoteRelease
+./gradlew connectedDemoDebugAndroidTest
+```
+
+The connected test task requires an available emulator or device.
+
+## Project Context
+
+MODU originally integrated with a REST backend that is no longer operational. The runnable `demo` flavor now uses bundled local data, while the `remote` flavor preserves the historical integration for reference. Checkout is simulated: it validates the flow and surfaces stock or price feedback without processing payments or creating production orders.
+
+## Technical Documentation
+
+- [Architecture decision records](Project/docs/adr/ADRs.md)
+- [Demo catalog generation](Project/docs/catalog-generation.md)
+- [Historical REST integration](Project/docs/historical-rest-integration.md)
