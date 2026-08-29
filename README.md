@@ -27,7 +27,7 @@ MODU is a native Android clothing-store experience for discovering products, cho
 - Open detailed product pages and discover related products.
 - Select product variants and quantities with stock validation.
 - Add products to a persistent cart, update quantities, remove or restore items, and clear the cart.
-- Continue through checkout with stock and price feedback.
+- Complete a simulated checkout flow.
 
 ## Engineering Highlights
 
@@ -80,7 +80,7 @@ The connected test task requires an available emulator or device.
 
 ## Project Context
 
-MODU originally integrated with a REST backend that is no longer operational. The runnable `demo` flavor now uses bundled local data, while the `remote` flavor preserves the historical integration for reference. Checkout is simulated: it validates the flow and surfaces stock or price feedback without processing payments or creating production orders.
+MODU originally integrated with a REST backend that is no longer operational. The runnable `demo` flavor now uses bundled local data, while the `remote` flavor preserves the historical integration for reference. In the demo, checkout is simulated locally: it clears the cart and reports success without processing payments or creating production orders. Stock and price alert handling belongs to the historical remote flow.
 
 ## Technical Documentation
 
