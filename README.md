@@ -3,11 +3,11 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Min%20SDK-28-green)](https://developer.android.com/about/versions/pie)
 
-MODU is a native Android clothing-store experience for discovering products, choosing the right variants, and managing a shopping cart through checkout. Its catalog-focused interface brings browsing, refinement, product details, and cart management together in a cohesive mobile flow.
+MODU is a native Android clothing-store experience for discovering products, choosing the right variants, and managing a shopping cart through checkout. Browse a paginated catalog, narrow results with search and filters, inspect product details, and keep cart selections between sessions.
 
 ## Screenshots
 
-<table>
+<table role="presentation">
   <tr>
     <td><img src="screenshots/home-default.png" width="200" alt="Product catalog"/></td>
     <td><img src="screenshots/product-detail-1.png" width="200" alt="Product detail"/></td>
@@ -23,7 +23,7 @@ MODU is a native Android clothing-store experience for discovering products, cho
 ## Explore MODU
 
 - Browse a paginated clothing catalog.
-- Search products, apply filters, and change their ordering.
+- Search products, apply filters, and sort results by price.
 - Open detailed product pages and discover related products.
 - Select product variants and quantities with stock validation.
 - Add products to a persistent cart, update quantities, remove or restore items, and clear the cart.
@@ -54,7 +54,7 @@ cd modu-clothes-shop-android
 
 Open the `Project` directory in Android Studio. If needed, let Android Studio create `Project/local.properties` with the local Android SDK path. Select the `demoDebug` build variant, then run the `app` configuration on an emulator or Android device.
 
-The `demo` flavor includes a versioned Room catalog and local image assets, providing a reproducible ready-to-run experience without additional services, credentials, API keys, downloads, or runtime imports.
+The `demo` flavor includes a versioned Room catalog and local image assets, providing a reproducible ready-to-run experience without additional services, credentials, API keys, runtime catalog or asset downloads, or runtime imports.
 
 ## Verification
 
@@ -80,7 +80,7 @@ The connected test task requires an available emulator or device.
 
 ## Project Context
 
-MODU originally integrated with a REST backend that is no longer operational. The runnable `demo` flavor now uses bundled local data, while the `remote` flavor preserves the historical integration for reference. In the demo, checkout is simulated locally: it clears the cart and reports success without processing payments or creating production orders. Stock and price alert handling belongs to the historical remote flow.
+The `remote` flavor preserves MODU's historical REST integration for reference, while the ready-to-run `demo` flavor uses bundled local data. In the demo, checkout is simulated locally: it clears the cart and reports success without processing payments or creating production orders. Stock and price alert handling belongs to the historical remote flow.
 
 ## Technical Documentation
 
