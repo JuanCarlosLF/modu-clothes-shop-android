@@ -84,6 +84,7 @@ The `remote` flavor preserves MODU's historical REST integration for reference, 
 
 ## Technical Documentation
 
+- [Current architecture](Project/docs/architecture.md)
 - [Architecture decision records](Project/docs/adr/ADRs.md)
 - [Demo catalog generation](Project/docs/catalog-generation.md)
 - [Historical REST integration](Project/docs/historical-rest-integration.md)
