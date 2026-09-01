@@ -10,6 +10,43 @@ plugins {
 }
 
 android {
+
+    val keystorePath = providers.environmentVariable("RELEASE_KEYSTORE_PATH")
+    val keystorePassword = providers.environmentVariable("RELEASE_KEYSTORE_PASSWORD")
+    val releaseAlias = providers.environmentVariable("RELEASE_KEY_ALIAS")
+    val releasePassword = providers.environmentVariable("RELEASE_KEY_PASSWORD")
+
+    val signingFields = listOf(
+        keystorePath,
+        keystorePassword,
+        releaseAlias,
+        releasePassword
+    )
+    val hasCompleteSigningConfig = signingFields.all { it.isPresent }
+    val hasAnySigningField = signingFields.any { it.isPresent }
+
+    if (hasCompleteSigningConfig) {
+        val keystoreFile = file(keystorePath.get())
+        if (!keystoreFile.isFile) {
+            throw GradleException("Release keystore file does not exist: ${keystoreFile.absolutePath}")
+        }
+
+        signingConfigs {
+            create("release") {
+                storeFile = keystoreFile
+                storePassword = keystorePassword.get()
+                keyAlias = releaseAlias.get()
+                keyPassword = releasePassword.get()
+            }
+        }
+    } else if (hasAnySigningField) {
+        throw GradleException(
+            "Release signing configuration is incomplete. Provide all four variables: " +
+                "RELEASE_KEYSTORE_PATH, RELEASE_KEYSTORE_PASSWORD, RELEASE_KEY_ALIAS, " +
+                "and RELEASE_KEY_PASSWORD."
+        )
+    }
+
     namespace = "com.juancarloslf.modu"
     compileSdk = 36
 
@@ -44,6 +81,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (hasCompleteSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
