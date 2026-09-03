@@ -1,0 +1,42 @@
+name: MODU CD
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modu-releases
+  cancel-in-progress: false
+
+jobs:
+  execute-ci:
+    if: >
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'release')
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+  validate-metadata:
+    needs: execute-ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download merged repository state
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Validate merged release metadata
+        env:
+          MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: bash .github/scripts/validate-merged-release-metadata.sh
+
+      - name: Validate release notes
+        run: bash .github/scripts/validate-release-notes.sh

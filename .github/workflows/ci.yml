@@ -2,6 +2,11 @@ name: MODU CI
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        description: Git reference to check out when CI is called by another workflow.
+        required: false
+        type: string
   push:
     branches:
       - develop
@@ -21,6 +26,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          ref: ${{ inputs.ref || github.sha }}
       - name: Set up JDK 21
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
