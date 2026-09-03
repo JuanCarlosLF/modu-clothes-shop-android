@@ -1,6 +1,7 @@
 name: MODU CI
 
 on:
+  workflow_call:
   push:
     branches:
       - develop
