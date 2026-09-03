@@ -13,7 +13,7 @@ Explore MODU through a self-contained Android demo featuring the complete local 
 
 **[Download the signed demo APK · v1.0.0](https://github.com/JuanCarlosLF/modu-clothes-shop-android/releases/download/v1.0.0/modu-demo-v1.0.0.apk)**
 
-`Android 9+` · `Works offline` · `No sign-in` · `No backend setup`
+`Android 9+` · `Works offline` · `No sign-in` · `No setup required`
 
 > [!NOTE]
 > Checkout is simulated. The demo does not process payments or create production orders.
