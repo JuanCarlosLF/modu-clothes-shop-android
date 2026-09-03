@@ -3,8 +3,20 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Min%20SDK-28-green)](https://developer.android.com/about/versions/pie)
 [![CI](https://github.com/JuanCarlosLF/modu-clothes-shop-android/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/JuanCarlosLF/modu-clothes-shop-android/actions/workflows/ci.yml)
+[![Latest Release](https://img.shields.io/github/v/release/JuanCarlosLF/modu-clothes-shop-android?label=Release&logo=github)](https://github.com/JuanCarlosLF/modu-clothes-shop-android/releases/latest)
 
 MODU is a native Android clothing-store experience for discovering products, choosing the right variants, and managing a shopping cart through checkout. Browse a paginated catalog, narrow results with search and filters, inspect product details, and keep cart selections between sessions.
+
+## Try the Demo
+
+Explore MODU through a self-contained Android demo featuring the complete local shopping journey: browse the catalog, search and filter products, choose variants, manage the cart, and complete a simulated checkout.
+
+**[Download the signed demo APK · v1.0.0](https://github.com/JuanCarlosLF/modu-clothes-shop-android/releases/download/v1.0.0/modu-demo-v1.0.0.apk)**
+
+`Android 9+` · `Works offline` · `No sign-in` · `No setup required`
+
+> [!NOTE]
+> Checkout is simulated. The demo does not process payments or create production orders.
 
 ## Screenshots
 
@@ -57,7 +69,7 @@ Open the `Project` directory in Android Studio. If needed, let Android Studio cr
 
 The `demo` flavor includes a versioned Room catalog and local image assets, providing a reproducible ready-to-run experience without additional services, credentials, API keys, runtime catalog or asset downloads, or runtime imports.
 
-Signed portfolio builds are available from [GitHub Releases](https://github.com/JuanCarlosLF/modu-clothes-shop-android/releases). Release pull requests are validated before merge, and the resulting `demoRelease` APK is rebuilt, signature-checked, and published from the merged `main` commit.
+Each release provides a signed, self-contained demo APK built from the corresponding `main` commit. Browse the complete [release history](https://github.com/JuanCarlosLF/modu-clothes-shop-android/releases).
 
 ## Verification
 
