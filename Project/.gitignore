@@ -13,6 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+*.jks
+*.keystore
 /scripts/catalog/.tmp/
 /scripts/catalog/reports/
 

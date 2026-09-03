@@ -11,10 +11,7 @@ if [[ ! -f "$build_file" ]]; then
 fi
 
 pr_build_content="$(cat "$build_file")"
-if ! base_build_content="$(git show "$base_sha:$build_file")"; then
-  echo "::error::Unable to read $build_file from the base commit $base_sha"
-  exit 1
-fi
+base_build_content="$(git show "$base_sha:$build_file" 2>/dev/null || true)"
 
 extract_single_value() {
   local content="$1"
@@ -43,17 +40,24 @@ extract_single_value() {
 }
 
 pr_version_code="$(extract_single_value "$pr_build_content" "versionCode")"
-base_version_code="$(extract_single_value "$base_build_content" "versionCode")"
 pr_version_name="$(extract_single_value "$pr_build_content" "versionName")"
-base_version_name="$(extract_single_value "$base_build_content" "versionName")"
+
+if [[ -n "$base_build_content" ]]; then
+  base_version_code="$(extract_single_value "$base_build_content" "versionCode")"
+  base_version_name="$(extract_single_value "$base_build_content" "versionName")"
+else
+  base_version_code=0
+  base_version_name="0.0.0"
+  echo "No previous Android release metadata found; validating the initial release"
+fi
 
 if ! [[ "$pr_version_code" =~ ^[1-9][0-9]*$ ]]; then
   echo "::error::PR versionCode must be a positive integer"
   exit 1
 fi
 
-if ! [[ "$base_version_code" =~ ^[1-9][0-9]*$ ]]; then
-  echo "::error::main versionCode must be a positive integer"
+if ! [[ "$base_version_code" =~ ^[0-9]+$ ]]; then
+  echo "::error::main versionCode must be a non-negative integer"
   exit 1
 fi
 
