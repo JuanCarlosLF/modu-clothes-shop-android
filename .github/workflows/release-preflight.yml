@@ -1,0 +1,41 @@
+name: MODU Pre-Release Verification
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+permissions:
+  contents: read
+
+jobs:
+  run-ci:
+    uses: ./.github/workflows/ci.yml
+
+  validate-conditions:
+    needs: run-ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate release label
+        env:
+          HAS_RELEASE_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'release') }}
+        run: bash .github/scripts/validate-release-label.sh
+
+      - name: Validate version metadata
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bash .github/scripts/validate-release-metadata.sh
+
+      - name: Validate release notes
+        run: bash .github/scripts/validate-release-notes.sh
