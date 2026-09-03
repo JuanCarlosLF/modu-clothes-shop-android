@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_home">
+
+    <fragment
+        android:id="@+id/fragment_home"
+        android:name="com.juancarloslf.modu.presentation.home.HomeFragment">
+        <action
+            android:id="@+id/action_home_to_filter"
+            app:destination="@+id/fragment_filter" />
+        <action
+            android:id="@+id/action_home_to_cart"
+            app:destination="@+id/fragment_cart" />
+        <action
+            android:id="@+id/action_home_to_detail"
+            app:destination="@id/fragment_product_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_product_detail"
+        android:name="com.juancarloslf.modu.presentation.detail.ProductDetailFragment">
+        <argument
+            android:name="product_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_fragment_product_detail_self"
+            app:destination="@+id/fragment_product_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_cart"
+        android:name="com.juancarloslf.modu.presentation.cart.CartFragment">
+        <action
+            android:id="@+id/action_cart_to_detail"
+            app:destination="@id/fragment_product_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_filter"
+        android:name="com.juancarloslf.modu.presentation.filter.FilterFragment">
+        <action
+            android:id="@+id/action_filter_to_home"
+            app:destination="@+id/fragment_home" />
+    </fragment>
+</navigation>

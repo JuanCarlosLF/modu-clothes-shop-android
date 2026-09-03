@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">MODU</string>
+
+    <!-- Detail Fragment -->
+    <string name="mosaic">Mosaic</string>
+    <string name="alert_stock">No hay suficiente stock</string>
+
+    <!-- Common -->
+    <string name="common_search_hint">Buscador</string>
+
+    <!-- Home -->
+    <string name="home_title">Mosaic</string>
+    <string name="home_filter_prefix_title">Nombre: </string>
+    <string name="home_filter_prefix_order">Orden: </string>
+    <string name="home_filter_prefix_max_price">Máx: </string>
+    <string name="home_filter_suffix_currency">$</string>
+    <string name="home_filter_order_lowest">Más bajo</string>
+    <string name="home_filter_order_highest">Más alto</string>
+    <string name="home_error_not_found">Sin coincidencias</string>
+
+    <!-- Detail -->
+    <string name="size">Talla</string>
+    <string name="color">Color</string>
+    <string name="text_total">$ 0.0</string>
+    <string name="similar">Similares</string>
+    <string name="continuar">Continuar</string>
+    <string name="text_price_format">$ %1$.2f</string>
+    <string name="text_add_to_cart">Tu producto se ha añadido al carrito</string>
+    <!-- Filter -->
+    <string name="filter_title">Filtros</string>
+    <string name="filter_button_reset_text">REESTABLECER</string>
+    <string name="filter_button_save_text">Guardar filtros</string>
+    <string name="filter_by_title_title">Filtrar por título</string>
+    <string name="filter_by_price_title">Filtrar por precio</string>
+    <string name="filter_by_price_range_title">Filtrar por rango de precio</string>
+    <string name="filter_by_category_title">Filtrar por categoría</string>
+    <string name="filter_search_hint_text">Buscar productos...</string>
+    <string name="filter_by_price_first_button_text">Más barato</string>
+    <string name="filter_by_price_second_button_text">Más caro</string>
+    <string name="filter_slider_min_value">$0</string>
+    <string name="filter_slider_max_value">$1000+</string>
+    <string name="filter_slider_default_value">Hasta $640</string>
+    <string name="filter_slider_current_value">Hasta $%1$d</string>
+    <string name="filter_info_title">Combinando Filtros</string>
+    <string name="filter_slider_max_valu">1000</string>
+    <string name="filter_info_desc">Al seleccionar múltiples filtros, se refinarán los resultados de búsqueda para que coincidan con todos los criterios simultáneamente.</string>
+    <string name="filter_reset_success">Filtros restablecidos</string>
+
+    <!-- Cart -->
+    <string name="cart_tob_bar">Carrito</string>
+    <string name="cart_summary">RESUMEN DEL PEDIDO</string>
+    <string name="cart_text_special_instructions">Instrucciones especiales</string>
+    <string name="cart_text_hint_instructions">Escribe aquí cualquier nota sobre tu pedido...</string>
+    <string name="cart_text_subtotal">Subtotal</string>
+    <string name="cart_text_shipping">Envío</string>
+    <string name="cart_text_value_shipping">GRATIS</string>
+    <string name="cart_text_total">Total</string>
+    <string name="cart_text_button">Ir al checkout</string>
+    <string name="cart_text_size_and_color">Talla: %1$s · Color: %2$s</string>
+    <string name="cart_text_price">$ %1$.2f</string>
+    <string name="cart_text_total_price">$ %1$.2f</string>
+    <string name="snackbar_item_deleted">Producto eliminado.</string>
+    <string name="snackbar_undo">Deshacer</string>
+    <string name="cart_toast_checkout_success">El pedido se ha realizado con éxito </string>
+    <string name="cart_max_stock_reached">Límite de stock alcanzado para este producto</string>
+
+    <!-- Error -->
+    <string name="error_no_internet_title">Sin conexión a Internet</string>
+    <string name="error_no_internet_msg">Por favor, comprueba tu conexión a la red y vuelve a intentarlo.</string>
+    <string name="error_unauthorized_title">Sesión Caducada</string>
+    <string name="error_unauthorized_msg">Tu sesión ha caducado. Por favor, inicia sesión de nuevo para continuar.</string>
+    <string name="error_not_found_title">No Encontrado</string>
+    <string name="error_not_found_msg">No se ha podido encontrar el recurso solicitado.</string>
+    <string name="error_internal_error_title">Error del Servidor</string>
+    <string name="error_internal_error_msg">Actualmente estamos experimentando dificultades técnicas. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="error_generic_oops">¡Vaya! Algo ha salido mal</string>
+    <string name="general_error_msg">Ha ocurrido un error inesperado. Por favor inténtalo de nuevo.</string>
+    <string name="button_retry">Reintentar</string>
+    <string name="error_sync_failed_title">Sincronización pendiente</string>
+    <string name="error_sync_failed_msg">No hemos podido sincronizar tus cambios con el servidor.\nTus cambios se guardarán en el dispositivo.</string>
+    <string name="error_checkout_offline_msg">No tienes conexión a internet.\nEl carrito está guardado, pero no podemos procesar tu pedido en este momento.</string>
+    <string name="error_add_item_to_cart">Ha habido un error, no se ha podido añadir al carrito</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_all_items_dialog">¿Estás seguro de que quieres eliminar todos los productos del carrito?</string>
+    <string name="alert_choice_delete">Vaciar</string>
+    <string name="alert_choice_cancel">Cancelar</string>
+    <string name="alert_unavailable">No disponible</string>
+    <string name="alert_out_of_stock_cart">Sin stock</string>
+    <string name="alert_out_of_stock_detail">No hay más stock disponible</string>
+</resources>
